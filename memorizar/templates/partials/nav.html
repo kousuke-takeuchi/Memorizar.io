@@ -1,0 +1,22 @@
+{% load static %}
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="#">
+            <img src="">
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-end">
+            <a class="navbar-item" href="#">メニュー1</a>
+            <a class="navbar-item" href="#">メニュー2</a>
+            <a class="navbar-item" href="#">メニュー3</a>
+            <a class="navbar-item" href="#">メニュー4</a>
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button" id="login-button" href="{% url 'users:login' %}">ログイン</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

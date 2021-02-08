@@ -1,0 +1,22 @@
+{% load static %}
+<ul class="paginator">
+    {% if page_obj.has_previous %}
+        <a href="?page=1"><li class="edge"><img src="{% static 'images/arrow-left.svg' %}" alt=""></li></a>
+    {% endif %}
+
+    {% for link_page in page_obj.paginator.page_range %}
+        {% if link_page %}
+            {% if link_page == page_obj.number %}
+                <li>{{ link_page }}</li>
+            {% else %}
+                <li><a href="?page={{ link_page }}">{{ link_page }}</a></li>
+            {% endif %}
+        {% else %}
+            <li>{{ link_page }}</li>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.paginator.num_pages }}"><li class="edge"><img src="{% static 'images/arrow-right.svg' %}" alt=""></li></a>
+    {% endif %}
+</ul>
