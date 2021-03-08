@@ -40,8 +40,11 @@ INSTALLED_APPS = [
     
     'django_extensions',
     'import_export',
+    'social_django',
 
     'memorizar',
+    'users',
+    'workbooks',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'memorizar.urls'
@@ -67,6 +71,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
             'libraries': {
                 'memorizar': 'memorizar.templatetags.memorizar_extras'
@@ -84,6 +90,27 @@ WSGI_APPLICATION = 'memorizar.wsgi.application'
 DATABASES = {
     'default': env.db()
 }
+
+# Auth0
+
+SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
+SOCIAL_AUTH_AUTH0_DOMAIN = env('AUTH0_DOMAIN')
+SOCIAL_AUTH_AUTH0_KEY = env('AUTH0_ID')
+SOCIAL_AUTH_AUTH0_SECRET = env('AUTH0_SECRET')
+SOCIAL_AUTH_AUTH0_SCOPE = [
+    'openid',
+    'profile',
+    'email',
+]
+SOCIAL_AUTH_URL_NAMESPACE = "users:social"
+
+AUTHENTICATION_BACKENDS = {
+    'lib.backend.Auth0',
+    'django.contrib.auth.backends.ModelBackend'
+}
+
+LOGIN_URL = '/users/login/auth0'
+LOGIN_REDIRECT_URL = '/workbooks'
 
 
 # Password validation

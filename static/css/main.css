@@ -2,3 +2,15 @@
 .navbar-brand img {
     height: 40px;
 }
+
+.answer-true {
+    border: #e53f3c 3px solid!important;
+}
+
+.answer-selection {
+    border: #eae7f5 3px solid!important;
+}
+
+.answer-true.answer-selection {
+    border: #19cb98 3px solid!important;
+}
