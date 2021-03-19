@@ -1,22 +1,108 @@
 {% load static %}
-<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" href="#">
-            <img src="">
-        </a>
-    </div>
 
-    <div class="navbar-menu">
-        <div class="navbar-end">
-            <a class="navbar-item" href="#">メニュー1</a>
-            <a class="navbar-item" href="#">メニュー2</a>
-            <a class="navbar-item" href="#">メニュー3</a>
-            <a class="navbar-item" href="#">メニュー4</a>
-            <div class="navbar-item">
-                <div class="buttons">
-                    <a class="button" id="login-button" href="{% url 'users:login' %}">ログイン</a>
+<!-- Navbar -->
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-default ">
+    <div class="container-fluid px-0">
+        <a class="navbar-brand" href="./index.html"><img src="{% static 'images/logo.svg' %}" alt="" /></a>
+        <!-- Mobile view nav wrap -->
+        <ul class="navbar-nav navbar-right-wrap ml-auto d-lg-none d-flex nav-top-wrap">
+            <li class="dropdown ml-2">
+                <a class="rounded-circle" href="#!" role="button" id="dropdownUser" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <div class="avatar avatar-md avatar-indicators avatar-online">
+                        <img alt="avatar" src="{% static 'images/avatar-1.jpg' %}" class="rounded-circle" />
+                    </div>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUser">
+                    <div class="dropdown-item">
+                        <div class="d-flex">
+                            <div class="avatar avatar-md avatar-indicators avatar-online">
+                                <img alt="avatar" src="{% static 'images/avatar-1.jpg' %}" class="rounded-circle" />
+                            </div>
+                            <div class="ml-3 lh-1">
+                                <h5 class="mb-1">山田太郎</h5>
+                                <p class="mb-0 text-muted">user@example.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="dropdown-divider"></div>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a class="dropdown-item" href="./pages/profile-edit.html">
+                                <i class="fe fe-user mr-2"></i>プロフィール
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#!">
+                                <i class="fe fe-settings mr-2"></i>設定
+                            </a>
+                        </li>
+                    </ul> -->
+                    <div class="dropdown-divider"></div>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a class="dropdown-item" href="./index.html">
+                                <i class="fe fe-power nav-icon"></i>ログアウト
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-            </div>
+            </li>
+        </ul>
+        <!-- Button -->
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbar-default"
+            aria-controls="navbar-default" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="icon-bar top-bar mt-0"></span>
+            <span class="icon-bar middle-bar"></span>
+            <span class="icon-bar bottom-bar"></span>
+        </button>
+        <!-- Collapse -->
+        <div class="collapse navbar-collapse" id="navbar-default">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Workbooks <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav navbar-right-wrap ml-auto d-none d-lg-block">
+                <li class="dropdown ml-2 d-inline-block">
+                    <a class="rounded-circle" href="#!" role="button" id="dropdownUserProfile"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="avatar avatar-md avatar-indicators avatar-online">
+                            <img alt="avatar" src="{% static 'images/avatar-1.jpg' %}" class="rounded-circle" />
+                        </div>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUserProfile">
+                        <div class="dropdown-item">
+                            <div class="d-flex">
+                                <div class="avatar avatar-md avatar-indicators avatar-online">
+                                    <img alt="avatar" src="{% static 'images/avatar-1.jpg' %}" class="rounded-circle" />
+                                </div>
+                                <div class="ml-3 lh-1">
+                                    <h5 class="mb-1">山田太郎</h5>
+                                    <p class="mb-0 text-muted">user@example.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="dropdown-divider"></div> -->
+                        <!-- <ul class="list-unstyled">
+                            <li>
+                                <a class="dropdown-item" href="#!">
+                                    <i class="fe fe-settings mr-2"></i>設定
+                                </a>
+                            </li>
+                        </ul> -->
+                        <div class="dropdown-divider"></div>
+                        <ul class="list-unstyled">
+                            <li>
+                                <a class="dropdown-item" href="./index.html">
+                                    <i class="fe fe-power nav-icon"></i>ログアウト
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>

@@ -1,0 +1,62 @@
+{% extends 'memorizar/base.html' %}
+{% load memorizar %}
+
+{% block content %}
+<!-- Page Content -->
+<div class="pb-5 py-md-5 py-5">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-12">
+				<div class="card">
+					<div class="d-lg-flex justify-content-between align-items-center card-header">
+						<div class="mb-3 mb-lg-0">
+							<h3 class="mb-0">{{ question.title }}</h3>
+							<span>{{ question.sentense }}</span>
+						</div>
+					</div>
+
+					<form method="POST">
+						{% csrf_token %}
+
+						<input type="hidden" name="selected_id" value="" />
+						<input type="hidden" name="question_id" value="{{ question.question_id }}" />
+						<input type="hidden" name="start_at" value="{{ start_at }}" />
+
+						<div class="card-body">
+							{% for answer_couple in answers|split_couple %}
+								<div class="card-deck pb-2 py-md-2 py-2">
+									{% for answer in answer_couple %}
+										<div class="card answer" data-answer-id="{{ answer.answer_id }}">
+											<div class="card-body">
+												<h5 class="card-title">{{ answer.title }}</h5>
+												<p class="card-text">{{ answer.sentense }}</p>
+											</div>
+										</div>
+									{% endfor %}
+								</div>
+							{% endfor %}
+
+							<div class="pb-4 py-md-4 py-4">
+								<button type="submit" class="btn btn-primary btn-block btn-lg" disabled>回答を見る</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+	$(function () {
+		$('.answer').on('click', function (e) {
+			$('.answer').removeClass('answer-selection');
+			$(e.currentTarget).addClass('answer-selection');
+			$('input[name="selected_id"]').val($(e.currentTarget).data('answer-id'));
+			$('button[type="submit"]').removeAttr('disabled');
+		});
+	});
+</script>
+{% endblock %}

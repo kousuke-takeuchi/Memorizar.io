@@ -1,18 +1,123 @@
+import time
+import math
+
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 
 from lib import mixins
-from . import models, services
+from . import models, forms, services
 
 
 
-class DiagnosisCreateView(mixins.BaseMixin, View):
-    template_name = 'diagnoses/create.html'
+class WorkbookListView(mixins.BaseMixin, View):
+    template_name = 'workbooks/list.html'
+
+    def get_querysets(self):
+        workbooks = models.Workbook.objects.aggregate_training(user=self.request.user)
+        print(workbooks)
+        return workbooks
     
     def get(self, request):
-        context = dict(user_id=request.user.user_id)
+        # 問題集一覧
+        querysets = self.get_querysets()
+        form = forms.WorkbookCreateForm(context={'request': request})
+        context = dict(form=form, page_obj=querysets)
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        # 問題集作成
+        form = forms.WorkbookCreateForm(request.POST, request.FILES, context={'request': request})
+        if not form.is_valid():
+            print(form.errors)
+            context = dict(form=form)
+            return render(request, self.template_name, context)
+        form.save()
+        return redirect('workbooks:list')
+
+
+class WorkbookDetailView(mixins.BaseMixin, View):
+    template_name = 'workbooks/detail.html'
+
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def get(self, request, workbook_id):
+        # 問題集の実施結果集計
+        workbook = self.get_querysets(workbook_id)
+        context = dict(workbook=workbook)
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        # トレーニングを開始する
+        workbook = self.get_querysets(workbook_id)
+        return redirect('workbooks:list')
+
+
+class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
+    template_name = 'workbooks/trainings/question.html'
+    
+    # 問題を表示
+    def get(self, request, training_id):
+        training = get_object_or_404(models.Training, training_id=training_id)
+
+        # もし終了している場合は結果ページへ
+        if training.done:
+            return redirect('workbooks:training_result', training_id=training.training_id)
+
+        # 問題集に含まれる問題の中から、ランダムに問題を取得する
+        question = models.Question.objects.filter(workbook=training.workbook).order_by('?').first()
+        answers = models.Answer.objects.filter(question=question)
+
+        form = forms.WorkbookTrainingQuestionForm(context={'request': request})
+        context = dict(form=form, question=question, answers=answers, start_at=time.time())
+        return render(request, self.template_name, context)
+    
+    # 回答を送信
+    def post(self, request, training_id):
+        training = get_object_or_404(models.Training, training_id=training_id)
+
+        form = forms.WorkbookTrainingQuestionForm(request.POST, context={'request': request, 'training': training})
+        if not form.is_valid():
+            context = dict(form=form)
+            return render(request, self.template_name, context)
+        training_selection = form.save()
+
+        # 10問解いたら終了
+        if len(models.TrainingSelection.objects.filter(training=training)) >= 10:
+            training.done = True
+            training.save()
+
+        # 正答結果ページに移動
+        return redirect('workbooks:training_answer', training_id=training.training_id, selection_id=training_selection.training_selection_id)
+
+
+class WorkbookTrainingAnswerView(mixins.BaseMixin, View):
+    template_name = 'workbooks/trainings/answer.html'
+    
+    def get(self, request, training_id, selection_id):
+        training_selection = get_object_or_404(models.TrainingSelection, training_selection_id=selection_id)
+        answers = models.Answer.objects.filter(question=training_selection.question)
+
+        context = dict(training_selection=training_selection, answers=answers)
+        return render(request, self.template_name, context)
+
+
+class WorkbookTrainingResultView(mixins.BaseMixin, View):
+    template_name = 'workbooks/trainings/result.html'
+    
+    def get(self, request, training_id):
+        training = get_object_or_404(models.Training, training_id=training_id, done=True)
+
+        # 正解数/回答数
+        selection_count = models.TrainingSelection.objects.filter(training=training).count()
+        true_count = models.TrainingSelection.objects.filter(training=training, correct=True).count()
+        true_rate = math.floor(100 * true_count / selection_count)
+
+        context = dict(selection_count=selection_count, true_count=true_count, true_rate=true_rate)
         return render(request, self.template_name, context)

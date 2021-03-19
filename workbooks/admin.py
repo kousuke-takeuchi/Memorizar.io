@@ -29,7 +29,6 @@ class ChapterAdmin(ImportExportModelAdmin):
     list_display = (
         'chapter_id',
         'workbook',
-        'question',
         'title',
         'description',
     )
@@ -46,6 +45,7 @@ class QuestionAdmin(ImportExportModelAdmin):
     list_display = (
         'question_id',
         'workbook',
+        'chapter',
         'title',
         'sentense',
         'image_urls',
@@ -98,6 +98,7 @@ class TrainingAdmin(ImportExportModelAdmin):
         'training_id',
         'user',
         'workbook',
+        'done',
     )
     search_fields = (
         'created_at',

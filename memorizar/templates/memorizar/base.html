@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Favicon icon-->
+	<link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+	<!-- Libs CSS -->
+	<link href="{% static 'fonts/feather/feather.css' %}" rel="stylesheet" />
+	<link href="{% static 'libs/dragula/dist/dragula.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'libs/@mdi/font/css/materialdesignicons.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'libs/prismjs/themes/prism.css' %}" rel="stylesheet" />
+	<link href="{% static 'libs/dropzone/dist/dropzone.css' %}" rel="stylesheet" />
+	<link href="{% static 'libs/magnific-popup/dist/magnific-popup.css' %}" rel="stylesheet" />
+	<link href="{% static 'libs/bootstrap-select/dist/css/bootstrap-select.min.css' %}" rel="stylesheet">
+	<link href="{% static 'libs/@yaireo/tagify/dist/tagify.css' %}" rel="stylesheet">
+	<!-- Theme CSS -->
+	<link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
+	<title>{% block title %}Memorizar{% endblock %}</title>
+</head>
+
+<body>
+    <!-- Navbar -->
+    {% include 'partials/nav.html' %}
+
+    <!-- Page Content -->
+    {% block content %}
+    {% endblock %}
+	
+
+    <!-- Footer -->
+    {% include 'partials/footer.html' %}
+
+
+	<!-- Scripts -->
+	<!-- Libs JS -->
+	<script src="{% static 'libs/jquery/dist/jquery.min.js' %}"></script>
+	<script src="{% static 'libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+	<script src="{% static 'libs/odometer/odometer.min.js' %}"></script>
+	<script src="{% static 'libs/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+	<script src="{% static 'libs/magnific-popup/dist/jquery.magnific-popup.min.js' %}"></script>
+	<script src="{% static 'libs/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
+	<script src="{% static 'libs/flatpickr/dist/flatpickr.min.js' %}"></script>
+	<script src="{% static 'libs/inputmask/dist/jquery.inputmask.min.js' %}"></script>
+	<script src="{% static 'libs/apexcharts/dist/apexcharts.min.js' %}"></script>
+	<script src="{% static 'libs/quill/dist/quill.min.js' %}"></script>
+	<script src="{% static 'libs/file-upload-with-preview/dist/file-upload-with-preview.min.js' %}"></script>
+	<script src="{% static 'libs/dragula/dist/dragula.min.js' %}"></script>
+	<script src="{% static 'libs/bs-stepper/dist/js/bs-stepper.min.js' %}"></script>
+	<script src="{% static 'libs/dropzone/dist/min/dropzone.min.js' %}"></script>
+	<script src="{% static 'libs/jQuery.print/jQuery.print.js' %}"></script>
+	<script src="{% static 'libs/prismjs/prism.js' %}"></script>
+	<script src="{% static 'libs/prismjs/components/prism-scss.min.js' %}"></script>
+	<script src="{% static 'libs/@yaireo/tagify/dist/tagify.min.js' %}"></script>
+	<!-- clipboard -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
+	<!-- Theme JS -->
+    <script src="{% static 'js/theme.min.js' %}"></script>
+    {% block js %}
+    {% endblock %}
+</body>
+
+</html>

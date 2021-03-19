@@ -26,9 +26,8 @@ class Workbook(BaseModel, models.Model):
 
 
 class Chapter(BaseModel, models.Model):
-    chapter_id = models.UUIDField('章識別子', default=uuid.uuid4, unique=True, db_index=True)
+    chapter_id = models.CharField('章識別子', max_length=100, db_index=True)
     workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
-    question = models.ForeignKey('workbooks.Question', db_index=True, on_delete=models.CASCADE)
     title = models.CharField('タイトル', max_length=250, db_index=True)
     description = models.TextField('詳細説明文', default=None, null=True, blank=True)
 
@@ -37,25 +36,33 @@ class Chapter(BaseModel, models.Model):
     class Meta:
         verbose_name = 'chapters'
         verbose_name_plural = 'Chapter'
+        unique_together = (
+            ('chapter_id', 'workbook'),
+        )
 
     def __str__(self):
         return str(self.title)
 
 
 class Question(BaseModel, models.Model):
-    question_id = models.UUIDField('問題識別子', default=uuid.uuid4, unique=True, db_index=True)
+    question_id = models.CharField('問題識別子', max_length=100, unique=True, db_index=True)
+    chapter = models.ForeignKey('workbooks.Chapter', db_index=True, on_delete=models.CASCADE, null=True, default=None, blank=True)
     workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
     title = models.CharField('タイトル', max_length=250, db_index=True)
     sentense = models.TextField('問題文')
-    image_urls = ArrayField(models.URLField(), size=10)
+    image_urls = ArrayField(models.URLField(), size=10, default=list)
     hint = models.TextField('問題ヒント文章', default=None, null=True, blank=True)
     commentary = models.TextField('正解解説文章', default=None, null=True, blank=True)
+    commentary_image_urls = ArrayField(models.URLField(), size=10, default=list)
 
     objects = managers.QuestionManager()
 
     class Meta:
         verbose_name = 'questions'
         verbose_name_plural = 'Question'
+        unique_together = (
+            ('question_id', 'workbook'),
+        )
 
     def __str__(self):
         return str(self.title)
@@ -94,6 +101,7 @@ class Training(BaseModel, models.Model):
     training_id = models.UUIDField('イベントID', default=uuid.uuid4, unique=True, db_index=True)
     user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
+    done = models.BooleanField('実施完了済みか', default=False)
     
     objects = managers.TrainingManager()
 
@@ -102,7 +110,7 @@ class Training(BaseModel, models.Model):
         verbose_name_plural = 'Training'
 
     def __str__(self):
-        return str(self.title)
+        return str(self.workbook.title)
 
 
 class TrainingSelection(BaseModel, models.Model):

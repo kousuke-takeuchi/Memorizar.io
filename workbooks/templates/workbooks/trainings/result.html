@@ -1,0 +1,32 @@
+{% extends 'memorizar/base.html' %}
+
+{% block content %}
+<!-- Page Content -->
+<div class="pb-5 py-md-5 py-5">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-12">
+				<div class="card">
+					<div class="d-lg-flex justify-content-between align-items-center card-header">
+						<div class="mb-3 mb-lg-0">
+							<h3 class="mb-0">採点結果</h3>
+						</div>
+					</div>
+
+					<div class="card-body">
+						<div class="col-12 pb-4 py-md-4 py-4">
+							<h3 class="mb-2">正解率 : <span class="{% if true_rate >= 80 %}text-success{% elif true_rate > 40 %}text-warning{% else %}text-danger{% endif %}">{{ true_rate }}%</span></h3>
+							<h3 class="mb-2">解答内容 : <b>{{ selection_count }}</b>問中<span class="{% if true_rate >= 80 %}text-success{% elif true_rate > 40 %}text-warning{% else %}text-danger{% endif %}">{{ true_count }}</span>問正解</h3>
+						</div>
+
+						<div class="pb-4 py-md-4 py-4">
+							<a href="{% url 'workbooks:list' %}" class="btn btn-primary btn-block btn-lg">もう一度</a>
+							<a href="{% url 'workbooks:list' %}" class="btn btn-default btn-block btn-lg">トップに戻る</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
