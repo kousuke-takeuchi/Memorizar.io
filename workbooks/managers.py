@@ -1,6 +1,6 @@
 import math
 
-from django.db.models import Sum, Count, Case, When, Value
+from django.db.models import Sum, Count, Case, When, Value, QuerySet
 
 from lib.managers import BaseManager
 
@@ -9,12 +9,28 @@ class WorkbookManager(BaseManager):
     def aggregate_training(self, **kwargs):
         from . import models
 
-        querysets = self.filter(**kwargs)
-        workbooks = models.TrainingSelection.objects.filter(training__workbook__in=querysets).select_related().values('training__workbook__title', 'training__workbook__workbook_id', 'correct').order_by('-training__workbook__created_at').annotate(true_count=Count(Case(When(correct=True, then=Value(1)))), selection_count=Count('correct'), training_count=Count('training')).order_by('training__workbook__workbook_id')
+        # querysets = models.TrainingSelection.objects.filter(training__workbook__in=self.filter(**kwargs))
+        # querysets = querysets.select_related().values('training__workbook__created_at', 'training__workbook__title', 'training__workbook__workbook_id', 'correct')
+        # querysets = querysets.annotate(true_count=Count(Case(When(correct=True, then=Value(1)))), selection_count=Count('correct'), training_count=Count('training'))
+        # querysets = querysets.order_by('-training__workbook__created_at')
+        
+        workbooks = self.filter(**kwargs)
+        results = []
         for workbook in workbooks:
-            true_rate = math.floor(100 * workbook['true_count'] / workbook['selection_count'])
-            workbook['true_rate'] = true_rate
-        return workbooks
+            querysets = models.TrainingSelection.objects.filter(training__workbook=workbook)
+            querysets = querysets.values('training__workbook')
+            querysets = querysets.annotate(true_count=Count(Case(When(correct=True, then=Value(1)))), selection_count=Count('correct'), training_count=Count('correct'))
+            true_rate = math.floor(100 * querysets[0]['true_count'] / querysets[0]['selection_count'])
+            results.append({
+                'workbook_id': workbook.workbook_id,
+                'title': workbook.title,
+                'created_at': workbook.created_at,
+                'true_count': querysets[0]['true_count'],
+                'selection_count': querysets[0]['selection_count'],
+                'true_rate': true_rate,
+                'training_count': querysets[0]['training_count'],
+            })
+        return results
 
 
 class ChapterManager(BaseManager):
@@ -38,5 +54,7 @@ class TrainingManager(BaseManager):
 
 
 class TrainingSelectionManager(BaseManager):
-    pass
+    def aggregate(self, **kwargs):
+        querysets = self.filter(**kwargs)
+        return querysets
 

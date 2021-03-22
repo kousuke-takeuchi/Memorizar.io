@@ -29,6 +29,12 @@
 						<h3 class="mb-0">History</h3>
 						<span>履歴</span>
 					</div>
+					<div>
+						<form method="POST">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-outline-primary btn-sm">開始</button>
+						</form>
+					</div>
 				</div>
 
 				<div class="table-invoice table-responsive border-0">

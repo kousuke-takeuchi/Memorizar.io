@@ -32,8 +32,8 @@
 							<tbody>
 								{% for workbook in page_obj %}
 									<tr>
-										<td>{{ workbook.training__workbook__workbook_id|truncatechars:9|slice:":8" }}</td>
-										<td><a href="{% url 'workbooks:detail' workbook.training__workbook__workbook_id %}">{{ workbook.training__workbook__title }}</a></td>
+										<td>{{ workbook.workbook_id|truncatechars:9|slice:":8" }}</td>
+										<td><a href="{% url 'workbooks:detail' workbook.workbook_id %}">{{ workbook.title }}</a></td>
 										<td>{{ workbook.training_count }}回</td>
 										<td>{{ workbook.true_count }}問/{{ workbook.selection_count }}問</td>
 										<td><span class="badge {% if workbook.true_rate >= 80 %}badge-success{% elif workbook.true_rate > 40 %}badge-warning{% else %}badge-danger{% endif %}">{{ workbook.true_rate }}%</span></td>
