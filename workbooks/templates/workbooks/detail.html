@@ -1,4 +1,5 @@
 {% extends "memorizar/base.html" %}
+{% load memorizar %}
 {% block title %}Workbooks{% endblock %}
 
 {% block content %}
@@ -48,24 +49,14 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>2021年1月1日</td>
-								<td>90問/100問</td>
-								<td><span class="badges badge-success">90%</span></td>
-								<td>5時間12分34秒</td>
-							</tr>
-							<tr>
-								<td>2021年1月2日</td>
-								<td>10問/100問</td>
-								<td><span class="badge badge-danger">10%</span></td>
-								<td>12分34秒</td>
-							</tr>
-							<tr>
-								<td>2021年1月2日</td>
-								<td>0問/100問</td>
-								<td><span class="badge badge-warning">70%</span></td>
-								<td>34秒</td>
-							</tr>
+							{% for training in page_obj %}
+								<tr>
+									<td>{{ training.training__created_at|date:"Y年n月j日" }}</td>
+									<td>{{ training.true_count }}問/{{ training.selection_count }}問</td>
+									<td><span class="badges {% if training.true_rate >= 80 %}badge-success{% elif training.true_rate > 40 %}badge-warning{% else %}badge-danger{% endif %}">{{ training.true_rate }}%</span></td>
+									<td>{{ training.duration|display_timedelta }}</td>
+								</tr>
+							{% endfor %}
 						</tbody>
 					</table>
 				</div>

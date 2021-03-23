@@ -11,8 +11,8 @@ class WorkbookService:
         sheet = wb.worksheets[0]
 
         default_title = '問題集 ' + timezone.now().strftime('%Y%m%d-%H%M%S')
-        workbook = models.Workbook.objects.all().first()
-        # workbook = models.Workbook.objects.create(user=user, title=default_title)
+        # workbook = models.Workbook.objects.all().first()
+        workbook = models.Workbook.objects.create(user=user, title=default_title)
         current_capter = None
         relationships = []
         for idx, row in enumerate(sheet.rows):

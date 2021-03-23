@@ -39,4 +39,4 @@ class Auth0(BaseOAuth2):
                 'first_name': payload['name'],
                 'picture': payload['picture'],
                 'user_id': payload['sub'],
-                'email': payload['email']}
+                'email': payload.get('email')}

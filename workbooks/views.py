@@ -19,7 +19,6 @@ class WorkbookListView(mixins.BaseMixin, View):
 
     def get_querysets(self):
         workbooks = models.Workbook.objects.aggregate_training(user=self.request.user)
-        print(workbooks)
         return workbooks
     
     def get(self, request):
@@ -33,7 +32,6 @@ class WorkbookListView(mixins.BaseMixin, View):
         # 問題集作成
         form = forms.WorkbookCreateForm(request.POST, request.FILES, context={'request': request})
         if not form.is_valid():
-            print(form.errors)
             context = dict(form=form)
             return render(request, self.template_name, context)
         form.save()
@@ -45,12 +43,13 @@ class WorkbookDetailView(mixins.BaseMixin, View):
 
     def get_querysets(self, workbook_id):
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
-        return workbook
+        querysets = models.TrainingSelection.objects.aggregate(training__workbook=workbook)
+        return workbook, querysets
     
     def get(self, request, workbook_id):
         # 問題集の実施結果集計
-        workbook = self.get_querysets(workbook_id)
-        context = dict(workbook=workbook)
+        workbook, trainings = self.get_querysets(workbook_id)
+        context = dict(workbook=workbook, page_obj=trainings)
         return render(request, self.template_name, context)
     
     def post(self, request, workbook_id):
