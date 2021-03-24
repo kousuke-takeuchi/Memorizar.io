@@ -177,3 +177,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # 本番環境かどうか
 IS_PRODUCTION = (STAGE == 'master')
+
+# heroku
+if env('STAGE') != 'local':
+    import django_heroku
+    django_heroku.settings(locals())
