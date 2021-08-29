@@ -5,7 +5,7 @@
 {% block content %}
 
 <!-- メニュー -->
-<div class="pb-5 py-md-5 py-5 container">
+<div class="py-md-5 py-5 container">
 	<div class="row">
 	<div class="col-xl-12 col-lg-12 col-md-12 col-12">
 		<!-- Bg -->
@@ -21,10 +21,23 @@
 				</div>
 			</div>
 			<div>
-				<form method="POST">
-					{% csrf_token %}
-					<button type="submit" class="btn btn-primary btn-sm">開始</button>
-				</form>
+				<!-- Nav -->
+				<div class="nav btn-group flex-nowrap">
+					<form method="POST">
+						{% csrf_token %}
+						<button type="submit" class="btn btn-primary btn-md">開始</button>
+					</form>
+				</div>
+				<!-- <span class="dropdown dropstart">
+					<a class="text-muted text-decoration-none" href="#" role="button" id="courseDropdown1" data-bs-toggle="dropdown" data-bs-offset="-20,20" aria-expanded="false">
+						<button class="btn btn-primary btn-md">メニュー</button>
+					</a>
+					<span class="dropdown-menu" aria-labelledby="courseDropdown1" style="">
+						<span class="dropdown-header">Setting </span>
+						<a class="dropdown-item" href="#"><i class="fe fe-edit dropdown-item-icon"></i>Excelをインポート</a>
+						<a class="dropdown-item" href="#"><i class="fe fe-trash dropdown-item-icon"></i>Remove</a>
+					</span>
+				</span> -->
 			</div>
 		</div>
 	</div>
@@ -48,7 +61,7 @@
 </div>
 
 <!-- Page Content -->
-<div class="container">
+<div class="container pb-5">
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-12">
 			<div class="card">
@@ -80,6 +93,81 @@
 							{% endfor %}
 						</tbody>
 					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 問題一覧 -->
+<div class="container pb-5">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-12">
+			<div class="card">
+				<div class="d-lg-flex justify-content-between align-items-center card-header">
+					<div class="mb-3 mb-lg-0">
+						<h3 class="mb-0">Questions</h3>
+						<span>問題</span>
+					</div>
+					<!-- Nav -->
+					<div class="nav btn-group flex-nowrap" role="tablist">
+						<button class="btn btn-outline-white active" data-bs-toggle="tab" data-bs-target="#tabPaneGrid" role="tab" aria-controls="tabPaneGrid" aria-selected="true">
+							<span class="fe fe-grid"></span>
+						</button>
+						<button class="btn btn-outline-white" data-bs-toggle="tab" data-bs-target="#tabPaneList" role="tab" aria-controls="tabPaneList" aria-selected="false">
+							<span class="fe fe-list"></span>
+						</button>
+					</div>
+				</div>
+
+				<div class="tab-content">
+					<!-- チャプタータブ -->
+					<div class="table-invoice table-responsive border-0 tab-pane fade" id="tabPaneGrid" role="tabpanel" aria-labelledby="tabPaneGrid">
+						<table class="table mb-0 text-nowrap">
+							<thead>
+								<tr>
+									<th scope="col" class="border-bottom-0">日付</th>
+									<th scope="col" class="border-bottom-0">正解数/回答数</th>
+									<th scope="col" class="border-bottom-0">正解率</th>
+									<th scope="col" class="border-bottom-0">かかった時間</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- {% for training in page_obj %}
+									<tr>
+										<td>{{ training.training__created_at|date:"Y年n月j日" }}</td>
+										<td>{{ training.true_count }}問/{{ training.selection_count }}問</td>
+										<td><span class="badges {% if training.true_rate >= 80 %}badge-success{% elif training.true_rate > 40 %}badge-warning{% else %}badge-danger{% endif %}">{{ training.true_rate }}%</span></td>
+										<td>{{ training.duration|display_timedelta }}</td>
+									</tr>
+								{% endfor %} -->
+							</tbody>
+						</table>
+					</div>
+					<!-- 問題一覧タブ -->
+					<div class="table-invoice table-responsive border-0 tab-pane fade" id="tabPaneList" role="tabpanel" aria-labelledby="tabPaneList">
+						<table class="table mb-0 text-nowrap">
+							<thead>
+								<tr>
+									<th scope="col" class="border-bottom-0">日付</th>
+									<th scope="col" class="border-bottom-0">正解数/回答数</th>
+									<th scope="col" class="border-bottom-0">正解率</th>
+									<th scope="col" class="border-bottom-0">かかった時間</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- {% for training in page_obj %}
+									<tr>
+										<td>{{ training.training__created_at|date:"Y年n月j日" }}</td>
+										<td>{{ training.true_count }}問/{{ training.selection_count }}問</td>
+										<td><span class="badges {% if training.true_rate >= 80 %}badge-success{% elif training.true_rate > 40 %}badge-warning{% else %}badge-danger{% endif %}">{{ training.true_rate }}%</span></td>
+										<td>{{ training.duration|display_timedelta }}</td>
+									</tr>
+								{% endfor %} -->
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
