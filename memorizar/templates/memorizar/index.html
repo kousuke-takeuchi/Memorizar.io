@@ -1,7 +1,49 @@
 {% extends "memorizar/base.html" %}
 {% load memorizar %}
+{% load static %}
 {% block title %}MEMORIZAR{% endblock %}
 
 {% block content %}
+<div class="pb-5 py-md-5 py-5 container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="mb-0">MENU</h2>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <!-- card -->
+            <a href="{% url 'workbooks:list' %}">
+                <div class="card mb-4 card-hover">
+                    <!-- img -->
+                    <div class="card-img-top">
+                        <img src="{% static 'images/menu-training.jpeg' %}" alt=""
+                            class="rounded-top-md img-fluid">
+                    </div>
+                    <!-- card body -->
+                    <div class="card-body">
+                        <h3 class="mb-0 fw-semi-bold"><a href="{% url 'workbooks:list' %}" class="text-inherit">Start Training</a></h3>
+                        <p class="mb-3">学習を開始する</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <!-- card -->
+            <div class="card mb-4 card-hover">
+                <!-- img -->
+                <div class="card-img-top">
+                    <img src="{% static 'images/menu-new.png' %}" alt=""
+                        class="rounded-top-md img-fluid">
+                </div>
+                <!-- card body -->
+                <div class="card-body">
+                    <h3 class="mb-0 fw-semi-bold"> <a href="#" class="text-inherit">New Workbook</a></h3>
+                    <p class="mb-3">新規問題集を作成する</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

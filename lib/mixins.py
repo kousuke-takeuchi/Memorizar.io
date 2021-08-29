@@ -4,4 +4,4 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class BaseMixin(LoginRequiredMixin):
-    passlogin_url = settings.LOGIN_URL
+    login_url = settings.LOGIN_URL

@@ -2,6 +2,8 @@ import json
 
 from django import template
 
+from social_django.models import UserSocialAuth
+
 
 register = template.Library()
 
@@ -9,6 +11,13 @@ register = template.Library()
 @register.filter()
 def json_dumps(obj):
     return json.dumps(obj)
+
+
+@register.filter()
+def user_avatar(user):
+    social_auth = UserSocialAuth.objects.get(user=user)
+    return social_auth.extra_data['picture']
+
 
 
 @register.filter()
