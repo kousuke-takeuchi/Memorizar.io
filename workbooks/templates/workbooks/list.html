@@ -15,6 +15,7 @@
 						</div>
 						<div>
 							<button class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#createWorkbookModal">新規追加</button>
+							<button class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#createWorkbookModal">Excelをインポート</button>
 						</div>
 					</div>
 
@@ -22,21 +23,26 @@
 						<table class="table mb-0 text-nowrap">
 							<thead>
 								<tr>
-									<th scope="col" class="border-bottom-0">ID</th>
 									<th scope="col" class="border-bottom-0">タイトル</th>
 									<th scope="col" class="border-bottom-0">実施回数</th>
 									<th scope="col" class="border-bottom-0">正解数/回答数</th>
 									<th scope="col" class="border-bottom-0">正答率</th>
+									<th scope="col" class="border-bottom-0"></th>
 								</tr>
 							</thead>
 							<tbody>
 								{% for workbook in page_obj %}
 									<tr>
-										<td>{{ workbook.workbook_id|truncatechars:9|slice:":8" }}</td>
 										<td><a href="{% url 'workbooks:detail' workbook.workbook_id %}">{{ workbook.title }}</a></td>
 										<td>{{ workbook.training_count }}回</td>
 										<td>{{ workbook.true_count }}問/{{ workbook.selection_count }}問</td>
 										<td><span class="badge {% if workbook.true_rate >= 80 %}badge-success{% elif workbook.true_rate > 40 %}badge-warning{% else %}badge-danger{% endif %}">{{ workbook.true_rate }}%</span></td>
+										<td>
+											<form method="POST" action="{% url 'workbooks:detail' workbook.workbook_id %}">
+												{% csrf_token %}
+												<button type="submit" class="btn btn-primary btn-sm">開始</button>
+											</form>
+										</td>
 									</tr>
 								{% endfor %}
 							</tbody>

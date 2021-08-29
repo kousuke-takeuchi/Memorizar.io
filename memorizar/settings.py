@@ -25,7 +25,7 @@ SECRET_KEY = env('SECRET_KEY')
 HOST_NAME = env('HOST_NAME')
 ALLOWED_HOSTS = ['*']
 STAGE = env('STAGE')
-DEBUG = STAGE != 'local'
+DEBUG = (STAGE == 'local')
 
 
 # Application definition
@@ -158,8 +158,6 @@ if STAGE == 'local':
 else:
     STATIC_URL = '/static/'
     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    MEDIA_URL = '/media/'  # or any prefix you choose
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
