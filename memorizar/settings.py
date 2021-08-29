@@ -22,10 +22,10 @@ environ.Env.read_env('.env')
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG')
 HOST_NAME = env('HOST_NAME')
 ALLOWED_HOSTS = ['*']
 STAGE = env('STAGE')
+DEBUG = STAGE != 'local'
 
 
 # Application definition
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -133,10 +134,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-
-
 SUPERUSER_EMAIL = env('SUPERUSER_EMAIL')
 SUPERUSER_PASSWORD = env('SUPERUSER_PASSWORD')
 
@@ -154,7 +151,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-AWS_STORAGE_BUCKET_NAME = 'memorizar-' + STAGE
 
 if STAGE == 'local':
     STATIC_URL = '/static/'
@@ -162,9 +158,9 @@ if STAGE == 'local':
 else:
     STATIC_URL = '/static/'
     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     MEDIA_URL = '/media/'  # or any prefix you choose
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
