@@ -13,9 +13,15 @@
 							<h3 class="mb-0">Workbooks</h3>
 							<span>過去に作成した問題集一覧</span>
 						</div>
-						<div>
-							<button class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#createWorkbookModal">新規追加</button>
-							<button class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#createWorkbookModal">Excelをインポート</button>
+						<!-- Nav -->
+						<div class="nav btn-group flex-nowrap">
+							<div>
+								<a class="btn btn-outline-white dropdown-toggle btn-sm" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">メニュー</a>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<a class="dropdown-item" data-toggle="modal" data-target="#createWorkbookModal" href="#">Excelをインポート</a>
+								</div>
+								<a class="btn btn-outline-primary btn-sm" href="{% url 'workbooks:create' %}">新規追加</a>
+							</div>
 						</div>
 					</div>
 

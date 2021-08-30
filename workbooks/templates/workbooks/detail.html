@@ -23,21 +23,17 @@
 			<div>
 				<!-- Nav -->
 				<div class="nav btn-group flex-nowrap">
-					<form method="POST">
-						{% csrf_token %}
-						<button type="submit" class="btn btn-primary btn-md">開始</button>
-					</form>
+					<div>
+						<form method="POST">
+							{% csrf_token %}
+							<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								<a class="dropdown-item" href="{% url 'workbooks:edit' workbook.workbook_id %}">編集</a>
+							  </div>
+							<button type="submit" class="btn btn-primary btn-md">開始</button>
+						</form>
+					</div>
 				</div>
-				<!-- <span class="dropdown dropstart">
-					<a class="text-muted text-decoration-none" href="#" role="button" id="courseDropdown1" data-bs-toggle="dropdown" data-bs-offset="-20,20" aria-expanded="false">
-						<button class="btn btn-primary btn-md">メニュー</button>
-					</a>
-					<span class="dropdown-menu" aria-labelledby="courseDropdown1" style="">
-						<span class="dropdown-header">Setting </span>
-						<a class="dropdown-item" href="#"><i class="fe fe-edit dropdown-item-icon"></i>Excelをインポート</a>
-						<a class="dropdown-item" href="#"><i class="fe fe-trash dropdown-item-icon"></i>Remove</a>
-					</span>
-				</span> -->
 			</div>
 		</div>
 	</div>

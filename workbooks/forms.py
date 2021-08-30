@@ -11,6 +11,7 @@ from django.core.validators import MinLengthValidator
 from django.templatetags.static import static
 
 from . import models, services
+import workbooks
 
 
 class WorkbookCreateForm(forms.Form):
@@ -37,6 +38,35 @@ class WorkbookCreateForm(forms.Form):
         service = services.WorkbookService()
         service.import_workbook(self.context['request'].user, filename)
         os.remove(filename)
+
+
+class WorkbookCreateForm(forms.Form):
+    title = forms.CharField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(WorkbookCreateForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        workbook = models.Workbook.objects.create(
+            user=self.context['request'].user,
+            title=self.cleaned_data.get('title'),
+        )
+        return workbook
+
+
+class WorkbookUpdateForm(forms.Form):
+    title = forms.CharField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(WorkbookUpdateForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        workbook = self.context['workbook']
+        workbook.title = self.cleaned_data.get('title')
+        workbook.save()
+        return workbook
 
 
 class WorkbookTrainingQuestionForm(forms.Form):

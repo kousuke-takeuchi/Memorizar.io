@@ -59,6 +59,46 @@ class WorkbookDetailView(mixins.BaseMixin, View):
         return redirect('workbooks:training_question', training_id=training.training_id)
 
 
+class WorkbookCreateView(mixins.BaseMixin, View):
+    template_name = 'workbooks/new.html'
+    
+    def get(self, request):
+        form = forms.WorkbookCreateForm()
+        context = dict(form=form)
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        form = forms.WorkbookCreateForm(request.POST, context={'request': request})
+        if not form.is_valid():
+            context = dict(form=form)
+            return render(request, self.template_name, context)
+        workbook = form.save()
+        return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
+
+
+class WorkbookEditView(mixins.BaseMixin, View):
+    template_name = 'workbooks/edit.html'
+
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def get(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        form = forms.WorkbookUpdateForm()
+        context = dict(workbook=workbook, form=form)
+        return render(request, self.template_name, context)
+    
+    def post(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        form = forms.WorkbookUpdateForm(request.POST, context={'request': request, 'workbook': workbook})
+        if not form.is_valid():
+            context = dict(workbook=workbook, form=form)
+            return render(request, self.template_name, context)
+        workbook = form.save()
+        return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
+
+
 class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/question.html'
     
