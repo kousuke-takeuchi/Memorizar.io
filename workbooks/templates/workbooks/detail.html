@@ -107,60 +107,52 @@
 						<span>問題</span>
 					</div>
 					<!-- Nav -->
-					<div class="nav btn-group flex-nowrap" role="tablist">
-						<button class="btn btn-outline-white active" data-bs-toggle="tab" data-bs-target="#tabPaneGrid" role="tab" aria-controls="tabPaneGrid" aria-selected="true">
-							<span class="fe fe-grid"></span>
-						</button>
-						<button class="btn btn-outline-white" data-bs-toggle="tab" data-bs-target="#tabPaneList" role="tab" aria-controls="tabPaneList" aria-selected="false">
-							<span class="fe fe-list"></span>
-						</button>
-					</div>
+					<nav>
+						<div class="nav nav-tabs btn-group flex-nowrap" id="nav-tab"  role="tablist">
+							<button class="btn btn-outline-white nav-link active" id="question-tab" data-bs-toggle="tab" data-bs-target="#question" role="tab" aria-controls="question" aria-selected="true">問題文</button>
+							<button class="btn btn-outline-white nav-link" id="chapter-tab" data-bs-toggle="tab" data-bs-target="#chapter" role="tab" aria-controls="chapter" aria-selected="false">チャプター</button>
+						</div>
+					</nav>
 				</div>
 
 				<div class="tab-content">
-					<!-- チャプタータブ -->
-					<div class="table-invoice table-responsive border-0 tab-pane fade" id="tabPaneGrid" role="tabpanel" aria-labelledby="tabPaneGrid">
+					<!-- 問題一覧タブ -->
+					<div class="table-responsive border-0 tab-pane fade show active" id="question" role="tabpanel" aria-labelledby="question">
 						<table class="table mb-0 text-nowrap">
 							<thead>
 								<tr>
-									<th scope="col" class="border-bottom-0">日付</th>
-									<th scope="col" class="border-bottom-0">正解数/回答数</th>
-									<th scope="col" class="border-bottom-0">正解率</th>
-									<th scope="col" class="border-bottom-0">かかった時間</th>
+									<th scope="col" class="border-bottom-0">タイトル</th>
+									<th scope="col" class="border-bottom-0">問題文</th>
+									<th scope="col" class="border-bottom-0">作成日</th>
 								</tr>
 							</thead>
 							<tbody>
-								<!-- {% for training in page_obj %}
+								{% for question in workbook.question_set.all %}
 									<tr>
-										<td>{{ training.training__created_at|date:"Y年n月j日" }}</td>
-										<td>{{ training.true_count }}問/{{ training.selection_count }}問</td>
-										<td><span class="badges {% if training.true_rate >= 80 %}badge-success{% elif training.true_rate > 40 %}badge-warning{% else %}badge-danger{% endif %}">{{ training.true_rate }}%</span></td>
-										<td>{{ training.duration|display_timedelta }}</td>
+										<td>{{ question.title }}</td>
+										<td>{{ question.sentense|truncatechars:20 }}</td>
+										<td>{{ question.created_at|date:"Y年n月j日" }}</td>
 									</tr>
-								{% endfor %} -->
+								{% endfor %}
 							</tbody>
 						</table>
 					</div>
-					<!-- 問題一覧タブ -->
-					<div class="table-invoice table-responsive border-0 tab-pane fade" id="tabPaneList" role="tabpanel" aria-labelledby="tabPaneList">
+					<!-- チャプタータブ -->
+					<div class="table-responsive border-0 tab-pane fade show" id="chapter" role="tabpanel" aria-labelledby="chapter">
 						<table class="table mb-0 text-nowrap">
 							<thead>
 								<tr>
-									<th scope="col" class="border-bottom-0">日付</th>
-									<th scope="col" class="border-bottom-0">正解数/回答数</th>
-									<th scope="col" class="border-bottom-0">正解率</th>
-									<th scope="col" class="border-bottom-0">かかった時間</th>
+									<th scope="col" class="border-bottom-0">タイトル</th>
+									<th scope="col" class="border-bottom-0">作成日</th>
 								</tr>
 							</thead>
 							<tbody>
-								<!-- {% for training in page_obj %}
+								{% for chapter in workbook.chapter_set.all %}
 									<tr>
-										<td>{{ training.training__created_at|date:"Y年n月j日" }}</td>
-										<td>{{ training.true_count }}問/{{ training.selection_count }}問</td>
-										<td><span class="badges {% if training.true_rate >= 80 %}badge-success{% elif training.true_rate > 40 %}badge-warning{% else %}badge-danger{% endif %}">{{ training.true_rate }}%</span></td>
-										<td>{{ training.duration|display_timedelta }}</td>
+										<td>{{ chapter.title }}</td>
+										<td>{{ chapter.created_at|date:"Y年n月j日" }}</td>
 									</tr>
-								{% endfor %} -->
+								{% endfor %}
 							</tbody>
 						</table>
 					</div>

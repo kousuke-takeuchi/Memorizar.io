@@ -31,18 +31,20 @@
         </div>
         <div class="col-xl-3 col-lg-4 col-md-6 col-12">
             <!-- card -->
-            <div class="card mb-4 card-hover">
-                <!-- img -->
-                <div class="card-img-top">
-                    <img src="{% static 'images/menu-new.png' %}" alt=""
-                        class="rounded-top-md img-fluid">
+            <a href="{% url 'workbooks:create' %}">
+                <div class="card mb-4 card-hover">
+                    <!-- img -->
+                    <div class="card-img-top">
+                        <img src="{% static 'images/menu-new.png' %}" alt=""
+                            class="rounded-top-md img-fluid">
+                    </div>
+                    <!-- card body -->
+                    <div class="card-body">
+                        <h3 class="mb-0 fw-semi-bold"> <a href="{% url 'workbooks:create' %}" class="text-inherit">New Workbook</a></h3>
+                        <p class="mb-3">新規問題集を作成する</p>
+                    </div>
                 </div>
-                <!-- card body -->
-                <div class="card-body">
-                    <h3 class="mb-0 fw-semi-bold"> <a href="#" class="text-inherit">New Workbook</a></h3>
-                    <p class="mb-3">新規問題集を作成する</p>
-                </div>
-            </div>
+            </a>
         </div>
     </div>
 </div>
