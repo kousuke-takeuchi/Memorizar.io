@@ -26,7 +26,7 @@
 					<div>
 						<form method="POST">
 							{% csrf_token %}
-							<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
+							<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
 							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 								<a class="dropdown-item" href="{% url 'workbooks:edit' workbook.workbook_id %}">編集</a>
 							  </div>
