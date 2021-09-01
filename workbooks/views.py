@@ -99,6 +99,52 @@ class WorkbookEditView(mixins.BaseMixin, View):
         return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
 
 
+class QuestionCreateView(mixins.BaseMixin, View):
+    template_name = 'workbooks/questions/new.html'
+
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def get(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        form = forms.QuestionCreateForm()
+        context = dict(workbook=workbook, form=form)
+        return render(request, self.template_name, context)
+    
+    def post(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        form = forms.QuestionCreateForm(request.POST, context={'request': request, 'workbook': workbook})
+        if not form.is_valid():
+            context = dict(workbook=workbook, form=form)
+            return render(request, self.template_name, context)
+        form.save()
+        return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
+
+
+class ChapterCreateView(mixins.BaseMixin, View):
+    template_name = 'workbooks/chapters/new.html'
+
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def get(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        form = forms.ChapterCreateForm()
+        context = dict(workbook=workbook, form=form)
+        return render(request, self.template_name, context)
+    
+    def post(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        form = forms.ChapterCreateForm(request.POST, context={'request': request, 'workbook': workbook})
+        if not form.is_valid():
+            context = dict(workbook=workbook, form=form)
+            return render(request, self.template_name, context)
+        form.save()
+        return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
+
+
 class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/question.html'
     

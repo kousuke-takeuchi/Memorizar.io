@@ -14,4 +14,6 @@ urlpatterns = [
     path('new/', views.WorkbookCreateView.as_view(), name='create'),
     path('<str:workbook_id>/', views.WorkbookDetailView.as_view(), name='detail'),
     path('<str:workbook_id>/edit/', views.WorkbookEditView.as_view(), name='edit'),
+    path('<str:workbook_id>/questions/new/', views.QuestionCreateView.as_view(), name='question_new'),
+    path('<str:workbook_id>/chapters/new/', views.ChapterCreateView.as_view(), name='chapter_new'),
 ]

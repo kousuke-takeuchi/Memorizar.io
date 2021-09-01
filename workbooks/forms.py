@@ -69,6 +69,79 @@ class WorkbookUpdateForm(forms.Form):
         return workbook
 
 
+class QuestionCreateForm(forms.Form):
+    question_id = forms.CharField(required=True)
+    title = forms.CharField(required=True)
+    sentense = forms.CharField(required=True)
+    chapter_id = forms.CharField(required=False)
+    image = forms.FileField(required=False)
+    answer1_title = forms.CharField(required=True)
+    answer1_sentense = forms.CharField(required=True)
+    answer2_title = forms.CharField(required=True)
+    answer2_sentense = forms.CharField(required=True)
+    answer3_title = forms.CharField(required=True)
+    answer3_sentense = forms.CharField(required=True)
+    answer4_title = forms.CharField(required=True)
+    answer4_sentense = forms.CharField(required=True)
+    collect_index = forms.IntegerField(required=True)
+    commentary = forms.CharField(required=True)
+    commentary_image = forms.FileField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(QuestionCreateForm, self).__init__(*args, **kwargs)
+    
+    def clean_chapter_id(self):
+        chapter_id = self.cleaned_data.get('chapter_id')
+        if chapter_id:
+            try:
+                chapter = models.Chapter.objects.get(chapter_id=chapter_id, workbook=self.context['workbook'])
+            except models.Chapter.DoesNotExist:
+                raise forms.ValidationError('このIDは存在しません')
+        return chapter
+
+    def create_answer(self, question, index):
+        answer = models.Answer.objects.create(
+            question=question,
+            title=self.cleaned_data.get('answer{}_title'.format(index)),
+            sentense=self.cleaned_data.get('answer{}_sentense'.format(index)),
+            is_true=self.cleaned_data.get('collect_index') == index,
+        )
+        return answer
+
+    def save(self):
+        question = models.Question.objects.create(
+            workbook=self.context['workbook'],
+            question_id=self.cleaned_data.get('question_id'),
+            title=self.cleaned_data.get('title'),
+            sentense=self.cleaned_data.get('sentense'),
+            chapter=self.cleaned_data.get('chapter_id'),
+            commentary=self.cleaned_data.get('commentary'),
+        )
+        self.create_answer(question, 1)
+        self.create_answer(question, 2)
+        self.create_answer(question, 3)
+        self.create_answer(question, 4)
+        return question
+
+
+class ChapterCreateForm(forms.Form):
+    chapter_id = forms.CharField(required=True)
+    title = forms.CharField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(ChapterCreateForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        chapter = models.Chapter.objects.create(
+            workbook=self.context['workbook'],
+            chapter_id=self.cleaned_data.get('chapter_id'),
+            title=self.cleaned_data.get('title'),
+        )
+        return chapter
+
+
 class WorkbookTrainingQuestionForm(forms.Form):
     selected_id = forms.CharField(required=True)
     question_id = forms.CharField(required=True)

@@ -26,11 +26,11 @@
 					<div>
 						<form method="POST">
 							{% csrf_token %}
+							<button type="submit" class="btn btn-primary btn-md">開始</button>
 							<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
 							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 								<a class="dropdown-item" href="{% url 'workbooks:edit' workbook.workbook_id %}">編集</a>
-							  </div>
-							<button type="submit" class="btn btn-primary btn-md">開始</button>
+							</div>
 						</form>
 					</div>
 				</div>
@@ -107,10 +107,19 @@
 						<span>問題</span>
 					</div>
 					<!-- Nav -->
-					<nav>
-						<div class="nav nav-tabs btn-group flex-nowrap" id="nav-tab"  role="tablist">
-							<button class="btn btn-outline-white nav-link active" id="question-tab" data-bs-toggle="tab" data-bs-target="#question" role="tab" aria-controls="question" aria-selected="true">問題文</button>
-							<button class="btn btn-outline-white nav-link" id="chapter-tab" data-bs-toggle="tab" data-bs-target="#chapter" role="tab" aria-controls="chapter" aria-selected="false">チャプター</button>
+					<nav class="nav btn-group flex-nowrap">
+						<div>
+								<div class="nav nav-tabs btn-group flex-nowrap" id="nav-tab"  role="tablist">
+									<button class="btn btn-outline-white nav-link active" id="question-tab" data-bs-toggle="tab" data-bs-target="#question" role="tab" aria-controls="question" aria-selected="true">問題文</button>
+									<button class="btn btn-outline-white nav-link" id="chapter-tab" data-bs-toggle="tab" data-bs-target="#chapter" role="tab" aria-controls="chapter" aria-selected="false">チャプター</button>
+
+									<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+										<a class="dropdown-item" href="{% url 'workbooks:question_new' workbook.workbook_id %}">問題を追加</a>
+										<a class="dropdown-item" href="{% url 'workbooks:chapter_new' workbook.workbook_id %}">チャプターを追加</a>
+									</div>
+								</div>
+								
 						</div>
 					</nav>
 				</div>
@@ -142,6 +151,7 @@
 						<table class="table mb-0 text-nowrap">
 							<thead>
 								<tr>
+									<th scope="col" class="border-bottom-0">ID</th>
 									<th scope="col" class="border-bottom-0">タイトル</th>
 									<th scope="col" class="border-bottom-0">作成日</th>
 								</tr>
@@ -149,6 +159,7 @@
 							<tbody>
 								{% for chapter in workbook.chapter_set.all %}
 									<tr>
+										<td>{{ chapter.chapter_id }}</td>
 										<td>{{ chapter.title }}</td>
 										<td>{{ chapter.created_at|date:"Y年n月j日" }}</td>
 									</tr>
