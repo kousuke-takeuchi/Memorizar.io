@@ -133,6 +133,7 @@
 									<th scope="col" class="border-bottom-0">タイトル</th>
 									<th scope="col" class="border-bottom-0">問題文</th>
 									<th scope="col" class="border-bottom-0">作成日</th>
+									<th scope="col" class="border-bottom-0"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -141,6 +142,13 @@
 										<td>{{ question.title }}</td>
 										<td>{{ question.sentense|truncatechars:20 }}</td>
 										<td>{{ question.created_at|date:"Y年n月j日" }}</td>
+										<td>
+											<button type="button" class="btn btn-outline-white btn-sm dropdown-toggle" id="questionMenu-{{ question.question_id }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
+											<div class="dropdown-menu" aria-labelledby="questionMenu-{{ question.question_id }}">
+												<a class="dropdown-item" href="{% url 'workbooks:question_edit' workbook.workbook_id question.question_id %}">編集</a>
+												<!-- <a class="dropdown-item" href="{% url 'workbooks:chapter_new' workbook.workbook_id %}">削除</a> -->
+											</div>
+										</td>
 									</tr>
 								{% endfor %}
 							</tbody>

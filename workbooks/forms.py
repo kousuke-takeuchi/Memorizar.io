@@ -125,6 +125,98 @@ class QuestionCreateForm(forms.Form):
         return question
 
 
+class QuestionUpdateForm(forms.Form):
+    question_id = forms.CharField(required=True)
+    title = forms.CharField(required=True)
+    sentense = forms.CharField(required=True)
+    chapter_id = forms.CharField(required=False)
+    image = forms.FileField(required=False)
+    answer1_id = forms.CharField(required=True)
+    answer1_title = forms.CharField(required=True)
+    answer1_sentense = forms.CharField(required=True)
+    answer2_id = forms.CharField(required=True)
+    answer2_title = forms.CharField(required=True)
+    answer2_sentense = forms.CharField(required=True)
+    answer3_id = forms.CharField(required=True)
+    answer3_title = forms.CharField(required=True)
+    answer3_sentense = forms.CharField(required=True)
+    answer4_id = forms.CharField(required=True)
+    answer4_title = forms.CharField(required=True)
+    answer4_sentense = forms.CharField(required=True)
+    collect_answer_id = forms.CharField(required=True)
+    commentary = forms.CharField(required=True)
+    commentary_image = forms.FileField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(QuestionUpdateForm, self).__init__(*args, **kwargs)
+    
+    def clean_chapter_id(self):
+        chapter_id = self.cleaned_data.get('chapter_id')
+        if chapter_id:
+            try:
+                chapter = models.Chapter.objects.get(chapter_id=chapter_id, workbook=self.context['workbook'])
+            except models.Chapter.DoesNotExist:
+                raise forms.ValidationError('このIDは存在しません')
+            return chapter
+    
+    def clean_answer1_id(self):
+        answer_id = self.cleaned_data.get('answer1_id')
+        try:
+            answer = models.Answer.objects.get(answer_id=answer_id)
+        except models.Answer.DoesNotExist:
+            raise forms.ValidationError('このIDは存在しません')
+        return answer
+    
+    def clean_answer2_id(self):
+        answer_id = self.cleaned_data.get('answer2_id')
+        try:
+            answer = models.Answer.objects.get(answer_id=answer_id)
+        except models.Answer.DoesNotExist:
+            raise forms.ValidationError('このIDは存在しません')
+        return answer
+    
+    def clean_answer3_id(self):
+        answer_id = self.cleaned_data.get('answer3_id')
+        try:
+            answer = models.Answer.objects.get(answer_id=answer_id)
+        except models.Answer.DoesNotExist:
+            raise forms.ValidationError('このIDは存在しません')
+        return answer
+    
+    def clean_answer4_id(self):
+        answer_id = self.cleaned_data.get('answer4_id')
+        try:
+            answer = models.Answer.objects.get(answer_id=answer_id)
+        except models.Answer.DoesNotExist:
+            raise forms.ValidationError('このIDは存在しません')
+        return answer
+
+    def update_answer(self, index):
+        answer = self.cleaned_data.get('answer{}_id'.format(index))
+        answer.title = self.cleaned_data.get('answer{}_title'.format(index))
+        answer.sentense = self.cleaned_data.get('answer{}_sentense'.format(index))
+        answer.is_true = self.cleaned_data.get('collect_answer_id') == str(answer.answer_id)
+        answer.save()
+
+    def save(self):
+        question = self.context['question']
+        question.question_id = self.cleaned_data.get('question_id')
+        question.title = self.cleaned_data.get('title')
+        question.sentense = self.cleaned_data.get('sentense')
+        question.chapter = self.cleaned_data.get('chapter_id')
+        question.commentary = self.cleaned_data.get('commentary')
+        question.save()
+
+        # 回答選択肢を編集
+        self.update_answer(1)
+        self.update_answer(2)
+        self.update_answer(3)
+        self.update_answer(4)
+
+        return question
+
+
 class ChapterCreateForm(forms.Form):
     chapter_id = forms.CharField(required=True)
     title = forms.CharField(required=True)

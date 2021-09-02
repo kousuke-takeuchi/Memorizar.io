@@ -1,0 +1,166 @@
+{% extends "memorizar/base.html" %}
+{% load memorizar %}
+{% block title %}Workbooks{% endblock %}
+
+{% block content %}
+
+<!-- 問題作成フォーム -->
+<div class="container pt-5 pb-5">
+    <div class="col-lg-12 col-md-12 col-12">
+        <div class="card">
+            <div class="d-lg-flex justify-content-between align-items-center card-header">
+                <div class="mb-3 mb-lg-0">
+                    <h3 class="mb-0">Create a new Question</h3>
+                    <span>問題の編集</span>
+                </div>
+            </div>
+
+            <form method="POST" class="card-body">
+                {% csrf_token %}
+
+                <!-- 問題 -->
+                <h4 class="mb-0">Question</h4>
+                <p class="mb-4">問題文の編集</p>
+
+                <div class="row">
+                    <div class="mb-3 col-12 col-md-6">
+                        <label class="form-label" for="question_id">ID</label>
+                        <input type="text" value="{{ question.question_id }}" name="question_id" class="form-control" placeholder="問題識別子" required>
+                    </div>
+    
+                    <div class="mb-3 col-12 col-md-6">
+                        <label class="form-label" for="title">Title</label>
+                        <input type="text" value="{{ question.title }}" name="title" class="form-control" placeholder="タイトル" required>
+                    </div>
+                </div>
+
+                <div class="mb-3 col-12 col-md-12">
+                    <label class="form-label" for="sentense">Sentense</label>
+                    <textarea name="sentense" cols="30" rows="10" class="form-control" placeholder="問題本文" required>{{ question.sentense }}</textarea>
+                </div>
+
+                <div class="row">
+                    <div class="mb-3 col-12 col-md-6">
+                        <label class="form-label" for="chapter_id">Chapter</label>
+                        <div class="dropdown bootstrap-select dropup" style="width: 100%;">
+                            <select class="selectpicker" name="chapter_id" data-width="100%" tabindex="null">
+                                <option value="">チャプターを選択してください</option>
+                                {% for chapter in workbook.chapter_set.all %}
+                                    <option value="{{ chapter.chapter_id }}" {% ifequal chapter.chapter_id question.chapter.chapter_id %}selected{% endifequal %}>{{ chapter.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="custom-file mb-3 col-12 col-md-6">
+                        <label class="form-label" for="chapter_id">Figure (Option)</label>
+                        <input type="file" class="form-control custom-file-input" name="image">
+                    </div>
+                </div>
+
+                <hr class="my-5">
+
+                <!-- 回答選択肢 -->
+                <h4 class="mb-0">Selections</h4>
+                <p class="mb-4">回答選択肢 (4つ)</p>
+
+                {% with answers=question.answer_set.all %}
+                    <div class="row">
+                        <div class="mb-3 col-12 col-md-6">
+                            <h4 class="mb-0">Selection 1</h4>
+                            <input type="hidden" name="answer1_id" value="{{ answers.0.answer_id }}" />
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer1_title">Title</label>
+                                <textarea name="answer1_title" cols="30" rows="3" class="form-control" placeholder="選択肢1 タイトル" required>{{ answers.0.title }}</textarea>
+                            </div>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer1_sentense">Sentense</label>
+                                <textarea name="answer1_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢1 回答文" required>{{ answers.0.sentense }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 col-12 col-md-6">
+                            <h4 class="mb-0">Selection 2</h4>
+                            <input type="hidden" name="answer2_id" value="{{ answers.1.answer_id }}" />
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer2_title">Title</label>
+                                <textarea name="answer2_title" cols="30" rows="3" class="form-control" placeholder="選択肢2 タイトル" required>{{ answers.1.title }}</textarea>
+                            </div>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer2_sentense">Sentense</label>
+                                <textarea name="answer2_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢2 回答文" required>{{ answers.1.sentense }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-3 col-12 col-md-6">
+                            <h4 class="mb-0">Selection 3</h4>
+                            <input type="hidden" name="answer3_id" value="{{ answers.2.answer_id }}" />
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer3_title">Title</label>
+                                <textarea name="answer3_title" cols="30" rows="3" class="form-control" placeholder="選択肢3 タイトル" required>{{ answers.2.title }}</textarea>
+                            </div>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer3_sentense">Sentense</label>
+                                <textarea name="answer3_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢3 回答文" required>{{ answers.2.sentense }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 col-12 col-md-6">
+                            <h4 class="mb-0">Selection 4</h4>
+                            <input type="hidden" name="answer4_id" value="{{ answers.3.answer_id }}" />
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer4_title">Title</label>
+                                <textarea name="answer4_title" cols="30" rows="3" class="form-control" placeholder="選択肢4 タイトル" required>{{ answers.3.title }}</textarea>
+                            </div>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer4_sentense">Sentense</label>
+                                <textarea name="answer4_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢4 回答文" required>{{ answers.3.sentense }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-3 col-12 col-md-6">
+                            <label class="form-label" for="collect_answer_id">Collect Answer</label>
+                            <div class="dropdown bootstrap-select dropup" style="width: 100%;">
+                                <select class="selectpicker" name="collect_answer_id" data-width="100%" tabindex="null" required>
+                                    <option value="">正解の選択肢を選択してください</option>
+                                    <option value="{{ answers.0.answer_id }}" {% if answers.0.is_true %}selected{% endif %}>選択肢1</option>
+                                    <option value="{{ answers.1.answer_id }}" {% if answers.1.is_true %}selected{% endif %}>選択肢2</option>
+                                    <option value="{{ answers.2.answer_id }}" {% if answers.2.is_true %}selected{% endif %}>選択肢3</option>
+                                    <option value="{{ answers.3.answer_id }}" {% if answers.3.is_true %}selected{% endif %}>選択肢4</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+
+                <hr class="my-5">
+
+                <!-- 解説文 -->
+                <h4 class="mb-0">Answer Commentary</h4>
+                <p class="mb-4">正解の選択肢についての解説</p>
+                
+                <div class="mb-3 col-12 col-md-12">
+                    <label class="form-label" for="commentary">Commentary</label>
+                    <textarea name="commentary" cols="30" rows="10" class="form-control" placeholder="問題本文" required>{{ question.commentary }}</textarea>
+                </div>
+
+                <div class="custom-file mb-3 col-12 col-md-6">
+                    <input type="file" class="form-control custom-file-input" name="commentary_image">
+                </div>
+
+                <hr class="my-5">
+
+                <!-- 送信ボタン -->
+                <div class="col-12">
+                    <button class="btn btn-primary" type="submit">Update Question</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
