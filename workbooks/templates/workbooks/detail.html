@@ -70,7 +70,7 @@
 
 				<div class="table-invoice table-responsive border-0">
 					<table class="table mb-0 text-nowrap">
-						<thead>
+						<thead class="table-light">
 							<tr>
 								<th scope="col" class="border-bottom-0">日付</th>
 								<th scope="col" class="border-bottom-0">正解数/回答数</th>
@@ -83,7 +83,7 @@
 								<tr>
 									<td>{{ training.training__created_at|date:"Y年n月j日" }}</td>
 									<td>{{ training.true_count }}問/{{ training.selection_count }}問</td>
-									<td><span class="badges {% if training.true_rate >= 80 %}badge-success{% elif training.true_rate > 40 %}badge-warning{% else %}badge-danger{% endif %}">{{ training.true_rate }}%</span></td>
+									<td><span class="badge {% if training.true_rate >= 80 %}bg-success{% elif training.true_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ training.true_rate }}%</span></td>
 									<td>{{ training.duration|display_timedelta }}</td>
 								</tr>
 							{% endfor %}
@@ -128,7 +128,7 @@
 					<!-- 問題一覧タブ -->
 					<div class="table-responsive border-0 tab-pane fade show active" id="question" role="tabpanel" aria-labelledby="question">
 						<table class="table mb-0 text-nowrap">
-							<thead>
+							<thead class="table-light">
 								<tr>
 									<th scope="col" class="border-bottom-0">タイトル</th>
 									<th scope="col" class="border-bottom-0">問題文</th>
@@ -142,12 +142,17 @@
 										<td>{{ question.title }}</td>
 										<td>{{ question.sentense|truncatechars:20 }}</td>
 										<td>{{ question.created_at|date:"Y年n月j日" }}</td>
-										<td>
-											<button type="button" class="btn btn-outline-white btn-sm dropdown-toggle" id="questionMenu-{{ question.question_id }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
-											<div class="dropdown-menu" aria-labelledby="questionMenu-{{ question.question_id }}">
-												<a class="dropdown-item" href="{% url 'workbooks:question_edit' workbook.workbook_id question.question_id %}">編集</a>
-												<!-- <a class="dropdown-item" href="{% url 'workbooks:chapter_new' workbook.workbook_id %}">削除</a> -->
-											</div>
+										<td class="text-muted align-middle border-top-0">
+											<span class="dropdown dropstart">
+												<a class="text-muted text-decoration-none" href="#" role="button" id="question-menu-{{ question.question_id }}" data-bs-toggle="dropdown" data-bs-offset="-20,20" aria-expanded="false">
+													<i class="fe fe-more-vertical"></i>
+												</a>
+												<span class="dropdown-menu" aria-labelledby="question-menu-{{ question.question_id }}" style="">
+													<span class="dropdown-header">設定 </span>
+													<a class="dropdown-item" href="{% url 'workbooks:question_edit' workbook.workbook_id question.question_id %}"><i class="fe fe-edit dropdown-item-icon"></i>編集</a>
+													<a class="dropdown-item" href="#"><i class="fe fe-trash dropdown-item-icon"></i>削除</a>
+												</span>
+											</span>
 										</td>
 									</tr>
 								{% endfor %}
@@ -157,11 +162,12 @@
 					<!-- チャプタータブ -->
 					<div class="table-responsive border-0 tab-pane fade show" id="chapter" role="tabpanel" aria-labelledby="chapter">
 						<table class="table mb-0 text-nowrap">
-							<thead>
+							<thead class="table-light">
 								<tr>
 									<th scope="col" class="border-bottom-0">ID</th>
 									<th scope="col" class="border-bottom-0">タイトル</th>
 									<th scope="col" class="border-bottom-0">作成日</th>
+									<th scope="col" class="border-bottom-0"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -170,6 +176,18 @@
 										<td>{{ chapter.chapter_id }}</td>
 										<td>{{ chapter.title }}</td>
 										<td>{{ chapter.created_at|date:"Y年n月j日" }}</td>
+										<td class="text-muted align-middle border-top-0">
+											<span class="dropdown dropstart">
+												<a class="text-muted text-decoration-none" href="#" role="button" id="chapter-menu-{{ chapter.chapter_id }}" data-bs-toggle="dropdown" data-bs-offset="-20,20" aria-expanded="false">
+													<i class="fe fe-more-vertical"></i>
+												</a>
+												<span class="dropdown-menu" aria-labelledby="chapter-menu-{{ chapter.chapter_id }}" style="">
+													<span class="dropdown-header">設定 </span>
+													<a class="dropdown-item" href="{% url 'workbooks:chapter_edit' workbook.workbook_id chapter.chapter_id %}"><i class="fe fe-edit dropdown-item-icon"></i>編集</a>
+													<a class="dropdown-item" href="#"><i class="fe fe-trash dropdown-item-icon"></i>削除</a>
+												</span>
+											</span>
+										</td>
 									</tr>
 								{% endfor %}
 							</tbody>

@@ -168,6 +168,29 @@ class ChapterCreateView(mixins.BaseMixin, View):
         return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
 
 
+class ChapterEditView(mixins.BaseMixin, View):
+    template_name = 'workbooks/chapters/edit.html'
+
+    def get_querysets(self, workbook_id, chapter_id):
+        chapter = get_object_or_404(models.Chapter, workbook__workbook_id=workbook_id, chapter_id=chapter_id)
+        return chapter
+    
+    def get(self, request, workbook_id, chapter_id):
+        chapter = self.get_querysets(workbook_id, chapter_id)
+        form = forms.ChapterUpdateForm()
+        context = dict(workbook=chapter.workbook, chapter=chapter, form=form)
+        return render(request, self.template_name, context)
+    
+    def post(self, request, workbook_id, chapter_id):
+        chapter = self.get_querysets(workbook_id, chapter_id)
+        form = forms.ChapterUpdateForm(request.POST, context={'request': request, 'chapter': chapter})
+        if not form.is_valid():
+            context = dict(workbook=chapter.workbook, chapter=chapter, form=form)
+            return render(request, self.template_name, context)
+        form.save()
+        return redirect('workbooks:detail', workbook_id=chapter.workbook.workbook_id)
+
+
 class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/question.html'
     

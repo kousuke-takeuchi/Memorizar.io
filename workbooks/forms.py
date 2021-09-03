@@ -234,6 +234,22 @@ class ChapterCreateForm(forms.Form):
         return chapter
 
 
+class ChapterUpdateForm(forms.Form):
+    chapter_id = forms.CharField(required=True)
+    title = forms.CharField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(ChapterUpdateForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        chapter = self.context['chapter']
+        chapter.chapter_id = self.cleaned_data.get('chapter_id')
+        chapter.title = self.cleaned_data.get('title')
+        chapter.save()
+        return chapter
+
+
 class WorkbookTrainingQuestionForm(forms.Form):
     selected_id = forms.CharField(required=True)
     question_id = forms.CharField(required=True)
