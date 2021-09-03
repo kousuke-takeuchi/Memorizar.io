@@ -182,5 +182,5 @@ class WorkbookService:
             learning_counts.append(learning_count)
             correct_counts.append(correct_count)
         weeks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        dates = [weeks[date.isocalendar().weekday-1] for date in dates]
+        dates = [weeks[date.weekday()] for date in dates]
         return (dates, learning_counts, correct_counts)

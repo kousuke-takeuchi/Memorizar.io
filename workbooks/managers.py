@@ -24,19 +24,18 @@ class WorkbookManager(BaseManager):
                 results.append({
                     'workbook_id': workbook.workbook_id,
                     'title': workbook.title,
-                    'created_at': None,
+                    'created_at': workbook.created_at,
                     'true_count': 0,
                     'selection_count': 0,
                     'true_rate': 0.0,
                     'training_count': 0,
                 })
             else:
-                start_at = models.Training.objects.filter(workbook=workbook, done=True).first().created_at
                 true_rate = math.floor(100 * querysets[0]['true_count'] / querysets[0]['selection_count'])
                 results.append({
                     'workbook_id': workbook.workbook_id,
                     'title': workbook.title,
-                    'created_at': start_at,
+                    'created_at': workbook.created_at,
                     'true_count': querysets[0]['true_count'],
                     'selection_count': querysets[0]['selection_count'],
                     'true_rate': true_rate,
