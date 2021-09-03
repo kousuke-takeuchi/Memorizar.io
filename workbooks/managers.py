@@ -1,6 +1,6 @@
 import math
 
-from django.db.models import Sum, Count, Case, When, Value, QuerySet
+from django.db.models import Sum, Count, Case, When, Value
 
 from lib.managers import BaseManager
 
@@ -24,18 +24,19 @@ class WorkbookManager(BaseManager):
                 results.append({
                     'workbook_id': workbook.workbook_id,
                     'title': workbook.title,
-                    'created_at': workbook.created_at,
+                    'created_at': None,
                     'true_count': 0,
                     'selection_count': 0,
                     'true_rate': 0.0,
                     'training_count': 0,
                 })
             else:
+                start_at = models.Training.objects.filter(workbook=workbook, done=True).first().created_at
                 true_rate = math.floor(100 * querysets[0]['true_count'] / querysets[0]['selection_count'])
                 results.append({
                     'workbook_id': workbook.workbook_id,
                     'title': workbook.title,
-                    'created_at': workbook.created_at,
+                    'created_at': start_at,
                     'true_count': querysets[0]['true_count'],
                     'selection_count': querysets[0]['selection_count'],
                     'true_rate': true_rate,

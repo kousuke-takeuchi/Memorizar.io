@@ -1,6 +1,8 @@
+import datetime
 import openpyxl
 
 from django.utils import timezone
+from django.db.models import Count, Case, When, Value
 
 from workbooks import models
 
@@ -166,3 +168,19 @@ class WorkbookService:
                 question1=question1,
                 question2=question2,
             )
+    
+    def aggregate_daily(self, workbook):
+        # 最近7日の1日ごとの学習回数と正解数を集計
+        learning_counts = []
+        correct_counts = []
+        today = datetime.date.today()
+        dates = [today - datetime.timedelta(days=i) for i in range(6, -1, -1)]
+        for date in dates:
+            trainings = models.Training.objects.filter(workbook=workbook, created_at__range=[datetime.datetime.combine(date, datetime.time.min), datetime.datetime.combine(date, datetime.time.max)])
+            learning_count = models.TrainingSelection.objects.filter(training__in=trainings).distinct('training').count()
+            correct_count = models.TrainingSelection.objects.filter(training__in=trainings, correct=True).count()
+            learning_counts.append(learning_count)
+            correct_counts.append(correct_count)
+        weeks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        dates = [weeks[date.isocalendar().weekday-1] for date in dates]
+        return (dates, learning_counts, correct_counts)

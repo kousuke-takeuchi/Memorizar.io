@@ -1,8 +1,13 @@
 {% extends "memorizar/base.html" %}
+{% load static %}
 {% load memorizar %}
 {% block title %}Workbooks{% endblock %}
 
 {% block content %}
+
+<div id="dates" data-values="{{ dates }}"></div>
+<div id="learning_counts" data-values="{{ learning_counts }}"></div>
+<div id="correct_counts" data-values="{{ correct_counts }}"></div>
 
 <!-- メニュー -->
 <div class="py-md-5 py-5 container">
@@ -48,7 +53,7 @@
 				<div class="card">
 					<div class="card-body">
 						<h4 class="mb-0">正答率グラフ</h4>
-						<div id="earning" class="apex-charts"></div>
+						<div id="chart" class="apex-charts"></div>
 					</div>
 				</div>
 			</div>
@@ -149,7 +154,7 @@
 												</a>
 												<span class="dropdown-menu" aria-labelledby="question-menu-{{ question.question_id }}" style="">
 													<span class="dropdown-header">設定 </span>
-													<a class="dropdown-item" href="{% url 'workbooks:question_edit' workbook.workbook_id question.question_id %}"><i class="fe fe-edit dropdown-item-icon"></i>編集</a>
+													<a class="dropdown-item" href="{% url 'workbooks:question_edit' workbook.workbook_id question.id %}"><i class="fe fe-edit dropdown-item-icon"></i>編集</a>
 													<a class="dropdown-item" href="#"><i class="fe fe-trash dropdown-item-icon"></i>削除</a>
 												</span>
 											</span>
@@ -183,7 +188,7 @@
 												</a>
 												<span class="dropdown-menu" aria-labelledby="chapter-menu-{{ chapter.chapter_id }}" style="">
 													<span class="dropdown-header">設定 </span>
-													<a class="dropdown-item" href="{% url 'workbooks:chapter_edit' workbook.workbook_id chapter.chapter_id %}"><i class="fe fe-edit dropdown-item-icon"></i>編集</a>
+													<a class="dropdown-item" href="{% url 'workbooks:chapter_edit' workbook.workbook_id chapter.id %}"><i class="fe fe-edit dropdown-item-icon"></i>編集</a>
 													<a class="dropdown-item" href="#"><i class="fe fe-trash dropdown-item-icon"></i>削除</a>
 												</span>
 											</span>
@@ -199,4 +204,9 @@
 	</div>
 </div>
 
+{% endblock %}
+
+
+{% block js %}
+<script src="{% static 'js/workbook_detail.js' %}"></script>
 {% endblock %}

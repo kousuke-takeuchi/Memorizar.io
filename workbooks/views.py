@@ -49,7 +49,9 @@ class WorkbookDetailView(mixins.BaseMixin, View):
     def get(self, request, workbook_id):
         # 問題集の実施結果集計
         workbook, trainings = self.get_querysets(workbook_id)
-        context = dict(workbook=workbook, page_obj=trainings)
+        service = services.WorkbookService()
+        dates, learning_counts, correct_counts = service.aggregate_daily(workbook)
+        context = dict(workbook=workbook, page_obj=trainings, dates=dates, learning_counts=learning_counts, correct_counts=correct_counts)
         return render(request, self.template_name, context)
     
     def post(self, request, workbook_id):
@@ -126,7 +128,7 @@ class QuestionEditView(mixins.BaseMixin, View):
     template_name = 'workbooks/questions/edit.html'
 
     def get_querysets(self, workbook_id, question_id):
-        question = get_object_or_404(models.Question, workbook__workbook_id=workbook_id, question_id=question_id)
+        question = get_object_or_404(models.Question, workbook__workbook_id=workbook_id, pk=question_id)
         return question
     
     def get(self, request, workbook_id, question_id):
@@ -172,7 +174,7 @@ class ChapterEditView(mixins.BaseMixin, View):
     template_name = 'workbooks/chapters/edit.html'
 
     def get_querysets(self, workbook_id, chapter_id):
-        chapter = get_object_or_404(models.Chapter, workbook__workbook_id=workbook_id, chapter_id=chapter_id)
+        chapter = get_object_or_404(models.Chapter, workbook__workbook_id=workbook_id, pk=chapter_id)
         return chapter
     
     def get(self, request, workbook_id, chapter_id):
