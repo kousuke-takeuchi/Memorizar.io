@@ -12,94 +12,39 @@
 <!-- メニュー -->
 <div class="py-md-5 py-5 container">
 	<div class="row">
-	<div class="col-xl-12 col-lg-12 col-md-12 col-12">
-		<!-- Bg -->
-		<div class="pt-16 rounded-top-md" style="
-					background: url(/static/images/profile-bg.jpg) no-repeat;
-					background-size: cover;
-				"></div>
-		<div class="d-flex align-items-end justify-content-between bg-white px-4 pt-2 pb-4 rounded-none rounded-bottom-md shadow-sm">
-			<div class="d-flex align-items-center">
-				<div class="lh-1">
-					<h3 class="mb-0">{{ workbook.title|truncatechars:20 }}</h3>
-					<p class="mb-0 d-block">{{ workbook.created_at|date:"Y年n月j日" }}に作成</p>
-				</div>
-			</div>
-			<div>
-				<!-- Nav -->
-				<div class="nav btn-group flex-nowrap">
-					<div>
-						<form method="POST">
-							{% csrf_token %}
-							<button type="submit" class="btn btn-primary btn-md">開始</button>
-							<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
-							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-								<a class="dropdown-item" href="{% url 'workbooks:edit' workbook.workbook_id %}">編集</a>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-</div>
-
-<!-- グラフ -->
-<div class="pb-5 py-md-5 py-5">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-12 col-md-12 col-12">
-				<div class="card">
-					<div class="card-body">
-						<h4 class="mb-0">正答率グラフ</h4>
-						<div id="chart" class="apex-charts"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Page Content -->
-<div class="container pb-5">
-	<div class="row">
-		<div class="col-lg-12 col-md-12 col-12">
-			<div class="card">
-				<div class="d-lg-flex justify-content-between align-items-center card-header">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-12">
+			<!-- Bg -->
+			<div class="pt-16 rounded-top-md" style="
+						background: url(/static/images/profile-bg.jpg) no-repeat;
+						background-size: cover;
+					"></div>
+			<div class="d-flex justify-content-between bg-white px-4 pt-2 pb-4 rounded-none rounded-bottom shadow-sm card">
+				<div class="d-lg-flex justify-content-between align-items-center card-header" style="border: none;">
 					<div class="mb-3 mb-lg-0">
-						<h3 class="mb-0">History</h3>
-						<span>履歴</span>
+						<h3 class="mb-0">{{ workbook.title|truncatechars:20 }}</h3>
+						<p class="mb-0 d-block">{{ workbook.created_at|date:"Y年n月j日" }}に作成</p>
 					</div>
+					<!-- Nav -->
+					<nav class="nav btn-group flex-nowrap">
+						<div>
+							<div class="nav nav-tabs btn-group flex-nowrap" id="nav-tab"  role="tablist">
+								<form method="POST">
+									{% csrf_token %}
+									<button type="submit" class="btn btn-primary btn-md">開始</button>
+									<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+										<a class="dropdown-item" href="{% url 'workbooks:edit' workbook.workbook_id %}">編集</a>
+									</div>
+								</form>
+							</div>
+						</div>
+					</nav>
 				</div>
 
-				<div class="table-invoice table-responsive border-0">
-					<table class="table mb-0 text-nowrap">
-						<thead class="table-light">
-							<tr>
-								<th scope="col" class="border-bottom-0">日付</th>
-								<th scope="col" class="border-bottom-0">正解数/回答数</th>
-								<th scope="col" class="border-bottom-0">正解率</th>
-								<th scope="col" class="border-bottom-0">かかった時間</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% for training in page_obj %}
-								<tr>
-									<td>{{ training.training__created_at|date:"Y年n月j日" }}</td>
-									<td>{{ training.true_count }}問/{{ training.selection_count }}問</td>
-									<td><span class="badge {% if training.true_rate >= 80 %}bg-success{% elif training.true_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ training.true_rate }}%</span></td>
-									<td>{{ training.duration|display_timedelta }}</td>
-								</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
 
 <!-- 問題一覧 -->
 <div class="container pb-5">
@@ -204,6 +149,60 @@
 	</div>
 </div>
 
+<!-- グラフ -->
+<div class="pb-5 py-md-5 py-5">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-12">
+				<div class="card">
+					<div class="card-body">
+						<h4 class="mb-0">正答率グラフ</h4>
+						<div id="chart" class="apex-charts"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Page Content -->
+<div class="container pb-5">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-12">
+			<div class="card">
+				<div class="d-lg-flex justify-content-between align-items-center card-header">
+					<div class="mb-3 mb-lg-0">
+						<h3 class="mb-0">History</h3>
+						<span>履歴</span>
+					</div>
+				</div>
+
+				<div class="table-invoice table-responsive border-0">
+					<table class="table mb-0 text-nowrap">
+						<thead class="table-light">
+							<tr>
+								<th scope="col" class="border-bottom-0">日付</th>
+								<th scope="col" class="border-bottom-0">正解数/回答数</th>
+								<th scope="col" class="border-bottom-0">正解率</th>
+								<th scope="col" class="border-bottom-0">かかった時間</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for training in page_obj %}
+								<tr>
+									<td>{{ training.training__created_at|date:"Y年n月j日" }}</td>
+									<td>{{ training.true_count }}問/{{ training.selection_count }}問</td>
+									<td><span class="badge {% if training.true_rate >= 80 %}bg-success{% elif training.true_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ training.true_rate }}%</span></td>
+									<td>{{ training.duration|display_timedelta }}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
 
 
