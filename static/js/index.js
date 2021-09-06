@@ -1,3 +1,8 @@
+var dates = JSON.parse($('#dates').data('values').replaceAll('\'', '"'));
+var learning_counts = $('#learning_counts').data('values');
+var correct_counts = $('#correct_counts').data('values');
+
+
 var options = {
     chart: {
         type: 'bar',
@@ -6,16 +11,18 @@ var options = {
             show: false,
         },
     },
-    series: [{
-        name: '学習回数',
-        data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
-    },
-    {
-        name: '正解数',
-        data: [49, 60, 70, 91, 125, 30, 40, 35, 50]
-    }],
+    series: [
+        {
+            name: '学習回数',
+            data: learning_counts,
+        },
+        {
+            name: '正解数',
+            data: correct_counts,
+        },
+    ],
     xaxis: {
-        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+        categories: dates
     },
     legend: {
         show: true,

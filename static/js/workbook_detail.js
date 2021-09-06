@@ -2,9 +2,6 @@ var dates = JSON.parse($('#dates').data('values').replaceAll('\'', '"'));
 var learning_counts = $('#learning_counts').data('values');
 var correct_counts = $('#correct_counts').data('values');
 
-console.log(dates)
-console.log(learning_counts)
-console.log(correct_counts)
 
 var options = {
     chart: {
