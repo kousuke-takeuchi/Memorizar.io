@@ -1,3 +1,4 @@
+import random
 import datetime
 import openpyxl
 
@@ -184,3 +185,50 @@ class WorkbookService:
         weeks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         dates = [weeks[date.weekday()] for date in dates]
         return (dates, learning_counts, correct_counts)
+
+
+class TrainingService:
+    def select_questions(self, training):
+        # ORMでSQL発行すると副クエリが大量に発生するため、
+        # 1問題集に含まれる問題数はさほど多くないので、pythonのリストでフィルター処理する
+
+        if training.training_type == models.Training.TrainingTypes.SELECT_CHAPTER:
+            # チャプターを指定する場合は、選ばれたチャプターの中から問題を取得
+            chapters = training.chapters.all()
+        else:
+            # 指定されない場合はすべてのチャプターから問題を取得
+            chapters = models.Chapter.objects.filter(workbook=training.workbook)
+
+        # すでに回答された問題
+        answered_question_ids = models.TrainingSelection.objects.filter(training=training).values_list('question__question_id')
+        answered_question_ids = [x[0] for x in answered_question_ids]
+        # 選択されたチャプターのID
+        chapter_ids = chapters.values_list('chapter_id')
+        chapter_ids = [x[0] for x in chapter_ids]
+
+        rest_questions = []
+        questions = models.Question.objects.filter(workbook=training.workbook)
+        for question in questions:
+            if not question.question_id in answered_question_ids and question.chapter.chapter_id in chapter_ids:
+                rest_questions.append(question)
+        return rest_questions
+
+
+    def select_question(self, training):
+        # まだ回答されていない問題から、ランダムに問題を取得する
+        questions = self.select_questions(training)
+        question = questions[random.randint(0, len(questions)-1)]
+        answers = models.Answer.objects.filter(question=question)
+
+        return question, answers
+    
+    def did_finish(self, training):
+        # 問題集をすべて解き終わったかどうか
+        rest_questions = self.select_questions(training)
+        if len(rest_questions) == 0:
+            return True
+        
+        # 10問解いた場合も終了
+        if len(rest_questions) > 9:
+            return True
+        return False

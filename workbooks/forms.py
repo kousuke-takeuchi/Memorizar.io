@@ -6,12 +6,9 @@ import time
 import openpyxl
 
 from django import forms
-from django.contrib.auth import authenticate, login
-from django.core.validators import MinLengthValidator
-from django.templatetags.static import static
+from multivaluefield import MultiValueField
 
 from . import models, services
-import workbooks
 
 
 class WorkbookCreateForm(forms.Form):
@@ -248,6 +245,40 @@ class ChapterUpdateForm(forms.Form):
         chapter.title = self.cleaned_data.get('title')
         chapter.save()
         return chapter
+
+
+class WorkbookTrainingSelectChapterForm(forms.Form):
+    chapter_ids = MultiValueField(forms.CharField(required=False), "chapter_ids")
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(WorkbookTrainingSelectChapterForm, self).__init__(*args, **kwargs)
+    
+    def clean_chapter_ids(self):
+        chapters = []
+        chapter_ids = self.cleaned_data.get('chapter_ids')
+        for chapter_id in chapter_ids:
+            try:
+                chapter = models.Chapter.objects.get(workbook=self.context['workbook'], chapter_id=chapter_id)
+            except models.Chapter.DoesNotExist:
+                raise forms.ValidationError('このIDは存在しません')
+            chapters.append(chapter)
+        return chapters
+
+    
+    def save(self):
+        training = models.Training.objects.create(
+            workbook=self.context['workbook'],
+            user=self.context['request'].user,
+            training_type=models.Training.TrainingTypes.SELECT_CHAPTER,
+        )
+        # 関連するチャプターを保存
+        for chapter in self.cleaned_data.get('chapter_ids'):
+            models.TrainingChapter.objects.create(
+                chapter=chapter,
+                training=training,
+            )
+        return training
 
 
 class WorkbookTrainingQuestionForm(forms.Form):

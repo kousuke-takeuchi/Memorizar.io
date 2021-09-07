@@ -98,6 +98,7 @@ class TrainingAdmin(ImportExportModelAdmin):
         'training_id',
         'user',
         'workbook',
+        'training_type',
         'done',
     )
     search_fields = (
@@ -117,6 +118,19 @@ class TrainingSelectionAdmin(ImportExportModelAdmin):
         'answer',
         'correct',
         'duration',
+    )
+    search_fields = (
+        'created_at',
+    )
+
+@admin.register(models.TrainingChapter)
+class TrainingChapterAdmin(ImportExportModelAdmin):
+    date_heirarchy = (
+        'updated_at',
+    )
+    list_display = (
+        'training',
+        'chapter',
     )
     search_fields = (
         'created_at',

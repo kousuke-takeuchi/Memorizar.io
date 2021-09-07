@@ -98,10 +98,17 @@ class Relationship(BaseModel, models.Model):
 
 
 class Training(BaseModel, models.Model):
+    class TrainingTypes(models.TextChoices):
+        RANDOM = 'RAND', 'Random'
+        SELECT_CHAPTER = 'CHAP', 'Select Chapter'
+
     training_id = models.UUIDField('イベントID', default=uuid.uuid4, unique=True, db_index=True)
     user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
+    training_type = models.TextField('実施種別', max_length=4, choices=TrainingTypes.choices, default=TrainingTypes.RANDOM)
     done = models.BooleanField('実施完了済みか', default=False)
+
+    chapters = models.ManyToManyField('workbooks.Chapter', through='workbooks.TrainingChapter')
     
     objects = managers.TrainingManager()
 
@@ -126,3 +133,14 @@ class TrainingSelection(BaseModel, models.Model):
     class Meta:
         verbose_name = 'training_selections'
         verbose_name_plural = 'TrainingSelection'
+
+
+class TrainingChapter(BaseModel, models.Model):
+    training = models.ForeignKey('workbooks.Training', db_index=True, on_delete=models.CASCADE)
+    chapter = models.ForeignKey('workbooks.Chapter', db_index=True, on_delete=models.CASCADE)
+    
+    objects = managers.TrainingChapterManager()
+
+    class Meta:
+        verbose_name = 'training_chapters'
+        verbose_name_plural = 'TrainingChapter'

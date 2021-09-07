@@ -74,3 +74,6 @@ class TrainingSelectionManager(BaseManager):
             result['true_rate'] = math.floor(100 * result['true_count'] / result['selection_count'])
         return querysets
 
+
+class TrainingChapterManager(BaseManager):
+    pass

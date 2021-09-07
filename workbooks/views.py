@@ -3,10 +3,6 @@ import math
 
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
-from django.http import Http404, HttpResponse
-from django.core.paginator import Paginator
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 
 from lib import mixins
@@ -193,6 +189,35 @@ class ChapterEditView(mixins.BaseMixin, View):
         return redirect('workbooks:detail', workbook_id=chapter.workbook.workbook_id)
 
 
+class WorkbookTrainingSelectChapterView(mixins.BaseMixin, View):
+    template_name = 'workbooks/trainings/select_chapter.html'
+
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    # チャプター一覧を表示
+    def get(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        chapters = models.Chapter.objects.filter(workbook=workbook)
+        form = forms.WorkbookTrainingSelectChapterForm(context={'request': request})
+        context = dict(form=form, chapters=chapters)
+        return render(request, self.template_name, context)
+    
+    # チャプターを関連付けて問題を開始
+    def post(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+
+        form = forms.WorkbookTrainingSelectChapterForm(request.POST, context={'request': request, 'workbook': workbook})
+        if not form.is_valid():
+            chapters = models.Chapter.objects.filter(workbook=workbook)
+            context = dict(form=form, chapters=chapters)
+            return render(request, self.template_name, context)
+        training = form.save()
+        # 問題ページに移動
+        return redirect('workbooks:training_question', training_id=training.training_id)
+
+
 class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/question.html'
     
@@ -203,10 +228,10 @@ class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
         # もし終了している場合は結果ページへ
         if training.done:
             return redirect('workbooks:training_result', training_id=training.training_id)
-
-        # 問題集に含まれる問題の中から、ランダムに問題を取得する
-        question = models.Question.objects.filter(workbook=training.workbook).order_by('?').first()
-        answers = models.Answer.objects.filter(question=question)
+        
+        # 問題集から次の問題と回答選択肢を選ぶ
+        service = services.TrainingService()
+        question, answers = service.select_question(training)
 
         form = forms.WorkbookTrainingQuestionForm(context={'request': request})
         context = dict(form=form, question=question, answers=answers, start_at=time.time())
@@ -223,7 +248,8 @@ class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
         training_selection = form.save()
 
         # 10問解いたら終了
-        if len(models.TrainingSelection.objects.filter(training=training)) >= 10:
+        service = services.TrainingService()
+        if service.did_finish(training):
             training.done = True
             training.save()
 

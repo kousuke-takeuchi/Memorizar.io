@@ -30,9 +30,13 @@
 							<div class="nav nav-tabs btn-group flex-nowrap" id="nav-tab"  role="tablist">
 								<form method="POST">
 									{% csrf_token %}
-									<button type="submit" class="btn btn-primary btn-md">開始</button>
-									<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
-									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<button type="button" class="btn btn-primary btn-md dropdown-toggle" id="startMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">開始</button>
+									<div class="dropdown-menu" aria-labelledby="startMenu">
+										<a href="{% url 'workbooks:training_select_chapter' workbook.workbook_id %}" class="dropdown-item">チャプターを選択</a>
+										<button type="submit" class="dropdown-item">ランダム</button>
+									</div>
+									<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="workbookMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
+									<div class="dropdown-menu" aria-labelledby="workbookMenu">
 										<a class="dropdown-item" href="{% url 'workbooks:edit' workbook.workbook_id %}">編集</a>
 									</div>
 								</form>
