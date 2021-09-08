@@ -247,6 +247,22 @@ class ChapterUpdateForm(forms.Form):
         return chapter
 
 
+class WorkbookTrainingCreateForm(forms.Form):
+    training_type = forms.ChoiceField(choices=models.Training.TrainingTypes.choices)
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(WorkbookTrainingCreateForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        training = models.Training.objects.create(
+            workbook=self.context['workbook'],
+            user=self.context['request'].user,
+            training_type=self.cleaned_data.get('training_type'),
+        )
+        return training
+
+
 class WorkbookTrainingSelectChapterForm(forms.Form):
     chapter_ids = MultiValueField(forms.CharField(required=False), "chapter_ids")
 

@@ -47,13 +47,33 @@ class WorkbookDetailView(mixins.BaseMixin, View):
         workbook, trainings = self.get_querysets(workbook_id)
         service = services.WorkbookService()
         dates, learning_counts, correct_counts = service.aggregate_daily(workbook)
-        context = dict(workbook=workbook, page_obj=trainings, dates=dates, learning_counts=learning_counts, correct_counts=correct_counts)
+        context = dict(
+                workbook=workbook,
+                page_obj=trainings,
+                dates=dates,
+                learning_counts=learning_counts,
+                correct_counts=correct_counts,
+            )
         return render(request, self.template_name, context)
     
     def post(self, request, workbook_id):
         # トレーニングを開始する
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
-        training = models.Training.objects.create(workbook=workbook, user=request.user)
+        form = forms.WorkbookTrainingCreateForm(request.POST, context={'request': request, 'workbook': workbook})
+        if not form.is_valid():
+            workbook, trainings = self.get_querysets(workbook_id)
+            service = services.WorkbookService()
+            dates, learning_counts, correct_counts = service.aggregate_daily(workbook)
+            context = dict(
+                form=form,
+                workbook=workbook,
+                page_obj=trainings,
+                dates=dates,
+                learning_counts=learning_counts,
+                correct_counts=correct_counts,
+            )
+            return render(request, self.template_name, context)
+        training = form.save()
         return redirect('workbooks:training_question', training_id=training.training_id)
 
 

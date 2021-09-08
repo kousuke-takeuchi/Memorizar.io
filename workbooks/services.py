@@ -195,9 +195,16 @@ class TrainingService:
         if training.training_type == models.Training.TrainingTypes.SELECT_CHAPTER:
             # チャプターを指定する場合は、選ばれたチャプターの中から問題を取得
             chapters = training.chapters.all()
+            questions = models.Question.objects.filter(workbook=training.workbook)
+        elif training.training_type == models.Training.TrainingTypes.REVIEW_MISTAKE:
+            # 間違えた問題のみ取得
+            chapters = models.Chapter.objects.filter(workbook=training.workbook)
+            wrong_selections = models.TrainingSelection.objects.filter(training__workbook=training.workbook, correct=False).order_by('question').distinct()
+            questions = [wrong_selection.question for wrong_selection in wrong_selections]
         else:
             # 指定されない場合はすべてのチャプターから問題を取得
             chapters = models.Chapter.objects.filter(workbook=training.workbook)
+            questions = models.Question.objects.filter(workbook=training.workbook)
 
         # すでに回答された問題
         answered_question_ids = models.TrainingSelection.objects.filter(training=training).values_list('question__question_id')
@@ -207,7 +214,6 @@ class TrainingService:
         chapter_ids = [x[0] for x in chapter_ids]
 
         rest_questions = []
-        questions = models.Question.objects.filter(workbook=training.workbook)
         for question in questions:
             if not question.question_id in answered_question_ids and question.chapter.chapter_id in chapter_ids:
                 rest_questions.append(question)

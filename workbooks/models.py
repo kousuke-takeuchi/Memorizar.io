@@ -101,6 +101,7 @@ class Training(BaseModel, models.Model):
     class TrainingTypes(models.TextChoices):
         RANDOM = 'RAND', 'Random'
         SELECT_CHAPTER = 'CHAP', 'Select Chapter'
+        REVIEW_MISTAKE = 'MIST', 'Review Mistake'
 
     training_id = models.UUIDField('イベントID', default=uuid.uuid4, unique=True, db_index=True)
     user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
