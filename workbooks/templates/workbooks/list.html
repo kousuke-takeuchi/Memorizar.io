@@ -44,10 +44,20 @@
 										<td>{{ workbook.true_count }}問/{{ workbook.selection_count }}問</td>
 										<td><span class="badge {% if workbook.true_rate >= 80 %}bg-success{% elif workbook.true_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ workbook.true_rate }}%</span></td>
 										<td>
-											<form method="POST" action="{% url 'workbooks:detail' workbook.workbook_id %}">
-												{% csrf_token %}
-												<button type="submit" class="btn btn-primary btn-sm">開始</button>
-											</form>
+											<button type="button" class="btn btn-primary btn-sm dropdown-toggle" id="startMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">開始</button>
+											<div class="dropdown-menu" aria-labelledby="startMenu">
+												<a href="{% url 'workbooks:training_select_chapter' workbook.workbook_id %}" class="dropdown-item">チャプターを選択</a>
+												<form method="POST" action="{% url 'workbooks:detail' workbook.workbook_id %}">
+													{% csrf_token %}
+													<input type="hidden" name="training_type" value="RAND">
+													<button type="submit" class="dropdown-item">ランダムに出題</button>
+												</form>
+												<form method="POST" action="{% url 'workbooks:detail' workbook.workbook_id %}">
+													{% csrf_token %}
+													<input type="hidden" name="training_type" value="MIST">
+													<button type="submit" class="dropdown-item">間違えた問題から出題</button>
+												</form>
+											</div>
 										</td>
 									</tr>
 								{% endfor %}
