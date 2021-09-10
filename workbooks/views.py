@@ -124,10 +124,17 @@ class QuestionCreateView(mixins.BaseMixin, View):
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
         return workbook
     
+    def get_question(self, question_id):
+        if question_id is None:
+            return None
+        return get_object_or_404(models.Question, question_id=question_id)
+    
     def get(self, request, workbook_id):
         workbook = self.get_querysets(workbook_id)
+        # question_idが指定されている場合は、問題を複製
+        original_question = self.get_question(request.GET.get('question_id'))
         form = forms.QuestionCreateForm()
-        context = dict(workbook=workbook, form=form)
+        context = dict(original_question=original_question, workbook=workbook, form=form)
         return render(request, self.template_name, context)
     
     def post(self, request, workbook_id):
@@ -240,6 +247,7 @@ class WorkbookTrainingSelectChapterView(mixins.BaseMixin, View):
 
 class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/question.html'
+    not_found_template_name = 'workbooks/trainings/question_not_found.html'
     
     # 問題を表示
     def get(self, request, training_id):
@@ -248,9 +256,15 @@ class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
         # もし終了している場合は結果ページへ
         if training.done:
             return redirect('workbooks:training_result', training_id=training.training_id)
+
+        service = services.TrainingService()
+
+        # 表示する問題がない場合は、問題がありませんのページへ
+        if service.did_finish(training):
+            context = {}
+            return render(request, self.not_found_template_name, context)
         
         # 問題集から次の問題と回答選択肢を選ぶ
-        service = services.TrainingService()
         question, answers = service.select_question(training)
 
         form = forms.WorkbookTrainingQuestionForm(context={'request': request})
@@ -299,5 +313,5 @@ class WorkbookTrainingResultView(mixins.BaseMixin, View):
         true_count = models.TrainingSelection.objects.filter(training=training, correct=True).count()
         true_rate = math.floor(100 * true_count / selection_count)
 
-        context = dict(selection_count=selection_count, true_count=true_count, true_rate=true_rate)
+        context = dict(training=training, selection_count=selection_count, true_count=true_count, true_rate=true_rate)
         return render(request, self.template_name, context)

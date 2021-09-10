@@ -30,13 +30,13 @@
     
                     <div class="mb-3 col-12 col-md-6">
                         <label class="form-label" for="title">Title</label>
-                        <input type="text" name="title" class="form-control" placeholder="タイトル" required>
+                        <input type="text" value="{{ original_question.title }}" name="title" class="form-control" placeholder="タイトル" required>
                     </div>
                 </div>
 
                 <div class="mb-3 col-12 col-md-12">
                     <label class="form-label" for="sentense">Sentense</label>
-                    <textarea name="sentense" cols="30" rows="10" class="form-control" placeholder="問題本文" required></textarea>
+                    <textarea name="sentense" cols="30" rows="10" class="form-control" placeholder="問題本文" required>{{ original_question.sentense }}</textarea>
                 </div>
 
                 <div class="row">
@@ -46,7 +46,7 @@
                             <select class="selectpicker" name="chapter_id" data-width="100%" tabindex="null">
                                 <option value="">チャプターを選択してください</option>
                                 {% for chapter in workbook.chapter_set.all %}
-                                    <option value="{{ chapter.chapter_id }}">{{ chapter.title }}</option>
+                                    <option value="{{ chapter.chapter_id }}" {% ifequal chapter.chapter_id original_question.chapter.chapter_id %}selected{% endifequal %}>{{ chapter.title }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -64,72 +64,147 @@
                 <h4 class="mb-0">Selections</h4>
                 <p class="mb-4">回答選択肢 (4つ)</p>
 
-                <div class="row">
-                    <div class="mb-3 col-12 col-md-6">
-                        <h4 class="mb-0">Selection 1</h4>
-                        <div class="mb-3 col-12 col-md-12">
-                            <label class="form-label" for="answer1_title">Title</label>
-                            <textarea name="answer1_title" cols="30" rows="3" class="form-control" placeholder="選択肢1 タイトル" required></textarea>
+                {% if original_question %}
+                    {% with answers=question.answer_set.all %}
+                        <div class="row">
+                            <div class="mb-3 col-12 col-md-6">
+                                <h4 class="mb-0">Selection 1</h4>
+                                <input type="hidden" name="answer1_id" value="{{ answers.0.answer_id }}" />
+                                <div class="mb-3 col-12 col-md-12">
+                                    <label class="form-label" for="answer1_title">Title</label>
+                                    <textarea name="answer1_title" cols="30" rows="3" class="form-control" placeholder="選択肢1 タイトル" required>{{ answers.0.title }}</textarea>
+                                </div>
+                                <div class="mb-3 col-12 col-md-12">
+                                    <label class="form-label" for="answer1_sentense">Sentense</label>
+                                    <textarea name="answer1_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢1 回答文" required>{{ answers.0.sentense }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 col-12 col-md-6">
+                                <h4 class="mb-0">Selection 2</h4>
+                                <input type="hidden" name="answer2_id" value="{{ answers.1.answer_id }}" />
+                                <div class="mb-3 col-12 col-md-12">
+                                    <label class="form-label" for="answer2_title">Title</label>
+                                    <textarea name="answer2_title" cols="30" rows="3" class="form-control" placeholder="選択肢2 タイトル" required>{{ answers.1.title }}</textarea>
+                                </div>
+                                <div class="mb-3 col-12 col-md-12">
+                                    <label class="form-label" for="answer2_sentense">Sentense</label>
+                                    <textarea name="answer2_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢2 回答文" required>{{ answers.1.sentense }}</textarea>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3 col-12 col-md-12">
-                            <label class="form-label" for="answer1_sentense">Sentense</label>
-                            <textarea name="answer1_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢1 回答文" required></textarea>
+
+                        <div class="row">
+                            <div class="mb-3 col-12 col-md-6">
+                                <h4 class="mb-0">Selection 3</h4>
+                                <input type="hidden" name="answer3_id" value="{{ answers.2.answer_id }}" />
+                                <div class="mb-3 col-12 col-md-12">
+                                    <label class="form-label" for="answer3_title">Title</label>
+                                    <textarea name="answer3_title" cols="30" rows="3" class="form-control" placeholder="選択肢3 タイトル" required>{{ answers.2.title }}</textarea>
+                                </div>
+                                <div class="mb-3 col-12 col-md-12">
+                                    <label class="form-label" for="answer3_sentense">Sentense</label>
+                                    <textarea name="answer3_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢3 回答文" required>{{ answers.2.sentense }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 col-12 col-md-6">
+                                <h4 class="mb-0">Selection 4</h4>
+                                <input type="hidden" name="answer4_id" value="{{ answers.3.answer_id }}" />
+                                <div class="mb-3 col-12 col-md-12">
+                                    <label class="form-label" for="answer4_title">Title</label>
+                                    <textarea name="answer4_title" cols="30" rows="3" class="form-control" placeholder="選択肢4 タイトル" required>{{ answers.3.title }}</textarea>
+                                </div>
+                                <div class="mb-3 col-12 col-md-12">
+                                    <label class="form-label" for="answer4_sentense">Sentense</label>
+                                    <textarea name="answer4_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢4 回答文" required>{{ answers.3.sentense }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-12 col-md-6">
+                                <label class="form-label" for="collect_answer_id">Collect Answer</label>
+                                <div class="dropdown bootstrap-select dropup" style="width: 100%;">
+                                    <select class="selectpicker" name="collect_answer_id" data-width="100%" tabindex="null" required>
+                                        <option value="">正解の選択肢を選択してください</option>
+                                        <option value="{{ answers.0.answer_id }}" {% if answers.0.is_true %}selected{% endif %}>選択肢1</option>
+                                        <option value="{{ answers.1.answer_id }}" {% if answers.1.is_true %}selected{% endif %}>選択肢2</option>
+                                        <option value="{{ answers.2.answer_id }}" {% if answers.2.is_true %}selected{% endif %}>選択肢3</option>
+                                        <option value="{{ answers.3.answer_id }}" {% if answers.3.is_true %}selected{% endif %}>選択肢4</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% else %}
+                    <div class="row">
+                        <div class="mb-3 col-12 col-md-6">
+                            <h4 class="mb-0">Selection 1</h4>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer1_title">Title</label>
+                                <textarea name="answer1_title" cols="30" rows="3" class="form-control" placeholder="選択肢1 タイトル" required></textarea>
+                            </div>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer1_sentense">Sentense</label>
+                                <textarea name="answer1_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢1 回答文" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 col-12 col-md-6">
+                            <h4 class="mb-0">Selection 2</h4>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer2_title">Title</label>
+                                <textarea name="answer2_title" cols="30" rows="3" class="form-control" placeholder="選択肢2 タイトル" required></textarea>
+                            </div>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer2_sentense">Sentense</label>
+                                <textarea name="answer2_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢2 回答文" required></textarea>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-3 col-12 col-md-6">
-                        <h4 class="mb-0">Selection 2</h4>
-                        <div class="mb-3 col-12 col-md-12">
-                            <label class="form-label" for="answer2_title">Title</label>
-                            <textarea name="answer2_title" cols="30" rows="3" class="form-control" placeholder="選択肢2 タイトル" required></textarea>
+                    <div class="row">
+                        <div class="mb-3 col-12 col-md-6">
+                            <h4 class="mb-0">Selection 3</h4>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer3_title">Title</label>
+                                <textarea name="answer3_title" cols="30" rows="3" class="form-control" placeholder="選択肢3 タイトル" required></textarea>
+                            </div>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer3_sentense">Sentense</label>
+                                <textarea name="answer3_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢3 回答文" required></textarea>
+                            </div>
                         </div>
-                        <div class="mb-3 col-12 col-md-12">
-                            <label class="form-label" for="answer2_sentense">Sentense</label>
-                            <textarea name="answer2_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢2 回答文" required></textarea>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="mb-3 col-12 col-md-6">
-                        <h4 class="mb-0">Selection 3</h4>
-                        <div class="mb-3 col-12 col-md-12">
-                            <label class="form-label" for="answer3_title">Title</label>
-                            <textarea name="answer3_title" cols="30" rows="3" class="form-control" placeholder="選択肢3 タイトル" required></textarea>
-                        </div>
-                        <div class="mb-3 col-12 col-md-12">
-                            <label class="form-label" for="answer3_sentense">Sentense</label>
-                            <textarea name="answer3_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢3 回答文" required></textarea>
+                        <div class="mb-3 col-12 col-md-6">
+                            <h4 class="mb-0">Selection 4</h4>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer4_title">Title</label>
+                                <textarea name="answer4_title" cols="30" rows="3" class="form-control" placeholder="選択肢4 タイトル" required></textarea>
+                            </div>
+                            <div class="mb-3 col-12 col-md-12">
+                                <label class="form-label" for="answer4_sentense">Sentense</label>
+                                <textarea name="answer4_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢4 回答文" required></textarea>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-3 col-12 col-md-6">
-                        <h4 class="mb-0">Selection 4</h4>
-                        <div class="mb-3 col-12 col-md-12">
-                            <label class="form-label" for="answer4_title">Title</label>
-                            <textarea name="answer4_title" cols="30" rows="3" class="form-control" placeholder="選択肢4 タイトル" required></textarea>
-                        </div>
-                        <div class="mb-3 col-12 col-md-12">
-                            <label class="form-label" for="answer4_sentense">Sentense</label>
-                            <textarea name="answer4_sentense" cols="30" rows="3" class="form-control" placeholder="選択肢4 回答文" required></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="mb-3 col-12 col-md-6">
-                        <label class="form-label" for="collect_index">Collect Answer</label>
-                        <div class="dropdown bootstrap-select dropup" style="width: 100%;">
-                            <select class="selectpicker" name="collect_index" data-width="100%" tabindex="null" required>
-                                <option value="">正解の選択肢を選択してください</option>
-                                <option value="1">選択肢1</option>
-                                <option value="2">選択肢2</option>
-                                <option value="3">選択肢3</option>
-                                <option value="4">選択肢4</option>
-                            </select>
+                    <div class="row">
+                        <div class="mb-3 col-12 col-md-6">
+                            <label class="form-label" for="collect_index">Collect Answer</label>
+                            <div class="dropdown bootstrap-select dropup" style="width: 100%;">
+                                <select class="selectpicker" name="collect_index" data-width="100%" tabindex="null" required>
+                                    <option value="">正解の選択肢を選択してください</option>
+                                    <option value="1">選択肢1</option>
+                                    <option value="2">選択肢2</option>
+                                    <option value="3">選択肢3</option>
+                                    <option value="4">選択肢4</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endif %}
 
                 <hr class="my-5">
 

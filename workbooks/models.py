@@ -54,6 +54,7 @@ class Question(BaseModel, models.Model):
     hint = models.TextField('問題ヒント文章', default=None, null=True, blank=True)
     commentary = models.TextField('正解解説文章', default=None, null=True, blank=True)
     commentary_image_urls = ArrayField(models.URLField(), size=10, default=list)
+    index = models.IntegerField('並び順', db_index=True, default=1)
 
     objects = managers.QuestionManager()
 
@@ -74,6 +75,7 @@ class Answer(BaseModel, models.Model):
     title = models.CharField('タイトル', max_length=250, db_index=True)
     sentense = models.TextField('問題文')
     is_true = models.BooleanField('正しい選択肢かどうか', default=False)
+    index = models.IntegerField('並び順', db_index=True, default=1)
 
     objects = managers.AnswerManager()
 
@@ -102,6 +104,7 @@ class Training(BaseModel, models.Model):
         RANDOM = 'RAND', 'Random'
         SELECT_CHAPTER = 'CHAP', 'Select Chapter'
         REVIEW_MISTAKE = 'MIST', 'Review Mistake'
+        ORDERED = 'ORDR', 'Ordered'
 
     training_id = models.UUIDField('イベントID', default=uuid.uuid4, unique=True, db_index=True)
     user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)

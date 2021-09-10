@@ -201,6 +201,10 @@ class TrainingService:
             chapters = models.Chapter.objects.filter(workbook=training.workbook)
             wrong_selections = models.TrainingSelection.objects.filter(training__workbook=training.workbook, correct=False).order_by('question').distinct()
             questions = [wrong_selection.question for wrong_selection in wrong_selections]
+        elif training.training_type == models.Training.TrainingTypes.ORDERED:
+            # すべての問題を順番に実行
+            chapters = models.Chapter.objects.filter(workbook=training.workbook)
+            questions = models.Question.objects.filter(workbook=training.workbook).order_by('index')
         else:
             # 指定されない場合はすべてのチャプターから問題を取得
             chapters = models.Chapter.objects.filter(workbook=training.workbook)
@@ -223,6 +227,8 @@ class TrainingService:
     def select_question(self, training):
         # まだ回答されていない問題から、ランダムに問題を取得する
         questions = self.select_questions(training)
+        if len(questions) == 0:
+            return None, []
         question = questions[random.randint(0, len(questions)-1)]
         answers = models.Answer.objects.filter(question=question)
 

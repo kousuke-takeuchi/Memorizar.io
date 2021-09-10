@@ -49,6 +49,11 @@
 												<a href="{% url 'workbooks:training_select_chapter' workbook.workbook_id %}" class="dropdown-item">チャプターを選択</a>
 												<form method="POST" action="{% url 'workbooks:detail' workbook.workbook_id %}">
 													{% csrf_token %}
+													<input type="hidden" name="training_type" value="ORDR">
+													<button type="submit" class="dropdown-item">1問目から順に出題</button>
+												</form>
+												<form method="POST" action="{% url 'workbooks:detail' workbook.workbook_id %}">
+													{% csrf_token %}
 													<input type="hidden" name="training_type" value="RAND">
 													<button type="submit" class="dropdown-item">ランダムに出題</button>
 												</form>
