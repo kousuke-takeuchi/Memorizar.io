@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'import_export',
     'social_django',
     'whitenoise.runserver_nostatic',
+    'cloudinary_storage',
+    'cloudinary',
 
     'memorizar',
     'users',
@@ -156,6 +158,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATICFILES_STORAGE = 'memorizar.storage.WhiteNoiseStaticFilesStorage'
+
+from urllib.parse import urlparse
+o = urlparse(env('CLOUDINARY_URL'))
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': o.hostname,
+    'API_KEY': o.username,
+    'API_SECRET': o.password
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.RawMediaCloudinaryStorage'
 
 # Media files
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
