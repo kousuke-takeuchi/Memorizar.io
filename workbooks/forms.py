@@ -6,6 +6,7 @@ import time
 import openpyxl
 
 from django import forms
+from django.core.files.storage import default_storage
 from multivaluefield import MultiValueField
 
 from . import models, services
@@ -106,14 +107,33 @@ class QuestionCreateForm(forms.Form):
         )
         return answer
 
+    def upload(self, image_file):
+        file_name = default_storage.save(image_file.name, image_file)
+        return default_storage.url(file_name)
+
     def save(self):
+        # 画像をアップロード
+        image_file = self.cleaned_data['image']
+        image_urls = []
+        if image_file:
+            image_url = self.upload(image_file)
+            image_urls.append(image_url)
+        
+        commentary_image_file = self.cleaned_data['commentary_image']
+        commentary_image_urls = []
+        if image_file:
+            commentary_image_url = self.upload(commentary_image_file)
+            commentary_image_urls.append(commentary_image_url)
+        
         question = models.Question.objects.create(
             workbook=self.context['workbook'],
             question_id=self.cleaned_data.get('question_id'),
             title=self.cleaned_data.get('title'),
             sentense=self.cleaned_data.get('sentense'),
+            image_urls=image_urls,
             chapter=self.cleaned_data.get('chapter_id'),
             commentary=self.cleaned_data.get('commentary'),
+            commentary_image_urls=commentary_image_urls,
         )
         self.create_answer(question, 1)
         self.create_answer(question, 2)
@@ -195,14 +215,33 @@ class QuestionUpdateForm(forms.Form):
         answer.sentense = self.cleaned_data.get('answer{}_sentense'.format(index))
         answer.is_true = self.cleaned_data.get('collect_answer_id') == str(answer.answer_id)
         answer.save()
+    
+    def upload(self, image_file):
+        file_name = default_storage.save(image_file.name, image_file)
+        return default_storage.url(file_name)
 
     def save(self):
+        # 画像をアップロード
+        image_file = self.cleaned_data['image']
+        image_urls = []
+        if image_file:
+            image_url = self.upload(image_file)
+            image_urls.append(image_url)
+        
+        commentary_image_file = self.cleaned_data['commentary_image']
+        commentary_image_urls = []
+        if image_file:
+            commentary_image_url = self.upload(commentary_image_file)
+            commentary_image_urls.append(commentary_image_url)
+
         question = self.context['question']
         question.question_id = self.cleaned_data.get('question_id')
         question.title = self.cleaned_data.get('title')
         question.sentense = self.cleaned_data.get('sentense')
+        question.image_urls = image_urls
         question.chapter = self.cleaned_data.get('chapter_id')
         question.commentary = self.cleaned_data.get('commentary')
+        question.commentary_image_urls = commentary_image_urls
         question.save()
 
         # 回答選択肢を編集

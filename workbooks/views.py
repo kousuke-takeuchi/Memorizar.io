@@ -139,7 +139,7 @@ class QuestionCreateView(mixins.BaseMixin, View):
     
     def post(self, request, workbook_id):
         workbook = self.get_querysets(workbook_id)
-        form = forms.QuestionCreateForm(request.POST, context={'request': request, 'workbook': workbook})
+        form = forms.QuestionCreateForm(request.POST, request.FILES, context={'request': request, 'workbook': workbook})
         if not form.is_valid():
             context = dict(workbook=workbook, form=form)
             return render(request, self.template_name, context)
@@ -157,14 +157,14 @@ class QuestionEditView(mixins.BaseMixin, View):
     def get(self, request, workbook_id, question_id):
         question = self.get_querysets(workbook_id, question_id)
         form = forms.QuestionUpdateForm()
-        context = dict(question=question, form=form)
+        context = dict(workbook=question.workbook, question=question, form=form)
         return render(request, self.template_name, context)
     
     def post(self, request, workbook_id, question_id):
         question = self.get_querysets(workbook_id, question_id)
-        form = forms.QuestionUpdateForm(request.POST, context={'request': request, 'question': question})
+        form = forms.QuestionUpdateForm(request.POST, request.FILES, context={'request': request, 'question': question, 'workbook': question.workbook})
         if not form.is_valid():
-            context = dict(question=question, form=form)
+            context = dict(question=question, form=form, workbook=question.workbook)
             return render(request, self.template_name, context)
         form.save()
         return redirect('workbooks:detail', workbook_id=question.workbook.workbook_id)

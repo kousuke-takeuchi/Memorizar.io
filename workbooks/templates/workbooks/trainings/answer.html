@@ -40,6 +40,11 @@
 							<p>
 								{{ training_selection.question.commentary }}
 							</p>
+							{% if training_selection.question.commentary_image_urls %}
+							<div class="mb-3">
+								<img src="{{ training_selection.question.commentary_image_urls.0 }}" style="max-height: 300px; max-width: 100%;" />
+							</div>
+						{% endif %}
 						</div>
 
 						<div class="pb-4 py-md-4 py-4">
