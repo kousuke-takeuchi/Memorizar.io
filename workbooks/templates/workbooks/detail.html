@@ -102,7 +102,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								{% for question in workbook.question_set.all %}
+								{% for question in questions %}
 									<tr>
 										<td>{{ question.title }}</td>
 										<td>{{ question.sentense|truncatechars:20 }}</td>
@@ -124,6 +124,9 @@
 								{% endfor %}
 							</tbody>
 						</table>
+						<div class="m-3">
+							{% include 'partials/paginator.html' with page_obj=questions %}
+						</div>
 					</div>
 					<!-- チャプタータブ -->
 					<div class="table-responsive border-0 tab-pane fade show" id="chapter" role="tabpanel" aria-labelledby="chapter">
@@ -204,7 +207,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							{% for training in page_obj %}
+							{% for training in trainings %}
 								<tr>
 									<td>{{ training.training__created_at|date:"Y年n月j日" }}</td>
 									<td>{{ training.true_count }}問/{{ training.selection_count }}問</td>

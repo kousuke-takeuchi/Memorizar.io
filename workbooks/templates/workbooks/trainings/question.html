@@ -11,7 +11,7 @@
 					<div class="justify-content-between align-items-center card-header">
 						<div class="mb-3 mb-lg-0">
 							<h3 class="mb-0">{{ question.title }}</h3>
-							<span>{{ question.sentense }}</span>
+							<span id="question-sentense">{{ question.sentense }}</span>
 						</div>
 						{% if question.image_urls %}
 							<div class="mb-3">
@@ -54,7 +54,10 @@
 {% endblock %}
 
 {% block js %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+	document.getElementById('question-sentense').innerHTML = marked(document.getElementById('question-sentense').innerHTML);
+
 	$(function () {
 		$('.answer').on('click', function (e) {
 			$('.answer').removeClass('answer-selection');

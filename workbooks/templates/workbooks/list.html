@@ -37,7 +37,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								{% for workbook in page_obj %}
+								{% for workbook in workbooks %}
 									<tr>
 										<td><a href="{% url 'workbooks:detail' workbook.workbook_id %}">{{ workbook.title }}</a></td>
 										<td>{{ workbook.training_count }}回</td>
@@ -68,6 +68,9 @@
 								{% endfor %}
 							</tbody>
 						</table>
+					</div>
+					<div class="m-3">
+						{% include 'partials/paginator.html' with page_obj=workbooks %}
 					</div>
 				</div>
 			</div>

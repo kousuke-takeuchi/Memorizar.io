@@ -4,6 +4,7 @@ import math
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
 
 from lib import mixins
 from . import models, forms, services
@@ -15,13 +16,15 @@ class WorkbookListView(mixins.BaseMixin, View):
 
     def get_querysets(self):
         workbooks = models.Workbook.objects.aggregate_training(user=self.request.user)
-        return workbooks
+        p = Paginator(workbooks, 5)
+        page = self.request.GET.get('page', 1)
+        return p.page(page)
     
     def get(self, request):
         # 問題集一覧
-        querysets = self.get_querysets()
+        workbooks = self.get_querysets()
         form = forms.WorkbookCreateForm(context={'request': request})
-        context = dict(form=form, page_obj=querysets)
+        context = dict(form=form, workbooks=workbooks)
         return render(request, self.template_name, context)
     
     def post(self, request):
@@ -39,17 +42,21 @@ class WorkbookDetailView(mixins.BaseMixin, View):
 
     def get_querysets(self, workbook_id):
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
-        querysets = models.TrainingSelection.objects.aggregate(training__workbook=workbook)
-        return workbook, querysets
+        trainings = models.TrainingSelection.objects.aggregate(training__workbook=workbook)[:5]
+        questions = workbook.question_set.all()
+        p = Paginator(questions, 5)
+        page = self.request.GET.get('page', 1)
+        return workbook, trainings, p.page(page)
     
     def get(self, request, workbook_id):
         # 問題集の実施結果集計
-        workbook, trainings = self.get_querysets(workbook_id)
+        workbook, trainings, questions = self.get_querysets(workbook_id)
         service = services.WorkbookService()
         dates, learning_counts, correct_counts = service.aggregate_daily(workbook)
         context = dict(
                 workbook=workbook,
-                page_obj=trainings,
+                trainings=trainings,
+                questions=questions,
                 dates=dates,
                 learning_counts=learning_counts,
                 correct_counts=correct_counts,
@@ -61,13 +68,13 @@ class WorkbookDetailView(mixins.BaseMixin, View):
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
         form = forms.WorkbookTrainingCreateForm(request.POST, context={'request': request, 'workbook': workbook})
         if not form.is_valid():
-            workbook, trainings = self.get_querysets(workbook_id)
+            workbook, trainings, questions = self.get_querysets(workbook_id)
             service = services.WorkbookService()
             dates, learning_counts, correct_counts = service.aggregate_daily(workbook)
             context = dict(
-                form=form,
                 workbook=workbook,
-                page_obj=trainings,
+                trainings=trainings,
+                questions=questions,
                 dates=dates,
                 learning_counts=learning_counts,
                 correct_counts=correct_counts,

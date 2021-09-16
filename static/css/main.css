@@ -14,3 +14,8 @@
 .answer-true.answer-selection {
     border: #19cb98 3px solid!important;
 }
+
+/* markdown */
+em {
+    font-weight: bold;
+}

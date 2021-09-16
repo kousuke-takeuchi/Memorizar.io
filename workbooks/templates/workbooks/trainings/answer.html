@@ -15,7 +15,7 @@
 							{% else %}
 								<h3 class="mb-0 text-danger">不正解！ {{ training_selection.answer.title }}</h3>
 							{% endif %}
-							<span>{{ training_selection.question.sentense }}</span>
+							<span id="question-sentense">{{ training_selection.question.sentense }}</span>
 						</div>
 					</div>
 
@@ -37,9 +37,7 @@
 						
 						<div class="col-12 pb-4 py-md-4 py-4">
 							<h3 class="mb-2">解説</h3>
-							<p>
-								{{ training_selection.question.commentary }}
-							</p>
+							<span id="commentary">{{ training_selection.question.commentary }}</span>
 							{% if training_selection.question.commentary_image_urls %}
 							<div class="mb-3">
 								<img src="{{ training_selection.question.commentary_image_urls.0 }}" style="max-height: 300px; max-width: 100%;" />
@@ -60,4 +58,12 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+	document.getElementById('question-sentense').innerHTML = marked(document.getElementById('question-sentense').innerHTML);
+	document.getElementById('commentary').innerHTML = marked(document.getElementById('commentary').innerHTML);
+</script>
 {% endblock %}
