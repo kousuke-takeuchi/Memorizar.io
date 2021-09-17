@@ -13,32 +13,6 @@ from . import models, services
 
 
 class WorkbookCreateForm(forms.Form):
-    workbook_file = forms.FileField(required=True)
-
-    def __init__(self, *args, **kwargs):
-        self.context = kwargs.pop('context', {})
-        super(WorkbookCreateForm, self).__init__(*args, **kwargs)
-    
-    def clean_workbook_file(self):
-        workbook_file = self.cleaned_data.get('workbook_file')
-        filename = 'tmp/{}.xlsx'.format(uuid.uuid4())
-        with open(filename, 'wb+') as f:
-            f.write(workbook_file.read())
-        try:
-            wb = openpyxl.load_workbook(filename)
-        except zipfile.BadZipFile:
-            os.remove(filename)
-            raise forms.ValidationError('Excelファイルを指定してください')
-        return filename
-
-    def save(self):
-        filename = self.cleaned_data.get('workbook_file')
-        service = services.WorkbookService()
-        service.import_workbook(self.context['request'].user, filename)
-        os.remove(filename)
-
-
-class WorkbookCreateForm(forms.Form):
     title = forms.CharField(required=True)
 
     def __init__(self, *args, **kwargs):
@@ -51,6 +25,43 @@ class WorkbookCreateForm(forms.Form):
             title=self.cleaned_data.get('title'),
         )
         return workbook
+
+
+class WorkbookImportForm(forms.Form):
+    title = forms.CharField(required=True)
+    workbook_file = forms.FileField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(WorkbookImportForm, self).__init__(*args, **kwargs)
+
+    def clean_title(self):
+        title = self.cleaned_data.get('title')
+        if models.Workbook.objects.filter(title=title).exists():
+            raise forms.ValidationError('この名前はすでに使用されています')
+        return title
+    
+    # def clean_workbook_file(self):
+    #     workbook_file = self.cleaned_data.get('workbook_file')
+    #     filename = 'tmp/{}.xlsx'.format(uuid.uuid4())
+    #     with open(filename, 'wb+') as f:
+    #         f.write(workbook_file.read())
+    #     try:
+    #         wb = openpyxl.load_workbook(filename)
+    #     except zipfile.BadZipFile:
+    #         os.remove(filename)
+    #         raise forms.ValidationError('Excelファイルを指定してください')
+    #     return workbook_file
+
+    def save(self):
+        title = self.cleaned_data.get('title')
+        workbook_file = self.cleaned_data.get('workbook_file')
+        # CloudinaryにExcelファイルをアップロード
+        cloudinary_key = default_storage.save('{}.xlsx'.format(uuid.uuid4()), workbook_file)
+        # インポート処理をバックグラウンドで開始
+        # service = services.WorkbookService()
+        # service.import_workbook(self.context['request'].user, filename)
+        # os.remove(filename)
 
 
 class WorkbookUpdateForm(forms.Form):

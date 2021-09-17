@@ -87,9 +87,16 @@
 				<h5 class="modal-title" id="upload-modal">問題集のテンプレートをアップロード</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<form method="POST" enctype="multipart/form-data">
+			<form method="POST" action="{% url 'workbooks:import' %}" enctype="multipart/form-data">
 				<div class="modal-body">
-					<input name="workbook_file" type="file" multiple />
+					<div class="mb-3 col-12 col-md-6">
+                        <label class="form-label" for="title">Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="タイトル" required>
+                    </div>
+					<div class="custom-file mb-3 col-12 col-md-12">
+                        <label class="form-label" for="chapter_id">Excelファイル</label>
+                        <input type="file" class="form-control custom-file-input" name="workbook_file">
+                    </div>
 				</div>
 				<div class="modal-footer">
 					{% csrf_token %}

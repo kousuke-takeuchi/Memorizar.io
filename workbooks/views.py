@@ -31,7 +31,28 @@ class WorkbookListView(mixins.BaseMixin, View):
         # 問題集作成
         form = forms.WorkbookCreateForm(request.POST, request.FILES, context={'request': request})
         if not form.is_valid():
-            context = dict(form=form)
+            workbooks = self.get_querysets()
+            context = dict(form=form, workbooks=workbooks)
+            return render(request, self.template_name, context)
+        form.save()
+        return redirect('workbooks:list')
+
+
+class WorkbookImportView(mixins.BaseMixin, View):
+    template_name = 'workbooks/list.html'
+
+    def get_querysets(self):
+        workbooks = models.Workbook.objects.aggregate_training(user=self.request.user)
+        p = Paginator(workbooks, 5)
+        page = self.request.GET.get('page', 1)
+        return p.page(page)
+
+    def post(self, request):
+        # 問題集作成
+        form = forms.WorkbookImportForm(request.POST, request.FILES, context={'request': request})
+        if not form.is_valid():
+            workbooks = self.get_querysets()
+            context = dict(form=form, workbooks=workbooks)
             return render(request, self.template_name, context)
         form.save()
         return redirect('workbooks:list')

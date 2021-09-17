@@ -12,6 +12,7 @@ urlpatterns = [
     path('trainings/<str:training_id>/selections/<str:selection_id>', views.WorkbookTrainingAnswerView.as_view(), name='training_answer'),
     path('trainings/<str:training_id>/', views.WorkbookTrainingResultView.as_view(), name='training_result'),
     path('new/', views.WorkbookCreateView.as_view(), name='create'),
+    path('import/', views.WorkbookImportView.as_view(), name='import'),
     path('<str:workbook_id>/', views.WorkbookDetailView.as_view(), name='detail'),
     path('<str:workbook_id>/edit/', views.WorkbookEditView.as_view(), name='edit'),
     path('<str:workbook_id>/questions/new/', views.QuestionCreateView.as_view(), name='question_new'),
