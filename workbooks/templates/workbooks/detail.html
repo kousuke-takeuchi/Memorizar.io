@@ -96,6 +96,7 @@
 							<thead class="table-light">
 								<tr>
 									<th scope="col" class="border-bottom-0">タイトル</th>
+									<th scope="col" class="border-bottom-0">チャプター</th>
 									<th scope="col" class="border-bottom-0">問題文</th>
 									<th scope="col" class="border-bottom-0">作成日</th>
 									<th scope="col" class="border-bottom-0"></th>
@@ -105,6 +106,7 @@
 								{% for question in questions %}
 									<tr>
 										<td>{{ question.title }}</td>
+										<td>{{ question.chapter.title }}</td>
 										<td>{{ question.sentense|truncatechars:20 }}</td>
 										<td>{{ question.created_at|date:"Y年n月j日" }}</td>
 										<td class="text-muted align-middle border-top-0">
