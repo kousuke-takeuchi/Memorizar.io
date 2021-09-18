@@ -30,3 +30,19 @@ class DashboardView(View):
         
         context = dict(dates=dates, learning_counts=learning_counts, correct_counts=correct_counts)
         return render(request, self.template_name, context)
+
+
+class PrivacyPolicyView(View):
+    template_name = 'memorizar/privacy_policy.html'
+
+    def get(self, request):
+        context = {}
+        return render(request, self.template_name, context)
+
+
+class AgreementView(View):
+    template_name = 'memorizar/agreement.html'
+
+    def get(self, request):
+        context = {}
+        return render(request, self.template_name, context)
