@@ -9,7 +9,7 @@ from django import forms
 from django.core.files.storage import default_storage
 from multivaluefield import MultiValueField
 
-from . import models, services
+from . import models, tasks
 
 
 class WorkbookCreateForm(forms.Form):
@@ -41,27 +41,24 @@ class WorkbookImportForm(forms.Form):
             raise forms.ValidationError('この名前はすでに使用されています')
         return title
     
-    # def clean_workbook_file(self):
-    #     workbook_file = self.cleaned_data.get('workbook_file')
-    #     filename = 'tmp/{}.xlsx'.format(uuid.uuid4())
-    #     with open(filename, 'wb+') as f:
-    #         f.write(workbook_file.read())
-    #     try:
-    #         wb = openpyxl.load_workbook(filename)
-    #     except zipfile.BadZipFile:
-    #         os.remove(filename)
-    #         raise forms.ValidationError('Excelファイルを指定してください')
-    #     return workbook_file
+    def clean_workbook_file(self):
+        workbook_file = self.cleaned_data.get('workbook_file')
+        filename = 'tmp/{}.xlsx'.format(uuid.uuid4())
+        with open(filename, 'wb+') as f:
+            f.write(workbook_file.read())
+        try:
+            openpyxl.load_workbook(filename)
+        except zipfile.BadZipFile:
+            os.remove(filename)
+            raise forms.ValidationError('Excelファイルを指定してください')
+        return os.path.abspath(filename)
 
     def save(self):
         title = self.cleaned_data.get('title')
-        workbook_file = self.cleaned_data.get('workbook_file')
-        # CloudinaryにExcelファイルをアップロード
-        cloudinary_key = default_storage.save('{}.xlsx'.format(uuid.uuid4()), workbook_file)
+        file_path = self.cleaned_data.get('workbook_file')
         # インポート処理をバックグラウンドで開始
-        # service = services.WorkbookService()
-        # service.import_workbook(self.context['request'].user, filename)
-        # os.remove(filename)
+        user_id = self.context['request'].user.id
+        tasks.import_workbook_task.delay(user_id, title, file_path)
 
 
 class WorkbookUpdateForm(forms.Form):

@@ -2,20 +2,18 @@ import random
 import datetime
 import openpyxl
 
-from django.utils import timezone
-from django.db.models import Count, Case, When, Value
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from workbooks import models
 
 
 class WorkbookService:
-    def import_workbook(self, user, filename):
+    def import_workbook(self, user, title, filename):
         wb = openpyxl.load_workbook(filename)
         sheet = wb.worksheets[0]
 
-        default_title = '問題集 ' + timezone.now().strftime('%Y%m%d-%H%M%S')
-        # workbook = models.Workbook.objects.all().first()
-        workbook = models.Workbook.objects.create(user=user, title=default_title)
+        workbook = models.Workbook.objects.create(user=user, title=title)
         current_capter = None
         relationships = []
         for idx, row in enumerate(sheet.rows):
@@ -27,7 +25,7 @@ class WorkbookService:
             chapter_title = row[1].value # チャプター名
             chapter_description = row[2].value # チャプター詳細
             if chapter_id:
-                current_capter, created = models.Chapter.objects.get_or_create(
+                current_capter, _ = models.Chapter.objects.get_or_create(
                     workbook=workbook,
                     chapter_id=chapter_id,
                     title=chapter_title,
@@ -169,7 +167,8 @@ class WorkbookService:
                 question1=question1,
                 question2=question2,
             )
-    
+
+
     def aggregate_daily(self, workbook):
         # 最近7日の1日ごとの学習回数と正解数を集計
         learning_counts = []
@@ -185,6 +184,40 @@ class WorkbookService:
         weeks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         dates = [weeks[date.weekday()] for date in dates]
         return (dates, learning_counts, correct_counts)
+
+
+    def notify_success(self, user, title):
+        # 表題
+        subject = "【Memorizar】インポート結果"
+        # 送信元
+        from_email = "noreply@memorizar.io"
+        # 送信先
+        recipient_list = [user.email,]
+        # パラメータ
+        context = {"title": title}
+        
+        # テンプレート
+        msg_plain = render_to_string('workbooks/mail/import_success.txt', context)
+        msg_html = render_to_string('workbooks/mail/import_success.html', context)
+
+        send_mail(subject, msg_plain, from_email, recipient_list, html_message=msg_html)
+
+
+    def notify_failure(self, user, title):
+        # 表題
+        subject = "【Memorizar】インポート結果"
+        # 送信元
+        from_email = "noreply@memorizar.io"
+        # 送信先
+        recipient_list = [user.email,]
+        # パラメータ
+        context = {"title": title}
+        
+        # テンプレート
+        msg_plain = render_to_string('workbooks/mail/import_failure.txt', context)
+        msg_html = render_to_string('workbooks/mail/import_failure.html', context)
+
+        send_mail(subject, msg_plain, from_email, recipient_list, html_message=msg_html)
 
 
 class TrainingService:

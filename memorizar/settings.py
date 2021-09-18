@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'cloudinary_storage',
     'cloudinary',
+    'django_celery_results',
 
     'memorizar',
     'users',
@@ -173,6 +174,23 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.RawMediaCloudinaryStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Email service
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = env('SENDGRID_USERNAME')
+EMAIL_HOST_PASSWORD = env('SENDGRID_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
+# Background task
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BROKER_URL = env('REDIS_URL')
+# Celery Configuration Options
+CELERY_TIMEZONE = "Asia/Tokyo"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
 
 # 本番環境かどうか
 IS_PRODUCTION = (STAGE == 'master')
