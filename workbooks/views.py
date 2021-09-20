@@ -145,6 +145,17 @@ class WorkbookEditView(mixins.BaseMixin, View):
         return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
 
 
+class WorkbookDeleteView(mixins.BaseMixin, View):
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def post(self, _, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        workbook.delete()
+        return redirect('workbooks:list')
+
+
 class QuestionCreateView(mixins.BaseMixin, View):
     template_name = 'workbooks/questions/new.html'
 
