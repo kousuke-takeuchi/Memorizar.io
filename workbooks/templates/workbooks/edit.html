@@ -19,11 +19,15 @@
             <div class="card-body">
                 <form method="POST">
                     {% csrf_token %}
-                    <div class="mb-3 col-12 col-md-6">
-                        <label class="form-label" for="title">Title</label>
-                        <input type="text" name="title" value="{{ workbook.title }}" class="form-control" placeholder="タイトル" required>
-                    </div>
 
+                    <div class="mb-3 col-12 col-md-6">
+                        <label class="form-label{% if form.errors.title %} text-danger{% endif %}" for="title">Title</label>
+                        <input type="text" name="title" value="{{ workbook.title }}" class="form-control{% if form.errors.title %} border-danger{% endif %}" placeholder="タイトル" required>
+                        {% if form.errors.title %}
+                            <small class="text-danger">{{ form.errors.title.0 }}</small>
+                        {% endif %}
+                    </div>
+                    
                     <div class="col-6">
                         <!-- Button -->
                         <button class="btn btn-primary" type="submit">
