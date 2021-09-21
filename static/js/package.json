@@ -1,0 +1,41 @@
+{
+  "name": "memorizar",
+  "version": "1.0.0",
+  "scripts": {
+    "build:local": "cross-env NODE_ENV=local webpack --mode development --watch",
+    "build:develop": "cross-env NODE_ENV=develop webpack --mode development",
+    "build:staging": "cross-env NODE_ENV=staging webpack --mode production",
+    "build:master": "cross-env NODE_ENV=master webpack --mode production",
+    "build:auto": "cross-env webpack --mode ${MODE}",
+    "build": "cross-env NODE_ENV=master webpack --mode production",
+    "start": "cross-env NODE_ENV=local webpack --mode development --watch & webpack-dev-server"
+  },
+  "author": "Kousuke Takeuchi <u651601f@gmail.com>",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bootstrap": "^5.0.1",
+    "jquery": "^3.5.1",
+    "lodash": "^4.17.21",
+    "vue": "^2.6.12",
+    "vue-axios": "^3.2.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.13",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.12.13",
+    "babel-loader": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.0.2",
+    "optimize-css-assets-webpack-plugin": "^5.0.4",
+    "terser-webpack-plugin": "^5.1.1",
+    "vue-loader": "^15.9.6",
+    "vue-router": "^3.5.1",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.6.12",
+    "webpack": "^5.21.2",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2"
+  }
+}
