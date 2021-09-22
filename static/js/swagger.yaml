@@ -1,0 +1,435 @@
+openapi: 3.0.0
+info:
+  title: Memorizar REST API
+  description: 問題集管理アプリケーションのREST API仕様書
+  version: 0.1.0
+servers:
+  - url: https://memorizar.io/api
+    description: 本番用アプリケーションサーバー
+  - url: https://dev.memorizar.io/api
+    description: 開発用アプリケーションサーバー
+tags:
+  - name: workbooks
+    description: 問題集
+paths:
+  /workbooks:
+    get:
+      summary: 問題集の一覧取得
+      description: 登録されている問題集の一覧を取得します
+      tags:
+        - workbooks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            description: ページ数
+            example: 1
+      responses:
+        '200':
+          description: 問題集の一覧取得に成功した場合
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 処理に成功したかどうか
+                    example: true
+                  workbooks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Workbook'
+  /workbooks/{workbook_id}:
+    get:
+      summary: 問題集の一覧
+      description: 登録されている問題集の一覧を取得します
+      tags:
+        - workbooks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: workbook_id
+          required: true
+          schema:
+            type: string
+            description: 問題集ID
+            example: '12345678-1234-5678-1234-567812345678'
+      responses:
+        '200':
+          description: 問題集の一覧取得に成功した場合
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 処理に成功したかどうか
+                    example: true
+                  workbook:
+                    $ref: '#/components/schemas/Workbook'
+  /workbooks/{workbook_id}/questions:
+    get:
+      summary: 問題一覧
+      description: 問題集に登録されている問題の一覧を取得します
+      tags:
+        - workbooks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: workbook_id
+          required: true
+          schema:
+            type: string
+            description: 問題集ID
+            example: '12345678-1234-5678-1234-567812345678'
+      responses:
+        '200':
+          description: 問題集の一覧取得に成功した場合
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 処理に成功したかどうか
+                    example: true
+                  questions:
+                    type: array
+                    description: 問題
+                    items:
+                      $ref: '#/components/schemas/Question'
+        '400':
+          description: 問題集の一覧取得に失敗した場合
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 処理に成功したかどうか
+                    example: false
+                  errors:
+                    type: array
+                    description: エラーメッセージ一覧
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          description: エラーが発生したフィールド名
+                          example: "question_id"
+                        message:
+                          type: string
+                          description: エラーメッセージ本文
+                          example: "このフィールドは必須です"
+    post:
+      summary: 問題の新規作成
+      description: 問題集に、新しい問題と回答選択肢、解説を追加します
+      tags:
+        - workbooks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: workbook_id
+          required: true
+          schema:
+            type: string
+            description: 問題集ID
+            example: '12345678-1234-5678-1234-567812345678'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/QuestionCreatePayload'
+      responses:
+        '200':
+          description: 問題集の一覧取得に成功した場合
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 処理に成功したかどうか
+                    example: true
+        '400':
+          description: 問題集の一覧取得に失敗した場合
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 処理に成功したかどうか
+                    example: false
+                  errors:
+                    type: array
+                    description: エラーメッセージ一覧
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          description: エラーが発生したフィールド名
+                          example: "question_id"
+                        message:
+                          type: string
+                          description: エラーメッセージ本文
+                          example: "このフィールドは必須です"
+  /workbooks/{workbook_id}/questions/{question_id}:
+    get:
+      summary: 問題詳細
+      description: 問題集に登録されている問題の一覧を取得します
+      tags:
+        - workbooks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: workbook_id
+          required: true
+          schema:
+            type: string
+            description: 問題集ID
+            example: '12345678-1234-5678-1234-567812345678'
+        - in: path
+          name: question_id
+          required: true
+          schema:
+            type: string
+            description: 問題ID
+            example: '12345678-1234-5678-1234-567812345678'
+      responses:
+        '200':
+          description: 問題の一覧取得に成功した場合
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 処理に成功したかどうか
+                    example: true
+                  questions:
+                    $ref: '#/components/schemas/Question'
+    post:
+      summary: 問題の更新
+      description: 問題集に登録されている、新しい問題と回答選択肢、解説を更新します
+      tags:
+        - workbooks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: workbook_id
+          required: true
+          schema:
+            type: string
+            description: 問題集ID
+            example: '12345678-1234-5678-1234-567812345678'
+        - in: path
+          name: question_id
+          required: true
+          schema:
+            type: string
+            description: 問題ID
+            example: '12345678-1234-5678-1234-567812345678'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/QuestionCreatePayload'
+      responses:
+        '200':
+          description: 問題集の更新に成功した場合
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 処理に成功したかどうか
+                    example: true
+        '400':
+          description: 問題集の更新に失敗した場合
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 処理に成功したかどうか
+                    example: false
+                  errors:
+                    type: array
+                    description: エラーメッセージ一覧
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          description: エラーが発生したフィールド名
+                          example: "title"
+                        message:
+                          type: string
+                          description: エラーメッセージ本文
+                          example: "このフィールドは必須です"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Key
+  schemas:
+    Workbook:
+      type: object
+      description: 問題集
+      properties:
+        workbook_id:
+          type: string
+          description: 問題集ID
+          format: uuid
+          example: '12345678-1234-5678-1234-567812345678'
+        title:
+          type: string
+          description: タイトル
+          example: '第一級陸上無線技術士 無線工学B'
+        description:
+          type: string
+          description: 問題集説明文
+          example: 'この問題集では第一級陸上無線技術士の無線工学Bについての問題を扱います'
+    QuestionCreatePayload:
+      type: object
+      properties:
+        question_id:
+          type: string
+          description: 問題集ID
+          example: 'question1'
+        image_url:
+          type: string
+          description: 問題文の画像URL
+          format: url 
+          example: https://memorizar.io/images/question.png
+        chapter_id:
+          type: string
+          description: チャプターID
+          example: '12345678-1234-5678-1234-567812345678'
+        title:
+          type: string
+          description: 問題タイトル
+          example: 問1
+        sentense:
+          type: string
+          description: 問題文
+          example: |
+            内部導体の外径が2(mm)、外部導体の内径が8[mm] の同軸線路の特性インピーダンスが 50[]であった。この同軸線路
+            の外部導体の内径を2倍にしたときの特性インピーダンスの値として、最も近いものを下の番号から選べ。ただし、内部導体と
+            外部導体の間には、同一の誘電体が充填されているものとする。
+        commentary:
+          type: string
+          description: 解説文
+          example: 正解です
+        commentary_image_url:
+          type: string
+          description: 解説文の画像URL
+          format: url 
+          example: https://memorizar.io/images/commentary.png
+        index:
+          type: string
+          description: 問題の並び順
+          example: 1
+    Chapter:
+      type: object
+      properties:
+        title:
+          type: string
+          description: タイトル
+          example: 'チャプター1'
+        description:
+          type: string
+          description: 説明文
+          example: '[1の問題集]'
+    Question:
+      type: object
+      properties:
+        question_id:
+          type: string
+          description: 問題集ID
+          example: 'question1'
+        image_url:
+          type: string
+          description: 問題文の画像URL
+          format: url 
+          example: https://memorizar.io/images/question.png
+        chapter:
+          $ref: '#/components/schemas/Chapter'
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+        title:
+          type: string
+          description: 問題タイトル
+          example: 問1
+        sentense:
+          type: string
+          description: 問題文
+          example: |
+            内部導体の外径が2(mm)、外部導体の内径が8[mm] の同軸線路の特性インピーダンスが 50[]であった。この同軸線路
+            の外部導体の内径を2倍にしたときの特性インピーダンスの値として、最も近いものを下の番号から選べ。ただし、内部導体と
+            外部導体の間には、同一の誘電体が充填されているものとする。
+        commentary:
+          type: string
+          description: 解説文
+          example: 正解です
+        commentary_image_url:
+          type: string
+          description: 解説文の画像URL
+          format: url
+          example: https://memorizar.io/images/commentary.png
+        index:
+          type: string
+          description: 問題の並び順
+          example: 1
+    Answer:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 回答選択肢タイトル
+          example: ①
+        sentense:
+          type: string
+          description: 回答選択肢本文
+          example: 25 [Ω]
+        index:
+          type: string
+          description: 表示の並び順
+          example: 1
+
+    # path('trainings/<str:training_id>/question', views.WorkbookTrainingQuestionView.as_view(), name='training_question'),
+    # path('trainings/<str:training_id>/selections/<str:selection_id>', views.WorkbookTrainingAnswerView.as_view(), name='training_answer'),
+    # path('trainings/<str:training_id>/', views.WorkbookTrainingResultView.as_view(), name='training_result'),
+    # path('<str:workbook_id>/questions/new/', views.QuestionCreateView.as_view(), name='question_new'),
+    # path('<str:workbook_id>/questions/<str:question_id>/edit/', views.QuestionEditView.as_view(), name='question_edit'),
+    # path('<str:workbook_id>/chapters/new/', views.ChapterCreateView.as_view(), name='chapter_new'),
+    # path('<str:workbook_id>/chapters/<int:chapter_id>/edit/', views.ChapterEditView.as_view(), name='chapter_edit'),
+    # path('<str:workbook_id>/trainings/select_chapters', views.WorkbookTrainingSelectChapterView.as_view(), name='training_select_chapter'),

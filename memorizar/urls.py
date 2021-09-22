@@ -27,3 +27,7 @@ urlpatterns = [
     path('users/', include('users.urls', namespace='users')),
     path('workbooks/', include('workbooks.urls', namespace='workbooks')),
 ]
+
+urlpatterns += [
+    path('api/workbooks/', include('workbooks.api_urls', namespace='workbooks_api')),
+]
