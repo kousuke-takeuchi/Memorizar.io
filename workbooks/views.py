@@ -190,7 +190,7 @@ class QuestionEditView(mixins.BaseMixin, View):
     template_name = 'workbooks/questions/edit.html'
 
     def get_querysets(self, workbook_id, question_id):
-        question = get_object_or_404(models.Question, workbook__workbook_id=workbook_id, pk=question_id)
+        question = get_object_or_404(models.Question, workbook__workbook_id=workbook_id, question_id=question_id)
         return question
     
     def get(self, request, workbook_id, question_id):
@@ -207,6 +207,17 @@ class QuestionEditView(mixins.BaseMixin, View):
             return render(request, self.template_name, context)
         form.save()
         return redirect('workbooks:detail', workbook_id=question.workbook.workbook_id)
+
+
+class QuestionDeleteView(mixins.BaseMixin, View):
+    def get_querysets(self, workbook_id, question_id):
+        question = get_object_or_404(models.Question, workbook__workbook_id=workbook_id, question_id=question_id)
+        return question
+    
+    def post(self, request, workbook_id, question_id):
+        question = self.get_querysets(workbook_id, question_id)
+        question.delete()
+        return redirect('workbooks:detail', workbook_id=workbook_id)
 
 
 class ChapterCreateView(mixins.BaseMixin, View):
@@ -236,7 +247,7 @@ class ChapterEditView(mixins.BaseMixin, View):
     template_name = 'workbooks/chapters/edit.html'
 
     def get_querysets(self, workbook_id, chapter_id):
-        chapter = get_object_or_404(models.Chapter, workbook__workbook_id=workbook_id, pk=chapter_id)
+        chapter = get_object_or_404(models.Chapter, workbook__workbook_id=workbook_id, chapter_id=chapter_id)
         return chapter
     
     def get(self, request, workbook_id, chapter_id):
@@ -253,6 +264,17 @@ class ChapterEditView(mixins.BaseMixin, View):
             return render(request, self.template_name, context)
         form.save()
         return redirect('workbooks:detail', workbook_id=chapter.workbook.workbook_id)
+
+
+class ChapterDeleteView(mixins.BaseMixin, View):
+    def get_querysets(self, workbook_id, chapter_id):
+        chapter = get_object_or_404(models.Chapter, workbook__workbook_id=workbook_id, chapter_id=chapter_id)
+        return chapter
+    
+    def post(self, request, workbook_id, chapter_id):
+        chapter = self.get_querysets(workbook_id, chapter_id)
+        chapter.delete()
+        return redirect('workbooks:detail', workbook_id=workbook_id)
 
 
 class WorkbookTrainingSelectChapterView(mixins.BaseMixin, View):

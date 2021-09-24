@@ -76,7 +76,6 @@ class WorkbookUpdateForm(forms.Form):
 
 
 class QuestionCreateForm(forms.Form):
-    question_id = forms.CharField(required=True)
     title = forms.CharField(required=True)
     sentense = forms.CharField(required=True)
     chapter_id = forms.CharField(required=False)
@@ -135,7 +134,6 @@ class QuestionCreateForm(forms.Form):
         
         question = models.Question.objects.create(
             workbook=self.context['workbook'],
-            question_id=self.cleaned_data.get('question_id'),
             title=self.cleaned_data.get('title'),
             sentense=self.cleaned_data.get('sentense'),
             image_urls=image_urls,
@@ -151,7 +149,6 @@ class QuestionCreateForm(forms.Form):
 
 
 class QuestionUpdateForm(forms.Form):
-    question_id = forms.CharField(required=True)
     title = forms.CharField(required=True)
     sentense = forms.CharField(required=True)
     chapter_id = forms.CharField(required=False)
@@ -243,7 +240,6 @@ class QuestionUpdateForm(forms.Form):
             commentary_image_urls.append(commentary_image_url)
 
         question = self.context['question']
-        question.question_id = self.cleaned_data.get('question_id')
         question.title = self.cleaned_data.get('title')
         question.sentense = self.cleaned_data.get('sentense')
         question.image_urls = image_urls
@@ -262,7 +258,6 @@ class QuestionUpdateForm(forms.Form):
 
 
 class ChapterCreateForm(forms.Form):
-    chapter_id = forms.CharField(required=True)
     title = forms.CharField(required=True)
 
     def __init__(self, *args, **kwargs):
@@ -272,14 +267,12 @@ class ChapterCreateForm(forms.Form):
     def save(self):
         chapter = models.Chapter.objects.create(
             workbook=self.context['workbook'],
-            chapter_id=self.cleaned_data.get('chapter_id'),
             title=self.cleaned_data.get('title'),
         )
         return chapter
 
 
 class ChapterUpdateForm(forms.Form):
-    chapter_id = forms.CharField(required=True)
     title = forms.CharField(required=True)
 
     def __init__(self, *args, **kwargs):
@@ -288,7 +281,6 @@ class ChapterUpdateForm(forms.Form):
 
     def save(self):
         chapter = self.context['chapter']
-        chapter.chapter_id = self.cleaned_data.get('chapter_id')
         chapter.title = self.cleaned_data.get('title')
         chapter.save()
         return chapter

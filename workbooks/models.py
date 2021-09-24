@@ -26,7 +26,7 @@ class Workbook(BaseModel, models.Model):
 
 
 class Chapter(BaseModel, models.Model):
-    chapter_id = models.CharField('章識別子', max_length=100, db_index=True)
+    chapter_id = models.CharField('章識別子', default=uuid.uuid4, max_length=100, db_index=True)
     workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
     title = models.CharField('タイトル', max_length=250, db_index=True)
     description = models.TextField('詳細説明文', default=None, null=True, blank=True)
@@ -45,7 +45,7 @@ class Chapter(BaseModel, models.Model):
 
 
 class Question(BaseModel, models.Model):
-    question_id = models.CharField('問題識別子', max_length=100, unique=True, db_index=True)
+    question_id = models.CharField('問題識別子', default=uuid.uuid4, max_length=100, unique=True, db_index=True)
     chapter = models.ForeignKey('workbooks.Chapter', db_index=True, on_delete=models.CASCADE, null=True, default=None, blank=True)
     workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
     title = models.CharField('タイトル', max_length=250, db_index=True)
