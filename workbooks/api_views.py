@@ -17,6 +17,13 @@ class WorkbookListView(mixins.MemorizarBaseMixin, APIView):
         querysets = self.get_querysets()
         serializer = serializers.WorkbookSerializer(querysets, many=True, context={'request': request})
         return SuccessResponse({'workbooks': serializer.data})
+    
+    def post(self, request):
+        serializer = serializers.WorkbookSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid(raise_exception=False):
+            return ErrorResponse(serializer.errors)
+        serializer.save()
+        return SuccessResponse({})
 
 
 class WorkbookDetailView(mixins.MemorizarBaseMixin, APIView):
@@ -28,3 +35,21 @@ class WorkbookDetailView(mixins.MemorizarBaseMixin, APIView):
         querysets = self.get_querysets(workbook_id)
         serializer = serializers.WorkbookSerializer(querysets, context={'request': request})
         return SuccessResponse({'workbook': serializer.data})
+
+
+class QuestionListView(mixins.MemorizarBaseMixin, APIView):
+    def get_querysets(self):
+        questions = models.Question.objects.filter(user=self.request.user)
+        return questions
+        
+    def get(self, request):
+        querysets = self.get_querysets()
+        serializer = serializers.QuestionSerializer(querysets, many=True, context={'request': request})
+        return SuccessResponse({'workbooks': serializer.data})
+    
+    def post(self, request):
+        serializer = serializers.QuestionSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid(raise_exception=False):
+            return ErrorResponse(serializer.errors)
+        serializer.save()
+        return SuccessResponse({})
