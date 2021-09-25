@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from . import views
+from . import views, api_views
 
 
 urlpatterns = [
@@ -29,5 +29,6 @@ urlpatterns = [
 ]
 
 urlpatterns += [
+    path('api/upload/', api_views.MediaUploadView.as_view(), name='upload_api'),
     path('api/workbooks/', include('workbooks.api_urls', namespace='workbooks_api')),
 ]

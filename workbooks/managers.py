@@ -20,6 +20,8 @@ class WorkbookManager(BaseManager):
             querysets = models.TrainingSelection.objects.filter(training__workbook=workbook)
             querysets = querysets.values('training__workbook')
             querysets = querysets.annotate(true_count=Count(Case(When(correct=True, then=Value(1)))), selection_count=Count('correct'), training_count=Count('training', distinct=True))
+            question_count = len(workbook.question_set.all())
+            trained_question_count = len(models.TrainingSelection.objects.filter(training__workbook=workbook).distinct('question'))
             if len(querysets) == 0:
                 results.append({
                     'workbook_id': workbook.workbook_id,
@@ -29,6 +31,8 @@ class WorkbookManager(BaseManager):
                     'selection_count': 0,
                     'true_rate': 0.0,
                     'training_count': 0,
+                    'question_count': question_count,
+                    'training_rate': 0,
                 })
             else:
                 true_rate = math.floor(100 * querysets[0]['true_count'] / querysets[0]['selection_count'])
@@ -40,6 +44,8 @@ class WorkbookManager(BaseManager):
                     'selection_count': querysets[0]['selection_count'],
                     'true_rate': true_rate,
                     'training_count': querysets[0]['training_count'],
+                    'question_count': question_count,
+                    'training_rate': math.floor(100 * trained_question_count / question_count),
                 })
         return results
 

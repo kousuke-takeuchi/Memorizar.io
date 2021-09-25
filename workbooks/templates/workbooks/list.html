@@ -30,6 +30,8 @@
 							<thead class="table-light">
 								<tr>
 									<th scope="col" class="border-bottom-0">タイトル</th>
+									<th scope="col" class="border-bottom-0">問題数</th>
+									<th scope="col" class="border-bottom-0">実施割合</th>
 									<th scope="col" class="border-bottom-0">実施回数</th>
 									<th scope="col" class="border-bottom-0">正解数/回答数</th>
 									<th scope="col" class="border-bottom-0">正答率</th>
@@ -40,6 +42,8 @@
 								{% for workbook in workbooks %}
 									<tr>
 										<td><a href="{% url 'workbooks:detail' workbook.workbook_id %}">{{ workbook.title }}</a></td>
+										<td>{{ workbook.question_count }}個</td>
+										<td><span class="badge {% if workbook.training_rate >= 80 %}bg-success{% elif workbook.training_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ workbook.training_rate }}%</span></td>
 										<td>{{ workbook.training_count }}回</td>
 										<td>{{ workbook.true_count }}問/{{ workbook.selection_count }}問</td>
 										<td><span class="badge {% if workbook.true_rate >= 80 %}bg-success{% elif workbook.true_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ workbook.true_rate }}%</span></td>
