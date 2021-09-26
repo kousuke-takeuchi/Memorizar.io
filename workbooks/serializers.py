@@ -81,3 +81,13 @@ class QuestionSerializer(serializers.ModelSerializer):
                 index=answer_data['index'],    
             )
         return question
+    
+
+    def update(self, question, validated_data):
+        question.title = validated_data['title']
+        question.sentense = validated_data['sentense']
+        question.index = validated_data['index']
+        question.commentary = validated_data['commentary']
+        question.commentary_image_urls = validated_data['commentary_image_urls']
+        question.save()
+        return question

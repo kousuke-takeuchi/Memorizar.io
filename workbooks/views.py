@@ -16,7 +16,7 @@ class WorkbookListView(mixins.BaseMixin, View):
 
     def get_querysets(self):
         workbooks = models.Workbook.objects.aggregate_training(user=self.request.user)
-        p = Paginator(workbooks, 5)
+        p = Paginator(workbooks, 10)
         page = self.request.GET.get('page', 1)
         return p.page(page)
     
@@ -43,7 +43,7 @@ class WorkbookImportView(mixins.BaseMixin, View):
 
     def get_querysets(self):
         workbooks = models.Workbook.objects.aggregate_training(user=self.request.user)
-        p = Paginator(workbooks, 5)
+        p = Paginator(workbooks, 10)
         page = self.request.GET.get('page', 1)
         return p.page(page)
 
@@ -65,7 +65,7 @@ class WorkbookDetailView(mixins.BaseMixin, View):
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
         trainings = models.TrainingSelection.objects.aggregate(training__workbook=workbook)[:5]
         questions = workbook.question_set.all()
-        p = Paginator(questions, 5)
+        p = Paginator(questions, 10)
         page = self.request.GET.get('page', 1)
         return workbook, trainings, p.page(page)
     
