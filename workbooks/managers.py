@@ -70,6 +70,9 @@ class TrainingManager(BaseManager):
     pass
 
 
+class TrainingQuestionManager(BaseManager):
+    pass
+
 class TrainingSelectionManager(BaseManager):
     def aggregate(self, **kwargs):
         querysets = self.filter(**kwargs)

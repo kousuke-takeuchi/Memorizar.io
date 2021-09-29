@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from . import models
+import workbooks
 
 
 class WorkbookSerializer(serializers.ModelSerializer):
@@ -37,6 +38,27 @@ class ChapterSerializer(serializers.ModelSerializer):
             'title', 'description'
         )
         extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
+    
+    def validate_chapter_id(self, chapter_id):
+        try:
+            chapter = models.Chapter.objects.get(chapter_id=chapter_id)
+        except models.Chapter.DoesNotExist:
+            raise serializers.ValidationError('このIDは存在しません')
+        return chapter
+    
+    def create(self, validated_data):
+        chapter = models.Question.objects.create(
+            title=validated_data['title'],
+            description=validated_data['description'],
+            workbook=self.context['workbook'],
+        )
+        return chapter
+    
+    def update(self, chapter, validated_data):
+        chapter.title = validated_data['title']
+        chapter.sentense = validated_data['sentense']
+        chapter.save()
+        return chapter
 
 
 class AnswerSerializer(serializers.ModelSerializer):
@@ -91,3 +113,27 @@ class QuestionSerializer(serializers.ModelSerializer):
         question.commentary_image_urls = validated_data['commentary_image_urls']
         question.save()
         return question
+
+
+class TrainingSerializer(serializers.ModelSerializer):
+    chapters = ChapterSerializer(many=True)
+    questions = QuestionSerializer(many=True)
+
+    class Meta:
+        model = models.Training
+        read_only_fields = ('training_id', 'questions')
+        write_only_fields = ('training_type', 'chapter_ids',)
+        fields = read_only_fields + write_only_fields + ()
+        extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
+  
+    def create(self, validated_data):
+        training = models.Training.objects.create(
+            user=self.context['request'].user,
+            workbook=self.context['workbook'],
+            training_type=validated_data['training_type'],
+        )
+        for chapter in validated_data['chapter']:
+            training.chapters.add(chapter)
+        training.save()
+        # 問題を10問まで選択して追加する
+        return training

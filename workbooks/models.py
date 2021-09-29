@@ -124,6 +124,18 @@ class Training(BaseModel, models.Model):
         return str(self.workbook.title)
 
 
+class TrainingQuestion(BaseModel, models.Model):
+    training_question_id = models.UUIDField('出題問題ID', default=uuid.uuid4, unique=True, db_index=True)
+    training = models.ForeignKey('workbooks.Training', db_index=True, on_delete=models.CASCADE)
+    question = models.ForeignKey('workbooks.Question', db_index=True, on_delete=models.CASCADE)
+    
+    objects = managers.TrainingQuestionManager()
+
+    class Meta:
+        verbose_name = 'training_questions'
+        verbose_name_plural = 'TrainingQuestion'
+
+
 class TrainingSelection(BaseModel, models.Model):
     training_selection_id = models.UUIDField('選択ID', default=uuid.uuid4, unique=True, db_index=True)
     training = models.ForeignKey('workbooks.Training', db_index=True, on_delete=models.CASCADE)
