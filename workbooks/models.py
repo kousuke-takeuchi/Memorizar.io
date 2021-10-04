@@ -128,6 +128,7 @@ class TrainingQuestion(BaseModel, models.Model):
     training_question_id = models.UUIDField('出題問題ID', default=uuid.uuid4, unique=True, db_index=True)
     training = models.ForeignKey('workbooks.Training', db_index=True, on_delete=models.CASCADE)
     question = models.ForeignKey('workbooks.Question', db_index=True, on_delete=models.CASCADE)
+    index = models.IntegerField('並び順', db_index=True, default=1)
     
     objects = managers.TrainingQuestionManager()
 

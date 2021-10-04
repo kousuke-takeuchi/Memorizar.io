@@ -129,3 +129,29 @@ class TrainingListView(mixins.MemorizarBaseMixin, APIView):
             return ErrorResponse(serializer.errors)
         serializer.save()
         return SuccessResponse({})
+
+
+class TrainingQuestionListView(mixins.MemorizarBaseMixin, APIView):
+    def get_querysets(self, workbook_id, training_id):
+        training = get_object_or_404(workbook__workbook_id=workbook_id, training_id=training_id)
+        questions = models.TrainingQuestion.objects.filter(training=training)
+        return questions
+        
+    def get(self, request, workbook_id, training_id):
+        querysets = self.get_querysets(workbook_id, training_id)
+        serializer = serializers.TrainingQuestionSerializer(querysets, many=True, context={'request': request})
+        return SuccessResponse({'training_questions': serializer.data})
+
+
+class TrainingSelectionListView(mixins.MemorizarBaseMixin, APIView):
+    def get_querysets(self, workbook_id, training_id):
+        training = get_object_or_404(workbook__workbook_id=workbook_id, training_id=training_id)
+        return training
+
+    def post(self, request, workbook_id, training_id):
+        training = self.get_querysets(workbook_id, training_id)
+        serializer = serializers.TrainingSelectionSerializer(data=request.data, context={'request': request, 'training': training})
+        if not serializer.is_valid(raise_exception=False):
+            return ErrorResponse(serializer.errors)
+        serializer.save()
+        return SuccessResponse({})

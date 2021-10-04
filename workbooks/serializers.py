@@ -1,7 +1,8 @@
+from django.utils import timezone
+
 from rest_framework import serializers
 
 from . import models
-import workbooks
 
 
 class WorkbookSerializer(serializers.ModelSerializer):
@@ -137,3 +138,60 @@ class TrainingSerializer(serializers.ModelSerializer):
         training.save()
         # 問題を10問まで選択して追加する
         return training
+
+
+class TrainingQuestionSerializer(serializers.ModelSerializer):
+    question = QuestionSerializer()
+    class Meta:
+        model = models.TrainingQuestion
+        read_only_fields = ('index', 'question')
+        write_only_fields = ()
+        fields = read_only_fields + write_only_fields + ()
+        extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
+
+
+class TrainingSelectionSerializer(serializers.ModelSerializer):
+    selected_id = serializers.CharField(required=True)
+    question_id = serializers.CharField(required=True)
+    started_at = serializers.IntegerField(required=True)
+
+    class Meta:
+        model = models.Training
+        read_only_fields = ()
+        write_only_fields = ('selected_id', 'question_id', 'started_id',)
+        fields = read_only_fields + write_only_fields + ()
+        extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
+    
+    def validate_selected_id(self, selected_id):
+        try:
+            selected_answer = models.Answer.objects.get(answer_id=selected_id)
+        except models.Answer.DoesNotExist:
+            raise serializers.ValidationError('このIDは存在しません')
+        return selected_answer
+    
+    def validate_question_id(self, question_id):
+        try:
+            question = models.Question.objects.get(question_id=question_id)
+        except models.Question.DoesNotExist:
+            raise serializers.ValidationError('このIDは存在しません')
+        return question
+
+    def validate_started_at(self, started_at):
+        current_time = int(timezone.now().timestamp())
+        if started_at <= current_time:
+            raise serializers.ValidationError('過去のUnixtimeを指定してください')
+        return current_time - started_at
+
+    def create(self, validated_data):
+        question = validated_data['question_id']
+        selected_answer = validated_data['selected_id']
+
+        training_selection = models.TrainingSelection.objects.create(
+            training=self.context['training'],
+            question=question,
+            answer=selected_answer,
+            correct=selected_answer.is_true,
+            duration=validated_data['started_at'],
+        )
+
+        return training_selection
