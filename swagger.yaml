@@ -581,10 +581,6 @@ components:
     QuestionCreatePayload:
       type: object
       properties:
-        question_id:
-          type: string
-          description: 問題集ID
-          example: 'question1'
         image_url:
           type: string
           description: 問題文の画像URL

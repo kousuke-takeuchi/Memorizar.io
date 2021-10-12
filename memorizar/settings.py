@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     
     'django_extensions',
     'import_export',
-    'social_django',
     'whitenoise.runserver_nostatic',
     'cloudinary_storage',
     'cloudinary',

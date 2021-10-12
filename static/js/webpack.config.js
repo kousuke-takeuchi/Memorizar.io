@@ -13,14 +13,12 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
-const environment = process.env.NODE_ENV || 'local';
-
-
 
 module.exports = {
   // エントリーポイント(メインのjsファイル)
   entry: {
     create_question: './src/create_question.js',
+    edit_question: './src/edit_question.js',
   },
   // ファイルの出力設定
   output: {

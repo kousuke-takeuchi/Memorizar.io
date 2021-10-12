@@ -7,6 +7,5 @@ __pycache__
 data/*
 !data/sample
 staticfiles
-static/js/dist
 static/js/node_modules
 static/js/package-lock.json
