@@ -1,39 +1,33 @@
 <template>
 <!-- 問題作成フォーム -->
-<b-container class="pt-5 pb-5">
-    <b-col lg=12 md=12, cols=12> 
-        <b-card header-tag="header" header-class="['d-lg-flex', 'justify-content-between', 'align-items-center']">
-            <template #header>
+<div class="container pt-5 pb-5">
+    <div class="lg-12 md-12 col-12"> 
+        <div class="card">
+            <div class="d-lg-flex justify-content-between align-items-center card-header">
                 <div class="mb-3 mb-lg-0">
                     <h3 class="mb-0">Create a new Question</h3>
                     <span>問題の新規作成</span>
                 </div>
-            </template>
+            </div>
 
-            <b-form class="card-body">
+            <form class="card-body">
                 <!-- 問題 -->
                 <h4 class="mb-0">Question</h4>
                 <p class="mb-4">問題の編集</p>
 
-                <b-row>
-                    <b-col mb=3 cols=12 md=6>
+                <div class="row">
+                    <div class="mb-3 col-12 col-md-6">
                         <label class="form-label" for="title">Title</label>
-                        <b-form-input
-                            id="title"
-                            name="title"
-                            placeholder="タイトル"
-                            required
-                            v-model="question.title"
-                        ></b-form-input>
-                    </b-col>
-                </b-row>
+                        <input type="text" v-model="question.title" name="title" class="form-control" placeholder="タイトル" required>
+                    </div>
+                </div>
 
-                <b-col mb=3 cols=12 md=12>
+                <div class="mb-3 col-12 col-md-3">
                     <label class="form-label" for="sentense">Sentense</label>
                     <textarea name="sentense" cols="30" rows="10" class="form-control" placeholder="問題本文" v-model="question.sentense" required></textarea>
-                </b-col>
+                </div>
 
-                <b-row>
+                <div class="row">
                     <div class="mb-3 col-12 col-md-6">
                         <label class="form-label" for="chapter_id">Chapter</label>
                         <div class="dropdown bootstrap-select dropup" style="width: 100%;">
@@ -48,7 +42,7 @@
                         <label class="form-label" for="chapter_id">Figure (Option)</label>
                         <input type="file" class="form-control custom-file-input" name="image">
                     </div>
-                </b-row>
+                </div>
 
                 <hr class="my-5">
 
@@ -56,24 +50,24 @@
                 <h4 class="mb-0">Selections</h4>
                 <p class="mb-4">回答選択肢 (4つ)</p>
 
-                <draggable v-model="question.answers">
+                <draggable class="row" v-model="question.answers">
                     <AnswerForm :answer="answer" :key="answer.index" v-for="answer in question.answers" />
                 </draggable>
 
-                <b-row>
+                <div class="row">
                     <div class="mb-3 col-12 col-md-6">
                         <label class="form-label" for="collect_index">Collect Answer</label>
                         <div class="dropdown bootstrap-select dropup" style="width: 100%;">
                             <select class="selectpicker" name="collect_index" data-width="100%" tabindex="null" required>
-                                <option :value="answer.index+1" :key="answer.index" v-for="answer in question.answers">選択肢{{ answer.index+1 }}</option>
+                                <option :value="answer.index" :key="answer.index" v-for="answer in question.answers">選択肢{{ answer.index }}</option>
                             </select>
                         </div>
                     </div>
-                </b-row>
+                </div>
 
-                <b-col cols=12>
-                    <b-button @click="question.addNewAnswer()">Add Selection</b-button>
-                </b-col>
+                <div class="col-12">
+                    <button class="btn btn-secondary" @click="question.addNewAnswer()">Add Selection</button>
+                </div>
 
                 <hr class="my-5">
 
@@ -81,10 +75,10 @@
                 <h4 class="mb-0">Answer Commentary</h4>
                 <p class="mb-4">正解の選択肢についての解説</p>
                 
-                <b-col mb=3 cols=12 md=12>
+                <div class="mb-3 col-12 col-md-12">
                     <label class="form-label" for="commentary">Commentary</label>
                     <textarea name="commentary" cols="30" rows="10" class="form-control" placeholder="問題本文" v-model="question.commentary" required></textarea>
-                </b-col>
+                </div>
 
                 <div class="custom-file mb-3 col-12 col-md-6">
                     <input type="file" class="form-control custom-file-input" name="commentary_image">
@@ -93,13 +87,13 @@
                 <hr class="my-5">
 
                 <!-- 送信ボタン -->
-                <b-col cols=12>
+                <div class="col-12">
                     <button class="btn btn-primary" @click.prevent="createQuestion">Create Question</button>
-                </b-col>
-            </b-form>
-        </b-card>
-    </b-col>
-</b-container>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 </template>
 
 

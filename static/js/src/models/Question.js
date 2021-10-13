@@ -21,7 +21,7 @@ export default class Question {
 
     addNewAnswer() {
         var index = this.size;
-        this.answers.push(new Answer(index));
+        this.answers.push(new Answer(index+1));
         this.size++;
     }
 
