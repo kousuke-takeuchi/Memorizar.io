@@ -12,7 +12,7 @@ def authorize(request):
     if not user_id:
         raise exceptions.AuthenticationFailed('認証トークンを指定してください')
     try:
-        user = User.objects.get(user_id=user_id)
+        user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
         raise exceptions.AuthenticationFailed('ユーザーが存在しません')
     if not user.is_active:

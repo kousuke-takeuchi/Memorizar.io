@@ -100,7 +100,7 @@ class QuestionListView(mixins.MemorizarBaseMixin, APIView):
 
 class QuestionDetailView(mixins.MemorizarBaseMixin, APIView):
     def get_querysets(self, workbook_id, question_id):
-        question = get_object_or_404(models.Question, user=self.request.user, workbook__workbook_id=workbook_id, question_id=question_id)
+        question = get_object_or_404(models.Question, workbook__user=self.request.user, workbook__workbook_id=workbook_id, question_id=question_id)
         return question
         
     def get(self, request, workbook_id, question_id):

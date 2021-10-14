@@ -2210,10 +2210,13 @@ __webpack_require__.r(__webpack_exports__);
 
   methods: {
     async createQuestion() {
-      const api = new _apis_QuestionAPI__WEBPACK_IMPORTED_MODULE_3__["default"]();
-      api.createQuestion(this.question).then(data => {
-        console.log("create question");
-        console.log(data);
+      const regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i;
+      const url = window.location.href;
+      const workbookId = url.match(regex)[1];
+      const token = document.getElementById('token').dataset.value;
+      const api = new _apis_QuestionAPI__WEBPACK_IMPORTED_MODULE_3__["default"](token);
+      api.createQuestion(workbookId, this.question).then(data => {
+        window.location.href = window.location.href.replace('/questions/new', '');
       }).catch(error => {
         console.log(error);
       });
@@ -2239,15 +2242,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
 class API {
+  constructor(token) {
+    this.token = token;
+  }
+
+  getHeader() {
+    return {
+      'Authorization': `Token ${this.token}`
+    };
+  }
+
   async get(path, params = {}) {
-    const headers = this.getHeader("get", path);
+    const headers = this.getHeader();
+    return axios__WEBPACK_IMPORTED_MODULE_0___default()({
+      method: 'get',
+      url: path,
+      data: params,
+      headers: headers
+    });
     return axios__WEBPACK_IMPORTED_MODULE_0___default().get(path, params, {
       headers
     });
   }
 
   async post(path, data = {}) {
-    const headers = this.getHeader("post", path);
+    const headers = this.getHeader();
     return axios__WEBPACK_IMPORTED_MODULE_0___default().post(path, data, {
       headers
     });
@@ -2269,28 +2288,87 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ QuestionAPI)
 /* harmony export */ });
 /* harmony import */ var _API__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./API */ "./src/apis/API.js");
+/* harmony import */ var _models_Question__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/Question */ "./src/models/Question.js");
+
 
 class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_0__["default"] {
-  async getQuestion(workbookId) {
-    const path = `/workbooks/${workbookId}/questions/`;
-    return this.get(path);
+  async getQuestion(workbookId, questionId) {
+    const path = `/api/workbooks/${workbookId}/questions/${questionId}/`;
+    const resp = await this.get(path, {});
+    const questionData = resp.data.question;
+    const question = new _models_Question__WEBPACK_IMPORTED_MODULE_1__["default"]();
+    question.question_id = questionData.question_id;
+    question.title = questionData.title;
+    question.sentense = questionData.sentense;
+    question.chapter = questionData.chapter;
+    question.correct_index = questionData.correct_index;
+    question.commentary = questionData.commentary;
+    question.answers = questionData.answers;
+    return question;
   }
 
   async createQuestion(workbookId, question) {
-    const path = `/workbooks/${workbookId}/questions/`;
-    const data = ({
+    const path = `/api/workbooks/${workbookId}/questions/`;
+    const {
       title,
       sentense,
       chapter_id,
+      correct_index,
       commentary
-    } = question);
+    } = question;
+    const data = {
+      title,
+      sentense,
+      chapter_id,
+      correct_index,
+      commentary
+    };
     data['answers'] = [];
 
-    for (var answer in question.answerSet.answers) {
-      var answerForm = ({
+    for (var answer of question.answers) {
+      const {
         index,
         sentense
-      } = answer);
+      } = answer;
+      const answerForm = {
+        index,
+        sentense
+      };
+      data['answers'].push(answerForm);
+    }
+
+    return this.post(path, data);
+  }
+
+  async editQuestion(workbookId, question) {
+    const path = `/api/workbooks/${workbookId}/questions/${question.question_id}/`;
+    const {
+      title,
+      sentense,
+      chapter_id,
+      correct_index,
+      commentary
+    } = question;
+    const data = {
+      title,
+      sentense,
+      chapter_id,
+      correct_index,
+      commentary
+    };
+    data['answers'] = [];
+
+    for (var answer of question.answers) {
+      const {
+        answer_id,
+        index,
+        sentense
+      } = answer;
+      const answerForm = {
+        answer_id,
+        index,
+        sentense
+      };
       data['answers'].push(answerForm);
     }
 
@@ -2337,9 +2415,12 @@ __webpack_require__.r(__webpack_exports__);
 
 class Question {
   constructor(size) {
+    this.question_id = null;
     this.title = null;
     this.sentense = null;
-    this.chapterId = null;
+    this.chapter_id = null;
+    this.chapter = null;
+    this.correct_index = null;
     this.commentary = null;
 
     if (size === undefined) {
@@ -6379,7 +6460,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "mb-3 col-12 col-md-3" }, [
+            _c("div", { staticClass: "mb-12 col-12 col-md-12" }, [
               _c(
                 "label",
                 { staticClass: "form-label", attrs: { for: "sentense" } },
@@ -6525,9 +6606,9 @@ var render = function() {
                   "label",
                   {
                     staticClass: "form-label",
-                    attrs: { for: "collect_index" }
+                    attrs: { for: "correct_index" }
                   },
-                  [_vm._v("Collect Answer")]
+                  [_vm._v("Correct Answer")]
                 ),
                 _vm._v(" "),
                 _c(
@@ -6540,12 +6621,39 @@ var render = function() {
                     _c(
                       "select",
                       {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.question.correct_index,
+                            expression: "question.correct_index"
+                          }
+                        ],
                         staticClass: "selectpicker",
                         attrs: {
-                          name: "collect_index",
+                          name: "correct_index",
                           "data-width": "100%",
                           tabindex: "null",
                           required: ""
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.question,
+                              "correct_index",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
                         }
                       },
                       _vm._l(_vm.question.answers, function(answer) {

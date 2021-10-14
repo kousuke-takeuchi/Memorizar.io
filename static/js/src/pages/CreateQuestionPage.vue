@@ -22,7 +22,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 col-12 col-md-3">
+                <div class="mb-12 col-12 col-md-12">
                     <label class="form-label" for="sentense">Sentense</label>
                     <textarea name="sentense" cols="30" rows="10" class="form-control" placeholder="問題本文" v-model="question.sentense" required></textarea>
                 </div>
@@ -56,9 +56,9 @@
 
                 <div class="row">
                     <div class="mb-3 col-12 col-md-6">
-                        <label class="form-label" for="collect_index">Collect Answer</label>
+                        <label class="form-label" for="correct_index">Correct Answer</label>
                         <div class="dropdown bootstrap-select dropup" style="width: 100%;">
-                            <select class="selectpicker" name="collect_index" data-width="100%" tabindex="null" required>
+                            <select class="selectpicker" name="correct_index" data-width="100%" tabindex="null" v-model="question.correct_index" required>
                                 <option :value="answer.index" :key="answer.index" v-for="answer in question.answers">選択肢{{ answer.index }}</option>
                             </select>
                         </div>
@@ -121,10 +121,13 @@ export default {
     },
     methods: {
         async createQuestion() {
-            const api = new QuestionAPI();
-            api.createQuestion(this.question).then(data => {
-                console.log("create question");
-                console.log(data);
+            const regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i
+            const url = window.location.href;
+            const workbookId = url.match(regex)[1];
+            const token = document.getElementById('token').dataset.value
+            const api = new QuestionAPI(token);
+            api.createQuestion(workbookId, this.question).then(data => {
+                window.location.href = window.location.href.replace('/questions/new', '');
             }).catch(error => {
                 console.log(error);
             })

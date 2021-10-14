@@ -68,50 +68,62 @@ class AnswerSerializer(serializers.ModelSerializer):
         read_only_fields = ('answer_id',)
         write_only_fields = ()
         fields = read_only_fields + write_only_fields + (
-            'title', 'sentense', 'index',
+            'sentense', 'index',
         )
         extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-    chapter = ChapterSerializer()
+    chapter = ChapterSerializer(read_only=True)
     answers = AnswerSerializer(source="answer_set.all", many=True)
+    chapter_id = serializers.CharField(write_only=True)
+    correct_index = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = models.Question
-        read_only_fields = ('question_id', 'chapter')
-        write_only_fields = ('chapter_id',)
+        read_only_fields = ('question_id', 'chapter',)
+        write_only_fields = ('chapter_id', 'correct_index',)
         fields = read_only_fields + write_only_fields + (
             'image_urls', 'title', 'sentense',
-            'commentary', 'commentary_image_urls', 'index',
+            'commentary', 'commentary_image_urls',
             'answers',
         )
         extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
+    
+    def validate_chapter_id(self, chapter_id):
+        try:
+            chapter = models.Chapter.objects.get(chapter_id=chapter_id)
+        except models.Chapter.DoesNotExist:
+            raise serializers.ValidationError('このIDは存在しません')
+        return chapter
   
     def create(self, validated_data):
         question = models.Question.objects.create(
             title=validated_data['title'],
             sentense=validated_data['sentense'],
-            index=validated_data['index'],
+            chapter=validated_data['chapter_id'],
+            image_urls=validated_data.get('image_urls', []),
             commentary=validated_data['commentary'],
-            commentary_image_urls=validated_data['commentary_image_urls'],
+            commentary_image_urls=validated_data.get('commentary_image_urls', []),
             workbook=self.context['workbook'],
         )
-        for answer_data in validated_data['answers']:
+        for answer_data in validated_data['answer_set']['all']:
             models.Answer.objects.create(
-                title=answer_data['title'],
+                question=question,
+                title=answer_data['index'],
                 sentense=answer_data['sentense'],
-                index=answer_data['index'],    
+                index=answer_data['index'],
+                is_true=answer_data['index'] == validated_data['correct_index']
             )
         return question
     
 
     def update(self, question, validated_data):
-        question.title = validated_data['title']
-        question.sentense = validated_data['sentense']
-        question.index = validated_data['index']
-        question.commentary = validated_data['commentary']
-        question.commentary_image_urls = validated_data['commentary_image_urls']
+        question.title = validated_data.get('title')
+        question.sentense = validated_data.get('sentense')
+        question.index = validated_data.get('index')
+        question.commentary = validated_data.get('commentary')
+        question.commentary_image_urls = validated_data.get('commentary_image_urls')
         question.save()
         return question
 

@@ -3,9 +3,12 @@ import Answer from './Answer';
 
 export default class Question {
     constructor(size) {
+        this.question_id = null;
         this.title = null;
         this.sentense = null;
-        this.chapterId = null;
+        this.chapter_id = null;
+        this.chapter = null;
+        this.correct_index = null;
         this.commentary = null;
         
         if (size === undefined) {
