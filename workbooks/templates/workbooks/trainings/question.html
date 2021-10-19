@@ -1,70 +1,16 @@
 {% extends 'memorizar/base.html' %}
+{% load static %}
 {% load memorizar %}
+{% block title %}問題{% endblock %}
 
 {% block content %}
-<!-- Page Content -->
-<div class="pb-5 py-md-5 py-5">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-12 col-md-12 col-12">
-				<div class="card">
-					<div class="justify-content-between align-items-center card-header">
-						<div class="mb-3 mb-lg-0">
-							<h3 class="mb-0">{{ question.title }}</h3>
-							<span id="question-sentense">{{ question.sentense }}</span>
-						</div>
-						{% if question.image_urls %}
-							<div class="mb-3">
-								<img src="{{ question.image_urls.0 }}" style="max-height: 300px; max-width: 100%;" />
-							</div>
-						{% endif %}
-					</div>
-
-					<form method="POST">
-						{% csrf_token %}
-
-						<input type="hidden" name="selected_id" value="" />
-						<input type="hidden" name="question_id" value="{{ question.question_id }}" />
-						<input type="hidden" name="start_at" value="{{ start_at }}" />
-
-						<div class="card-body">
-							{% for answer_couple in answers|split_couple %}
-								<div class="card-deck pb-2 py-md-2 py-2">
-									{% for answer in answer_couple %}
-										<div class="card answer" data-answer-id="{{ answer.answer_id }}">
-											<div class="card-body">
-												<h5 class="card-title">{{ answer.title }}</h5>
-												<p class="card-text">{{ answer.sentense }}</p>
-											</div>
-										</div>
-									{% endfor %}
-								</div>
-							{% endfor %}
-
-							<div class="pb-4 py-md-4 py-4">
-								<button type="submit" class="btn btn-primary btn-block btn-lg" disabled>回答を見る</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+<div id="token" data-value="{{ request.user.pk }}"></div>
+<div id="start_at" data-value="{{ start_at }}"></div>
+<div id="questions" data-value="{% to_json question 'question_id' 'sentense' 'image_urls' many=False %}"></div>
+<div id="answers" data-value="{% to_json answers 'answer_id' 'title' 'sentense' many=True to_str='answer_id' %}"></div>
+<div id="main-content"></div>
 {% endblock %}
 
 {% block js %}
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script>
-	document.getElementById('question-sentense').innerHTML = marked(document.getElementById('question-sentense').innerHTML);
-
-	$(function () {
-		$('.answer').on('click', function (e) {
-			$('.answer').removeClass('answer-selection');
-			$(e.currentTarget).addClass('answer-selection');
-			$('input[name="selected_id"]').val($(e.currentTarget).data('answer-id'));
-			$('button[type="submit"]').removeAttr('disabled');
-		});
-	});
-</script>
+<script src="{% static 'js/dist/training_question.js' %}"></script>
 {% endblock %}

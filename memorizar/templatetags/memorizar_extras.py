@@ -57,17 +57,26 @@ def display_timedelta(elapsed_time):
 
 
 @register.simple_tag
-def to_json(obj, *fields, many=True):
+def to_json(obj, *fields, **kwargs):
     print(obj)
+    many = kwargs.get('many', True)
+    to_str = kwargs.get('to_str', '')
+    to_str = to_str.split()
     if many:
         data = []
         for o in obj:
             d = {}
             for field in fields:
-                d[field] = getattr(o, field)
+                value = getattr(o, field)
+                if field in to_str:
+                    value = str(value)
+                d[field] = value
             data.append(d)
     else:
         data = {}
         for field in fields:
-            data[field] = getattr(obj, field)
+            value = getattr(obj, field)
+            if field in to_str:
+                value = str(value)
+            data[field] = value
     return json.dumps(data)
