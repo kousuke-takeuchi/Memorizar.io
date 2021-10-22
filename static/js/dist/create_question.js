@@ -6505,68 +6505,61 @@ var render = function() {
                 ),
                 _vm._v(" "),
                 _c(
-                  "div",
+                  "select",
                   {
-                    staticClass: "dropdown bootstrap-select dropup",
-                    staticStyle: { width: "100%" }
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.question.chapter_id,
+                        expression: "question.chapter_id"
+                      }
+                    ],
+                    staticClass: "form-select",
+                    attrs: {
+                      name: "chapter_id",
+                      "data-width": "100%",
+                      tabindex: "null"
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.question,
+                          "chapter_id",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      }
+                    }
                   },
                   [
                     _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.question.chapter_id,
-                            expression: "question.chapter_id"
-                          }
-                        ],
-                        staticClass: "selectpicker",
-                        attrs: {
-                          name: "chapter_id",
-                          "data-width": "100%",
-                          tabindex: "null"
+                      "option",
+                      { attrs: { value: "", selected: "", disabled: "" } },
+                      [_vm._v("チャプターを選択してください")]
+                    ),
+                    _vm._v(" "),
+                    _vm._l(_vm.chapters, function(chapter) {
+                      return _c(
+                        "option",
+                        {
+                          key: chapter.chapter_id,
+                          domProps: { value: chapter.chapter_id }
                         },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.question,
-                              "chapter_id",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
-                      },
-                      [
-                        _c("option", { attrs: { value: "" } }, [
-                          _vm._v("チャプターを選択してください")
-                        ]),
-                        _vm._v(" "),
-                        _vm._l(_vm.chapters, function(chapter) {
-                          return _c(
-                            "option",
-                            {
-                              key: chapter.chapter_id,
-                              domProps: { value: chapter.chapter_id }
-                            },
-                            [_vm._v(_vm._s(chapter.title))]
-                          )
-                        })
-                      ],
-                      2
-                    )
-                  ]
+                        [_vm._v(_vm._s(chapter.title))]
+                      )
+                    })
+                  ],
+                  2
                 )
               ]),
               _vm._v(" "),
@@ -6612,63 +6605,51 @@ var render = function() {
                 ),
                 _vm._v(" "),
                 _c(
-                  "div",
+                  "select",
                   {
-                    staticClass: "dropdown bootstrap-select dropup",
-                    staticStyle: { width: "100%" }
-                  },
-                  [
-                    _c(
-                      "select",
+                    directives: [
                       {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.question.correct_index,
-                            expression: "question.correct_index"
-                          }
-                        ],
-                        staticClass: "selectpicker",
-                        attrs: {
-                          name: "correct_index",
-                          "data-width": "100%",
-                          tabindex: "null",
-                          required: ""
-                        },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.question,
-                              "correct_index",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
-                      },
-                      _vm._l(_vm.question.answers, function(answer) {
-                        return _c(
-                          "option",
-                          {
-                            key: answer.index,
-                            domProps: { value: answer.index }
-                          },
-                          [_vm._v("選択肢" + _vm._s(answer.index))]
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.question.correct_index,
+                        expression: "question.correct_index"
+                      }
+                    ],
+                    staticClass: "form-select",
+                    attrs: {
+                      name: "correct_index",
+                      "data-width": "100%",
+                      tabindex: "null",
+                      required: ""
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.question,
+                          "correct_index",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
                         )
-                      }),
-                      0
+                      }
+                    }
+                  },
+                  _vm._l(_vm.question.answers, function(answer) {
+                    return _c(
+                      "option",
+                      { key: answer.index, domProps: { value: answer.index } },
+                      [_vm._v("選択肢" + _vm._s(answer.index))]
                     )
-                  ]
+                  }),
+                  0
                 )
               ])
             ]),

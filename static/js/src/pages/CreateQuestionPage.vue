@@ -30,12 +30,10 @@
                 <div class="row">
                     <div class="mb-3 col-12 col-md-6">
                         <label class="form-label" for="chapter_id">Chapter</label>
-                        <div class="dropdown bootstrap-select dropup" style="width: 100%;">
-                            <select class="selectpicker" name="chapter_id" data-width="100%" tabindex="null" v-model="question.chapter_id">
-                                <option value="">チャプターを選択してください</option>
-                                <option :value="chapter.chapter_id" :key="chapter.chapter_id" v-for="chapter in chapters">{{ chapter.title }}</option>
-                            </select>
-                        </div>
+                        <select class="form-select" name="chapter_id" data-width="100%" tabindex="null" v-model="question.chapter_id">
+                            <option value="" selected disabled>チャプターを選択してください</option>
+                            <option :value="chapter.chapter_id" :key="chapter.chapter_id" v-for="chapter in chapters">{{ chapter.title }}</option>
+                        </select>
                     </div>
     
                     <div class="custom-file mb-3 col-12 col-md-6">
@@ -57,11 +55,9 @@
                 <div class="row">
                     <div class="mb-3 col-12 col-md-6">
                         <label class="form-label" for="correct_index">Correct Answer</label>
-                        <div class="dropdown bootstrap-select dropup" style="width: 100%;">
-                            <select class="selectpicker" name="correct_index" data-width="100%" tabindex="null" v-model="question.correct_index" required>
-                                <option :value="answer.index" :key="answer.index" v-for="answer in question.answers">選択肢{{ answer.index }}</option>
-                            </select>
-                        </div>
+                        <select class="form-select" name="correct_index" data-width="100%" tabindex="null" v-model="question.correct_index" required>
+                            <option :value="answer.index" :key="answer.index" v-for="answer in question.answers">選択肢{{ answer.index }}</option>
+                        </select>
                     </div>
                 </div>
 
