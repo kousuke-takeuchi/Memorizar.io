@@ -10,7 +10,7 @@
                 </div>
             </div>
 
-            <form class="card-body">
+            <form id="form" class="card-body">
                 <!-- 問題 -->
                 <h4 class="mb-0">Question</h4>
                 <p class="mb-4">問題の編集</p>
@@ -48,7 +48,7 @@
                 <h4 class="mb-0">Selections</h4>
                 <p class="mb-4">回答選択肢 (4つ)</p>
 
-                <draggable class="row" v-model="question.answers">
+                <draggable class="row" v-model="question.answers" @change="onChangedAnswers">
                     <AnswerForm :answer="answer" :key="answer.index" v-for="answer in question.answers" />
                 </draggable>
 
@@ -62,7 +62,7 @@
                 </div>
 
                 <div class="col-12">
-                    <button class="btn btn-secondary" @click="question.addNewAnswer()">Add Selection</button>
+                    <button class="btn btn-secondary" @click.prevent="question.addNewAnswer()">Add Selection</button>
                 </div>
 
                 <hr class="my-5">
@@ -77,6 +77,7 @@
                 </div>
 
                 <div class="custom-file mb-3 col-12 col-md-6">
+                    <label class="form-label" for="chapter_id">Figure (Option)</label>
                     <input type="file" class="form-control custom-file-input" name="commentary_image">
                 </div>
 
@@ -84,7 +85,7 @@
 
                 <!-- 送信ボタン -->
                 <div class="col-12">
-                    <button class="btn btn-primary" @click.prevent="createQuestion">Create Question</button>
+                    <button class="btn btn-primary" @click="createQuestion">Create Question</button>
                 </div>
             </form>
         </div>
@@ -113,9 +114,10 @@ export default {
             chapters: JSON.parse(document.getElementById('chapters').dataset.value),
         }
     },
-    async beforeMount() {
-    },
     methods: {
+        onChangedAnswers() {
+            this.question.reindex();
+        },
         async createQuestion() {
             const regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i
             const url = window.location.href;

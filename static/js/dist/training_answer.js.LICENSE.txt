@@ -1,0 +1,2732 @@
+/*
+ * not type checking this file because flow doesn't play well with
+ * dynamically accessing methods on Array prototype
+ */
+
+/*  */
+
+/* asRootData */
+
+/* binding */
+
+/* default */
+
+/* direct */
+
+/* eslint-disable no-proto */
+
+/* eslint-disable no-self-compare */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-enable no-proto */
+
+/* eslint-enable no-self-compare */
+
+/* eslint-enable no-unused-vars */
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+/* harmony default export */
+
+/* harmony export */
+
+/* hot reload */
+
+/* hydrating */
+
+/* isRenderWatcher */
+
+/* istanbul ignore else */
+
+/* istanbul ignore if */
+
+/* istanbul ignore next */
+
+/* istanbul ignore next, $flow-disable-line */
+
+/* module decorator */
+
+/* not type checking this file because flow doesn't play well with Proxy */
+
+/* removeOnly */
+
+/* server only */
+
+/* true */
+
+/* vue-cli only */
+
+/* webpack/runtime/amd options */
+
+/*!
+ * Vue.js v2.6.14
+ * (c) 2014-2021 Evan You
+ * Released under the MIT License.
+ */
+
+/*#__PURE__*/
+
+/**
+     * Convert string to unique id
+     * @param {object} options
+     * @param {boolean} options.dryrun Generates the next unique slug without updating the internal accumulator.
+     */
+
+/**
+     * Expose Rules
+     */
+
+/**
+     * Finds the next safe (unique) slug to use
+     */
+
+/**
+     * Lexing
+     */
+
+/**
+     * Lexing/Compiling
+     */
+
+/**
+     * Parse Inline Tokens
+     */
+
+/**
+     * Parse Loop
+     */
+
+/**
+     * Preprocessing
+     */
+
+/**
+     * Static Lex Inline Method
+     */
+
+/**
+     * Static Lex Method
+     */
+
+/**
+     * Static Parse Inline Method
+     */
+
+/**
+     * Static Parse Method
+     */
+
+/**
+    * Determine if a URL shares the same origin as the current location
+    *
+    * @param {String} requestURL The URL to test
+    * @returns {boolean} True if URL shares the same origin, otherwise false
+    */
+
+/**
+    * Parse a URL to discover it's components
+    *
+    * @param {String} url The URL to be parsed
+    * @returns {Object}
+    */
+
+/**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
+
+/**
+   * Block Lexer
+   */
+
+/**
+   * Check if a tag is an unknown element.
+   * Platform-dependent.
+   */
+
+/**
+   * Check if a tag is reserved so that it cannot be registered as a
+   * component. This is platform-dependent and may be overwritten.
+   */
+
+/**
+   * Check if an attribute is reserved so that it cannot be used as a component
+   * prop. This is platform-dependent and may be overwritten.
+   */
+
+/**
+   * Check if an attribute must be bound using property, e.g. value
+   * Platform-dependent.
+   */
+
+/**
+   * Class inheritance
+   */
+
+/**
+   * Create asset registration methods.
+   */
+
+/**
+   * Custom user key aliases for v-on
+   */
+
+/**
+   * Each instance constructor, including Vue, has a unique
+   * cid. This enables us to create wrapped "child
+   * constructors" for prototypal inheritance and cache them.
+   */
+
+/**
+   * Error handler for watcher errors
+   */
+
+/**
+   * Expose
+   */
+
+/**
+   * Exposed for legacy reasons
+   */
+
+/**
+   * GFM + Line Breaks Inline Grammar
+   */
+
+/**
+   * GFM Block Grammar
+   */
+
+/**
+   * GFM Inline Grammar
+   */
+
+/**
+   * Get the namespace of an element
+   */
+
+/**
+   * Helpers
+   */
+
+/**
+   * Ignore certain custom elements
+   */
+
+/**
+   * Inline-Level Grammar
+   */
+
+/**
+   * Marked
+   */
+
+/**
+   * Normal Block Grammar
+   */
+
+/**
+   * Normal Inline Grammar
+   */
+
+/**
+   * Option merge strategies (used in core/util/options)
+   */
+
+/**
+   * Options
+   */
+
+/**
+   * Parse Inline
+   */
+
+/**
+   * Parse the real tag name for the specific platform.
+   */
+
+/**
+   * Pedantic Inline Grammar
+   */
+
+/**
+   * Pedantic grammar (original John Gruber's loose markdown specification)
+   */
+
+/**
+   * Perform updates asynchronously. Intended to be used by Vue Test Utils
+   * This will significantly reduce performance if set to false.
+   */
+
+/**
+   * Run callback for every token
+   */
+
+/**
+   * Show production mode tip message on boot?
+   */
+
+/**
+   * Tokenizer
+   */
+
+/**
+   * Use Extension
+   */
+
+/**
+   * Warn handler for watcher warns
+   */
+
+/**
+   * Whether to enable devtools
+   */
+
+/**
+   * Whether to record perf
+   */
+
+/**
+   * Whether to suppress warnings.
+   */
+
+/**
+   * mangle email addresses
+   */
+
+/**
+   * smartypants text replacement
+   */
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+
+/**
+ * A watcher parses an expression, collects dependencies,
+ * and fires callback when the expression value changes.
+ * This is used for both the $watch() api and directives.
+ */
+
+/**
+ * Accepts varargs expecting each argument to be an object, then
+ * immutably merges the properties of each object and returns result.
+ *
+ * When multiple objects contain the same key the later object in
+ * the arguments list will take precedence.
+ *
+ * Example:
+ *
+ * ```js
+ * var result = merge({foo: 123}, {foo: 456});
+ * console.log(result.foo); // outputs 456
+ * ```
+ *
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+
+/**
+ * Add a dependency to this directive.
+ */
+
+/**
+ * Add a new interceptor to the stack
+ *
+ * @param {Function} fulfilled The function to handle `then` for a `Promise`
+ * @param {Function} rejected The function to handle `reject` for a `Promise`
+ *
+ * @return {Number} An ID used to remove interceptor later
+ */
+
+/**
+ * Add class with compatibility for SVG since classList is not supported on
+ * SVG elements in IE
+ */
+
+/**
+ * Always return false.
+ */
+
+/**
+ * Assert object's properties type
+ * @param {object} options
+ * @param {object} schema
+ * @param {boolean?} allowUnknown
+ */
+
+/**
+ * Assert whether a prop is valid.
+ */
+
+/**
+ * Assets
+ *
+ * When a vm is present (instance creation), we need to do
+ * a three-way merge between constructor options, instance
+ * options and parent options.
+ */
+
+/**
+ * Attempt to create an observer instance for a value,
+ * returns the new observer if successfully observed,
+ * or the existing observer if the value already has one.
+ */
+
+/**
+ * Augment a target Object or Array by defining
+ * hidden properties.
+ */
+
+/**
+ * Augment a target Object or Array by intercepting
+ * the prototype chain using __proto__
+ */
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {object} [params] The params to be appended
+ * @returns {string} The formatted url
+ */
+
+/**
+ * Camelize a hyphen-delimited string.
+ */
+
+/**
+ * Check if a string starts with $ or _
+ */
+
+/**
+ * Check if a tag is a built-in tag.
+ */
+
+/**
+ * Check if an attribute is a reserved attribute.
+ */
+
+/**
+ * Check if two values are loosely equal - that is,
+ * if they are plain objects, do they have the same shape?
+ */
+
+/**
+ * Check if val is a valid array index.
+ */
+
+/**
+ * Check if value is primitive.
+ */
+
+/**
+ * Check whether an object has the property.
+ */
+
+/**
+ * Clean up for dependency collection.
+ */
+
+/**
+ * Collect dependencies on array elements when the array is touched, since
+ * we cannot intercept array element access like property getters.
+ */
+
+/**
+ * Config-specific merge-function which creates a new config-object
+ * by merging two configuration objects together.
+ *
+ * @param {Object} config1
+ * @param {Object} config2
+ * @returns {Object} New object resulting from merging config2 to config1
+ */
+
+/**
+ * Convert a value to a string that is actually rendered.
+ */
+
+/**
+ * Convert an Array-like object to a real Array.
+ */
+
+/**
+ * Convert an input value to a number for persistence.
+ * If the conversion fails, return original string.
+ */
+
+/**
+ * Create a cached version of a pure function.
+ */
+
+/**
+ * Create a new instance of Axios
+ *
+ * @param {Object} instanceConfig The default config for the instance
+ */
+
+/**
+ * Create an Error with the specified message, config, error code, request and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+
+/**
+ * Creates a new URL by combining the baseURL with the requestedURL,
+ * only when the requestedURL is not already an absolute URL.
+ * If the requestURL is absolute, this function returns the requestedURL untouched.
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} requestedURL Absolute or relative URL to combine
+ * @returns {string} The combined full path
+ */
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ * @returns {string} The combined URL
+ */
+
+/**
+ * DO NOT EDIT THIS FILE
+ * The code in this file is generated from files in ./src/
+ */
+
+/**
+ * Data
+ */
+
+/**
+ * Default strategy.
+ */
+
+/**
+ * Define a property.
+ */
+
+/**
+ * Define a reactive property on an Object.
+ */
+
+/**
+ * Delete a property and trigger change if necessary.
+ */
+
+/**
+ * Depend on all deps collected by this watcher.
+ */
+
+/**
+ * Determine if a value is a Blob
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Blob, otherwise false
+ */
+
+/**
+ * Determine if a value is a Buffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Buffer, otherwise false
+ */
+
+/**
+ * Determine if a value is a Date
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Date, otherwise false
+ */
+
+/**
+ * Determine if a value is a File
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a File, otherwise false
+ */
+
+/**
+ * Determine if a value is a FormData
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an FormData, otherwise false
+ */
+
+/**
+ * Determine if a value is a Function
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Function, otherwise false
+ */
+
+/**
+ * Determine if a value is a Number
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Number, otherwise false
+ */
+
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+
+/**
+ * Determine if a value is a String
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a String, otherwise false
+ */
+
+/**
+ * Determine if a value is a URLSearchParams object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+ */
+
+/**
+ * Determine if a value is a plain Object
+ *
+ * @param {Object} val The value to test
+ * @return {boolean} True if value is a plain Object, otherwise false
+ */
+
+/**
+ * Determine if a value is a view on an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+ */
+
+/**
+ * Determine if a value is an Array
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Array, otherwise false
+ */
+
+/**
+ * Determine if a value is an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+ */
+
+/**
+ * Determine if a value is an Object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Object, otherwise false
+ */
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+
+/**
+ * Determine if we're running in a standard browser environment
+ *
+ * This allows axios to run in a web worker, and react-native.
+ * Both environments support XMLHttpRequest, but not fully standard globals.
+ *
+ * web workers:
+ *  typeof window -> undefined
+ *  typeof document -> undefined
+ *
+ * react-native:
+ *  navigator.product -> 'ReactNative'
+ * nativescript
+ *  navigator.product -> 'NativeScript' or 'NS'
+ */
+
+/**
+ * Determines whether the payload is an error thrown by Axios
+ *
+ * @param {*} payload The value to test
+ * @returns {boolean} True if the payload is an error thrown by Axios, otherwise false
+ */
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+
+/**
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
+
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+
+/**
+ * Ensure a function is called only once.
+ */
+
+/**
+ * Ensure all props option syntax are normalized into the
+ * Object-based format.
+ */
+
+/**
+ * Evaluate the getter, and re-collect dependencies.
+ */
+
+/**
+ * Evaluate the value of the watcher.
+ * This only gets called for lazy watchers.
+ */
+
+/**
+ * Extends object a by mutably adding to it the properties of object b.
+ *
+ * @param {Object} a The object to be extended
+ * @param {Object} b The object to copy properties from
+ * @param {Object} thisArg The object to bind function to
+ * @return {Object} The resulting value of object a
+ */
+
+/**
+ * Flush both queues and run the watchers.
+ */
+
+/**
+ * Get the default value of a prop.
+ */
+
+/**
+ * Get the raw type string of a value, e.g., [object Object].
+ */
+
+/**
+ * Helper that recursively merges two data objects together.
+ */
+
+/**
+ * Hooks and props are merged as arrays.
+ */
+
+/**
+ * In some cases we may want to disable observation inside a component's
+ * update computation.
+ */
+
+/**
+ * Intercept mutating methods and emit events
+ */
+
+/**
+ * Iterate over all the registered interceptors
+ *
+ * This method is particularly useful for skipping over any
+ * interceptors that may have become `null` calling `eject`.
+ *
+ * @param {Function} fn The function to call for each interceptor
+ */
+
+/**
+ * Iterate over an Array or an Object invoking a function for each item.
+ *
+ * If `obj` is an Array callback will be called passing
+ * the value, index, and complete array for each item.
+ *
+ * If 'obj' is an Object callback will be called passing
+ * the value, key, and complete object for each property.
+ *
+ * @param {Object|Array} obj The object to iterate
+ * @param {Function} fn The callback to invoke for each item
+ */
+
+/**
+ * Make a map and return a function for checking if a key
+ * is in that map.
+ */
+
+/**
+ * Merge an Array of Objects into a single Object.
+ */
+
+/**
+ * Merge two option objects into a new one.
+ * Core utility used in both instantiation and inheritance.
+ */
+
+/**
+ * Mix properties into target object.
+ */
+
+/**
+ * Normalize a transition hook's argument length. The hook may be:
+ * - a merged hook (invoker) with the original in .fns
+ * - a wrapped component method (check ._length)
+ * - a plain function (.length)
+ */
+
+/**
+ * Normalize all injections into Object-based format
+ */
+
+/**
+ * Normalize raw function directives into object format.
+ */
+
+/**
+ * Not type checking this file because flow doesn't like attaching
+ * properties to Elements.
+ */
+
+/**
+ * Observe a list of Array items.
+ */
+
+/**
+ * Observer class that is attached to each observed
+ * object. Once attached, the observer converts the target
+ * object's property keys into getter/setters that
+ * collect dependencies and dispatch updates.
+ */
+
+/**
+ * Option overwriting strategies are functions that handle
+ * how to merge a parent option value and a child option
+ * value into the final value.
+ */
+
+/**
+ * Options with restrictions
+ */
+
+/**
+ * Other object hashes.
+ */
+
+/**
+ * Parse headers into an object
+ *
+ * ```
+ * Date: Wed, 27 Aug 2014 08:58:49 GMT
+ * Content-Type: application/json
+ * Connection: keep-alive
+ * Transfer-Encoding: chunked
+ * ```
+ *
+ * @param {String} headers Headers needing to be parsed
+ * @returns {Object} Headers parsed into an object
+ */
+
+/**
+ * Parse simple path.
+ */
+
+/**
+ * Perform no operation.
+ * Stubbing args to make Flow happy without leaving useless transpiled code
+ * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/).
+ */
+
+/**
+ * Push a watcher into the watcher queue.
+ * Jobs with duplicate IDs will be skipped unless it's
+ * pushed when the queue is being flushed.
+ */
+
+/**
+ * Query an element selector if it's not an element already.
+ */
+
+/**
+ * Queue a kept-alive component that was activated during patch.
+ * The queue will be processed after the entire tree has been patched.
+ */
+
+/**
+ * Quick object check - this is primarily used to tell
+ * Objects from primitive values when we know the value
+ * is a JSON-compliant type.
+ */
+
+/**
+ * Recursively traverse an object to evoke all converted
+ * getters, so that every nested property inside the object
+ * is collected as a "deep" dependency.
+ */
+
+/**
+ * Remove an interceptor from the stack
+ *
+ * @param {Number} id The ID that was returned by `use`
+ */
+
+/**
+ * Remove an item from an array.
+ */
+
+/**
+ * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+ *
+ * @param {string} content with BOM
+ * @return {string} content value without BOM
+ */
+
+/**
+ * Remove class with compatibility for SVG since classList is not supported on
+ * SVG elements in IE
+ */
+
+/**
+ * Remove self from all dependencies' subscriber list.
+ */
+
+/**
+ * Resolve an asset.
+ * This function is used because child instances need access
+ * to assets defined in its ancestor chain.
+ */
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+
+/**
+ * Return the first index at which a loosely equal value can be
+ * found in the array (if value is a plain object, the array must
+ * contain an object of the same shape), or -1 if it is not present.
+ */
+
+/**
+ * Return the same value.
+ */
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+
+/**
+ * Runtime helper for checking keyCodes from config.
+ * exposed as Vue.prototype._k
+ * passing in eventKeyName as last argument separately for backwards compat
+ */
+
+/**
+ * Runtime helper for merging v-bind="object" into a VNode's data.
+ */
+
+/**
+ * Runtime helper for rendering <slot>
+ */
+
+/**
+ * Runtime helper for rendering static trees.
+ */
+
+/**
+ * Runtime helper for rendering v-for lists.
+ */
+
+/**
+ * Runtime helper for resolving filters
+ */
+
+/**
+ * Runtime helper for resolving raw children VNodes into a slot object.
+ */
+
+/**
+ * Runtime helper for v-once.
+ * Effectively it means marking the node as static with a unique key.
+ */
+
+/**
+ * Scheduler job interface.
+ * Will be called by the scheduler.
+ */
+
+/**
+ * Set a property on an object. Adds the new property and
+ * triggers change notification if the property doesn't
+ * already exist.
+ */
+
+/**
+ * Simple bind polyfill for environments that do not support it,
+ * e.g., PhantomJS 1.x. Technically, we don't need this anymore
+ * since native bind is now performant enough in most browsers.
+ * But removing it would mean breaking code that was able to run in
+ * PhantomJS 1.x, so this must be kept for backward compatibility.
+ */
+
+/**
+ * Strict object type check. Only returns true
+ * for plain JavaScript objects.
+ */
+
+/**
+ * Subscribe to the cancel signal
+ */
+
+/**
+ * Subscriber interface.
+ * Will be called when a dependency changes.
+ */
+
+/**
+ * Syntactic sugar for invoking a function and expanding an array for arguments.
+ *
+ * Common use case would be to use `Function.prototype.apply`.
+ *
+ *  ```js
+ *  function f(x, y, z) {}
+ *  var args = [1, 2, 3];
+ *  f.apply(null, args);
+ *  ```
+ *
+ * With `spread` this example can be re-written.
+ *
+ *  ```js
+ *  spread(function(x, y, z) {})([1, 2, 3]);
+ *  ```
+ *
+ * @param {Function} callback
+ * @returns {Function}
+ */
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+
+/**
+ * Transitional option validator
+ * @param {function|boolean?} validator - set to false if the transitional option has been removed
+ * @param {string?} version - deprecated version / removed since version
+ * @param {string?} message - some message with additional info
+ * @returns {function}
+ */
+
+/**
+ * Trim excess whitespace off the beginning and end of a string
+ *
+ * @param {String} str The String to trim
+ * @returns {String} The String freed of excess whitespace
+ */
+
+/**
+ * Unsubscribe from the cancel signal
+ */
+
+/**
+ * Update an Error with the specified config, error code, and response.
+ *
+ * @param {Error} error The error to update.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The error.
+ */
+
+/**
+ * Use function string name to check built-in types,
+ * because a simple equality check will fail when running
+ * across different vms / iframes.
+ */
+
+/**
+ * Validate component names
+ */
+
+/**
+ * Virtual DOM patching algorithm based on Snabbdom by
+ * Simon Friis Vindum (@paldepind)
+ * Licensed under the MIT License
+ * https://github.com/paldepind/snabbdom/blob/master/LICENSE
+ *
+ * modified by Evan You (@yyx990803)
+ *
+ * Not type-checking this because this file is perf-critical and the cost
+ * of making flow understand it is not worth it.
+ */
+
+/**
+ * Walk through all properties and convert them into
+ * getter/setters. This method should only be called when
+ * value type is Object.
+ */
+
+/**
+ * Watchers.
+ *
+ * Watchers hashes should not overwrite one
+ * another, so we merge them as arrays.
+ */
+
+/**
+ * marked - a markdown parser
+ * Copyright (c) 2011-2021, Christopher Jeffrey. (MIT Licensed)
+ * https://github.com/markedjs/marked
+ */
+
+/**
+ * parent component style should be after child's
+ * so that parent component's style could override it
+ */
+
+/************************************************************************/
+
+/******/
+
+/***/
+
+/*@__PURE__*/
+
+/*eslint func-names:0*/
+
+/*eslint no-param-reassign:0*/
+
+//
+
+//        () Skip orphan delim inside strong    (1) #***                (2) a***#, a***                   (3) #***a, ***a                 (4) ***#              (5) #***#                 (6) a***a
+
+//        (1) and (2) can only be a Right Delimiter. (3) and (4) can only be Left.  (5) and (6) can be either Left or Right.
+
+//    created before the child)
+
+//    its watchers can be skipped.
+
+//    user watchers are created before the render watcher)
+
+//  nested
+
+// "$stable" marker.
+
+// "force" the microtask queue to be flushed by adding an empty timer.
+
+// "touch" every property so they are all tracked as
+
+// #4391: in IE9, setting type can reset value for input[type=radio]
+
+// #6157
+
+// #6513
+
+// #6574 in case the inject object is observed...
+
+// #6601 work around Chrome version <= 55 bug where single textNode
+
+// #6666: IE/Edge forces progress value down to 1 before setting a max
+
+// #6903
+
+// #7138: IE10 & 11 fires input event when setting placeholder on
+
+// #7573 disable dep collection when invoking data getters
+
+// #7573 disable dep collection when invoking lifecycle hooks
+
+// #7817 clone node before setting fnContext, otherwise if the node is reused
+
+// #7975
+
+// #9446: Firefox <= 53 (in particular, ESR 52) has incorrect Event.timeStamp
+
+// #9448 bail if event is fired in another document in a multi-page
+
+// #9462 iOS 9 bug: event.timeStamp is 0 after history.pushState
+
+// #9681 QtWebEngine event.timeStamp is negative value
+
+// $attrs & $listeners are exposed for easier HOC creation.
+
+// $flow-disable-line
+
+// (#6466 MutationObserver is unreliable in IE11)
+
+// () => Promise
+
+// (async resolves are shimmed as synchronous during SSR)
+
+// (e.g. #6813, out-in transitions).
+
+// (e.g. it was from a cached normal slot) the fnContext causes named slots
+
+// (relative to UNIX epoch), so in order to compare time we have to use the
+
+// /c*$/ is vulnerable to REDOS.
+
+// 1. Components are updated from parent to child. (because parent is always
+
+// 1. When the children contains components - because a functional component
+
+// 2. A component's user watchers are run before its render watcher (because
+
+// 2. When the children contains constructs that always generated nested Arrays,
+
+// 2.2 with runInNewContext: true
+
+// 2.3 injection
+
+// 2.6 explicit observable API
+
+// 3. If a component is destroyed during a parent component's watcher run,
+
+// :class are used on slot nodes
+
+// <textarea>... block the first input event and remove the blocker
+
+// ==-- Parse "addon" extensions --== //
+
+// ==-- Parse "overwrite" extensions --== //
+
+// ==-- Parse WalkTokens extensions --== //
+
+// A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+
+// A major drawback of this tradeoff is that there are some scenarios
+
+// AFTER it was attached.
+
+// Add headers to the request
+
+// Add responseType to request if needed
+
+// Add withCredentials to request if needed
+
+// Add xsrf header
+
+// All IE versions use low-res event timestamps, and have problematic clock
+
+// Allow for axios('example/url'[, config]) a la fetch API
+
+// Allow use of default import syntax in TypeScript
+
+// Also, using (macro) tasks in event handler would cause some weird behaviors
+
+// An indented code block cannot interrupt a paragraph.
+
+// Apply extends and mixins on the child options,
+
+// Async edge case #6566 requires saving the timestamp when event listeners are
+
+// Async edge case fix requires storing an event listener's attach timestamp.
+
+// Axios
+
+// Browser environment sniffing
+
+// CDATA section
+
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
+
+// CONCATENATED MODULE: ./node_modules/vue/dist/vue.runtime.esm.js
+
+// CONCATENATED MODULE: ./src/pages/TrainingAnswerPage.vue?vue&type=template&id=74fb520b&
+
+// CONCATENATED MODULE: ./src/training_answer.js
+
+// CSS transitions. Since the element may be inside an entering
+
+// Check for task list items
+
+// Check if current line is empty
+
+// Check if module is in cache
+
+// Child tokens to be visited by walkTokens
+
+// Clean up request
+
+// Clip maskedSrc to same section of string as src (move to lexer?)
+
+// CommonMark requires space before trailing #s
+
+// Copy axios.prototype to instance
+
+// Copy context to instance
+
+// Create 'strong' if smallest delimiter has even char count. **a***
+
+// Create `em` if smallest delimiter has odd char count. *a***
+
+// Create a new module (and put it into the cache)
+
+// Create the default instance to be exported
+
+// DEPRECATED: alias for componentInstance for backwards compat.
+
+// Deactivate deps tracking while processing error handler to avoid possible infinite rendering.
+
+// Dedent if possible
+
+// Dedent this line
+
+// Deep watchers and watchers on Object/Arrays should fire even
+
+// Detect whether an element with the move class applied has
+
+// Determine what event timestamp the browser is using. Annoyingly, the
+
+// Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
+
+// Don't bother if no value provided
+
+// During updates, a kept-alive component's child components may
+
+// EXTERNAL MODULE: ./node_modules/axios/index.js
+
+// EXTERNAL MODULE: ./node_modules/marked/lib/marked.js
+
+// EXTERNAL MODULE: ./node_modules/vue-axios/dist/vue-axios.esm.min.js
+
+// End list item if found start of new bullet
+
+// Ensure headers exist
+
+// Execute the module function
+
+// Expose Axios class to allow class inheritance
+
+// Expose Cancel & CancelToken
+
+// Expose all/spread
+
+// Expose isAxiosError
+
+// Factory for creating new instances
+
+// Fallback to setImmediate.
+
+// Find first non-space char
+
+// First/last cell in a row cannot be empty if it has no leading/trailing pipe
+
+// Flag the module as loaded
+
+// Flatten headers
+
+// For browsers use XHR adapter
+
+// For plain HTML markup, normalization can be completely skipped because the
+
+// For props and computed properties, we define the proxy getters on
+
+// Force an array if not already something iterable
+
+// Function to check for start of token
+
+// Get each top-level item
+
+// Get next list item
+
+// HTTP basic authentication
+
+// Handle browser request cancellation (as opposed to a manual cancellation)
+
+// Handle cancellation
+
+// Handle low level network errors
+
+// Handle progress if needed
+
+// Handle timeout
+
+// Haven't found enough closing delimiters
+
+// Headers whose duplicates are ignored by node
+
+// Here we have async deferring wrappers using microtasks.
+
+// However, it has subtle problems when state is changed right before repaint
+
+// IE doesn't support innerHTML for SVG elements
+
+// IE input[type=range] only supports `change` event
+
+// IE needs attribute set twice to normalize properties
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+
+// If comma is not replaced with a dot, the input will be rounded down (i.e. acting
+
+// If the previous item ended with a blank line, the list is loose
+
+// In 2.5 we used (macro) tasks (in combination with microtasks).
+
+// In problematic UIWebViews, Promise.then doesn't completely break, but
+
+// Item child tokens handled here at end because we needed to have the final item to trim it first
+
+// Iterate over array values
+
+// Iterate over object keys
+
+// JSDOM may return undefined for transition properties
+
+// Length of suffix matching the invert condition.
+
+// Line was not properly indented; end of this item
+
+// Listen for ready state to emulate onloadend
+
+// Mask out escaped em & strong delimiters
+
+// Mask out other blocks
+
+// Mask out reflinks
+
+// Microsoft
+
+// Mozilla
+
+// MutationObserver has wider support, however it is seriously bugged in
+
+// NOTE: these are not considered part of the public API - avoid relying on
+
+// New element
+
+// Not all browsers support upload events
+
+// Note: style is excluded because it relies on initial clone for future
+
+// Note: this is a browser-only function so we can assume elms are DOM nodes.
+
+// Old versions of Chromium (below 61.0.3163.100) formats floating pointer numbers
+
+// Only merged options has the _base property.
+
+// Otherwise add header to the request
+
+// PhantomJS and iOS 7.x
+
+// Prefixed last, checked first
+
+// Prepare the response
+
+// Promise is available, we will use it:
+
+// Provide aliases for supported request methods
+
+// RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+
+// Re-align to follow commonmark nesting rules
+
+// Real errors are hidden from us by the browser
+
+// Remove Content-Type if data is undefined
+
+// Remove extra characters. *a*** -> *a*
+
+// Remove trailing 'c's. Equivalent to str.replace(/c*$/, '').
+
+// Renderer extensions
+
+// Replace extension with func to run new extension but fall back if false
+
+// Replace renderer with func to run extension, but fall back if false
+
+// Replace tokenizer with func to run extension, but fall back if false
+
+// Return the exports of the module
+
+// Reuse variable
+
+// Run any renderer extensions
+
+// Safari < 10.2 & UIWebView doesn't fire compositionend when
+
+// See: https://github.com/vuejs/vuex/issues/1505
+
+// Send the request
+
+// Set config.method
+
+// Set the request timeout in MS
+
+// Set them one by one, and the browser will only set those it can recognize
+
+// So we now use microtasks everywhere, again.
+
+// Sort queue before flush.
+
+// Specifically not if we're in a web worker, or react-native.
+
+// Standard
+
+// Standard browser envs have full support of the APIs needed to test
+
+// Step left until we fail to match the invert condition.
+
+// String with links masked to avoid interference with em and strong
+
+// Support values array created by autoprefixer, e.g.
+
+// TODO parse inline content if parameter markdown=1
+
+// Technically it leverages the (macro) task queue,
+
+// Text node
+
+// The current target watcher being evaluated.
+
+// The module cache
+
+// The nextTick behavior leverages the microtask queue, which can be accessed
+
+// The request errored out and we didn't get a response, this will be
+
+// The require function
+
+// The template compiler attempts to minimize the need for normalization by
+
+// There's no need to maintain a stack because all render fns are called
+
+// These helpers produce better VM code in JS engines due to their
+
+// This  #4521 by skipping the unnecessary `checked` update.
+
+// This ensures that:
+
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+
+// This is globally unique because only one watcher
+
+// This is only done if running in a standard browser environment.
+
+// This module is a runtime utility for cleaner component module output and will
+
+// This vnode was used in a previous render!
+
+// This was originally intended to fix #4521 but no longer necessary
+
+// Tokenizer Extensions
+
+// Track prevChar before string of ____ started
+
+// Transform request data
+
+// Transform response data
+
+// UIWebView in iOS >= 9.3.3 when triggered in touch event handlers. It
+
+// Until we encounter a blank line, item contents do not need indentation
+
+// Use MutationObserver where native Promise is not available,
+
+// Use onloadend if available
+
+// Vnode moved left
+
+// Vnode moved right
+
+// Vue.extend constructor export interop
+
+// Vue.prototype.__patch__ is injected in entry points
+
+// Walk any extensions
+
+// With one exception: request that using file: protocol, most browsers
+
+// _ can't be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
+
+// `value` is handled separately because the DOM value may be temporarily
+
+// a child.
+
+// a flag to avoid this being observed
+
+// a reactivated keep-alive component doesn't insert itself
+
+// a successful hydration.
+
+// a uid
+
+// a value is Function if its prototype is function even across different execution context
+
+// abstract components do not keep anything
+
+// activeInstance in lifecycle state
+
+// additional parameters
+
+// after 2.5. Keeping it for backwards compat with generated code from < 2.4
+
+// after calling the init hook, if the vnode is a child component
+
+// again. It's not ideal to involve module-specific logic in here but
+
+// all
+
+// all other transition classes applied to ensure only the move class
+
+// allow further extension/mixin/plugin usage
+
+// already a merged invoker
+
+// already pending
+
+// and is always a fresh object, so it's safe to merge into it
+
+// and prevent memory leak
+
+// and the handler would only fire if the event passed to it was fired
+
+// and we need to use the hi-res version for event listener timestamps as
+
+// and when that is passed down this would cause an error
+
+// apply transition data to child
+
+// are already rendered on the client or has no need for initialization
+
+// args order: tag, data, children, normalizationType, alwaysNormalize
+
+// array of events
+
+// as a comment node but preserves all the raw information for the node.
+
+// as a floor function) causing unexpected behaviors
+
+// as these will throw away existing DOM nodes and cause removal errors
+
+// as we run existing watchers
+
+// assert node match
+
+// assign to this to avoid being removed in tree-shaking
+
+// associated DOM element for it.
+
+// async component
+
+// async edge case #6566: inner click event triggers patch, event handler
+
+// at instantiation here.
+
+// attached during that flush.
+
+// attached to outer element during patch, and triggered again. This
+
+// attached. However, calling performance.now() has a perf overhead especially
+
+// attributes that should be using props for binding
+
+// autolink
+
+// avoid catch triggering multiple times when nested calls
+
+// avoid resetting cursor position when value is the same
+
+// avoids Object.defineProperty calls for each instance created.
+
+// avoriaz seems to mock a non-extensible $scopedSlots object
+
+// bail for environments that have buggy event.timeStamp implementations
+
+// based on the rendering backend used.
+
+// basic support for MathML
+
+// be included in the final webpack user bundle.
+
+// be processed after the whole patch process ended.
+
+// because functional components already normalize their own children.
+
+// been updated.
+
+// before it to distinguish it from an escaped pipe
+
+// bind the createElement fn to this instance
+
+// binding to window is necessary to make hot reload work in IE in strict mode
+
+// blockquote
+
+// boolean has higher priority
+
+// br
+
+// but Flash expects a value of "true" when used on <embed> tag
+
+// but it is still a better choice than setTimeout.
+
+// but only if it is a raw options object that isn't
+
+// but we might need to add _that_
+
+// by any combination of letters, digits, plus, period, or hyphen.
+
+// c.f. https://nodejs.org/api/http.html#http_message_headers
+
+// cache constructor
+
+// cache original method
+
+// cache resolved
+
+// cached call
+
+// call component updated and activated hooks
+
+// call enter callback now
+
+// call factory function for non-Function types
+
+// call leave callback now
+
+// call the last hook...
+
+// can be evaluated at a time.
+
+// can have their private assets too.
+
+// can we use __proto__?
+
+// cater for pre-defined getter/setters
+
+// cell child tokens
+
+// certain weird environments...
+
+// change, so directly walking the tree here may call activated hooks
+
+// check default value
+
+// check if there are any late-modified/attached options (#4976)
+
+// check if there are dynamic scopedSlots (hand-written or compiled but with
+
+// check if this is server-rendered content and if we can perform
+
+// check inline-template render functions
+
+// check local registration variations first
+
+// check pattern
+
+// check platforms/web/util/attrs.js acceptValue
+
+// child component listeners instead of DOM listeners
+
+// child component. it should have hydrated its own tree.
+
+// clone children array to avoid mutating original in case of cloning
+
+// clone observed objects, as the user probably wants to mutate it
+
+// clone reused vnode
+
+// code
+
+// commonmark requires matching angle brackets
+
+// compiled as a scoped slot, render fn users would expect it to be present
+
+// completely stops working after triggering a few times... so, if native
+
+// component also has set the placeholder vnode's elm.
+
+// component constructor creation
+
+// component instance. This key will be used to remove pending leaving nodes
+
+// component itself.
+
+// component prototype. We only need to define computed properties defined
+
+// component's mounted hook), which relies on vm._watcher being already defined
+
+// component-defined computed properties are already defined on the
+
+// components with in Weex's multi-instance scenarios.
+
+// computed properties are just getters during SSR
+
+// config
+
+// convert primitive to vnode
+
+// copied from https://stackoverflow.com/a/5450113/806777
+
+// create an empty node and replace it
+
+// create asset registers, so extended classes
+
+// create internal watcher for the computed property.
+
+// create new node
+
+// deep updates (#7063).
+
+// def
+
+// default key for nested array children (likely generated by v-for)
+
+// define getter functions for harmony exports
+
+// del (gfm)
+
+// delay insert hooks for component root nodes, invoke them after the
+
+// delay setting the cache until update
+
+// dependencies for deep watching
+
+// destroy old node
+
+// detect devtools
+
+// detect such cases and filter out values that no longer has a matching
+
+// determine whether component has slot children
+
+// devtool hook
+
+// devtools global hook
+
+// direct component options / constructor
+
+// directly removing
+
+// do extended autolink path validation
+
+// do not cache length because more watchers might be pushed
+
+// do not log it twice
+
+// does not trigger because the inner node's created hooks are not called
+
+// doing this because it's faster than dynamic enumeration.
+
+// during Vue.extend(). We only need to proxy props defined at
+
+// during entering.
+
+// during template compilation
+
+// dynamic slot names). Static scoped slots compiled from template has the
+
+// e.g. <option disabled>Select one</option>
+
+// e.g. <template>, <slot>, v-for, or when the children is provided by user
+
+// e.g. PhantomJS, iOS7, Android 4.4
+
+// e.g. `value` on <progress> w/ non-finite value
+
+// e.g. for directives that uses the "inserted" hook.
+
+// either not server-rendered, or hydration failed.
+
+// electron/nw.js app, since event.timeStamp will be using a different
+
+// element is really inserted
+
+// element may have already been removed due to v-html / v-text
+
+// em & strong
+
+// empty component root.
+
+// empty element, allow client to pick up and populate children
+
+// empty mount (likely as component), create new root element
+
+// enable recursive self-lookup
+
+// ending angle bracket cannot be escaped
+
+// ensure a key that is unique to the vnode type and to this transition
+
+// ensure collecting deps for deep class bindings for future updates
+
+// ensure only append when value is already string, otherwise it will be cast
+
+// ensure that every cell-delimiting pipe has a space
+
+// escape
+
+// eslint-disable-next-line consistent-return
+
+// eslint-disable-next-line func-names
+
+// eslint-disable-next-line no-param-reassign
+
+// essentially merged when rendered to HTML strings
+
+// event is fired after handler attachment
+
+// events.
+
+// every time the scheduler flushes and use that for all event listeners
+
+// excluded
+
+// existing directive, update
+
+// existing plain hook
+
+// explicitly match decimal, hex, and named HTML entities
+
+// explicitness and function inlining.
+
+// expose FunctionalRenderContext for ssr runtime helper installation
+
+// expose normal slots on scopedSlots
+
+// expose real self
+
+// exposed util methods.
+
+// exposing $options for renderStatic()
+
+// extensions
+
+// extract listeners and pass them directly to the transition methods
+
+// extract listeners, since these needs to be treated as
+
+// extract props
+
+// extremely rare edge case: do not insert if old element is in a
+
+// fallback to prototype chain
+
+// false or null will remove the attribute but undefined will not
+
+// fast path 1: child component re-render only, parent did not change
+
+// fast path 2: stable scoped slots w/ no normal slots to proxy,
+
+// fences
+
+// fences not supported
+
+// filter out skipped interceptors
+
+// filter out text nodes (possible whitespaces)
+
+// find closing parenthesis
+
+// fire destroyed hook
+
+// fires "change" instead of "input" on autocomplete.
+
+// flow complains about extra args which is why we use any
+
+// flow somehow has problems with directly declared definition object
+
+// for lazy watchers
+
+// for slot content they should also get the scopeId from the host instance.
+
+// for template-only hot-reload because in that case the render fn doesn't
+
+// for transition enter check
+
+// force reflow to put everything in position
+
+// force removing pass
+
+// found another Left Delim
+
+// frozen object may not have observer.
+
+// functional
+
+// functional component
+
+// functional template
+
+// generated render function is guaranteed to return Array<VNode>. There are
+
+// getDefaultExport function for compatibility with non-harmony modules
+
+// go through the normalizer
+
+// hack for #4339: a reactivated component with inner transition
+
+// handle transition classes
+
+// handle transition mode
+
+// handled by onerror instead
+
+// happens because browsers fire microtask ticks between event propagation.
+
+// has new static slots
+
+// has old static slots
+
+// have mutated.
+
+// header
+
+// header child tokens
+
+// heading
+
+// helper to dynamically append modifier runtime markers to event names.
+
+// helpers
+
+// hr
+
+// html
+
+// http://www.matts411.com/post/internet-explorer-9-oninput/
+
+// https://github.com/axios/axios/issues/632
+
+// https://github.com/facebook/flow/issues/285
+
+// https://tools.ietf.org/html/rfc3986#section-3
+
+// hydrating
+
+// ie9 setting to null has no effect, must use empty string
+
+// if already flushing, splice the watcher based on its id
+
+// if already past its id, it will be run next immediately.
+
+// if at this stage it's not a constructor or an async component factory,
+
+// if childNode is not null, it means the actual childNodes list is
+
+// if has already-rendered static tree and not inside v-for,
+
+// if parent is an HOC, update its $el as well
+
+// if the event timestamp, although evaluated AFTER the Date.now(), is
+
+// if the new node is not cloned it means the render functions have been
+
+// if the page has thousands of event listeners. Instead, we take a timestamp
+
+// if the returned array contains only a single node, allow it
+
+// if the user intentionally throws the original error in the handler,
+
+// if the vm is being destroyed.
+
+// if this is a component root node and the component's
+
+// ignore IDs
+
+// ignore children if the node has textContent or innerHTML,
+
+// ignore slots that contains only whitespace
+
+// immediately.
+
+// implementation and does not fire microtasks in between event propagation, so
+
+// implementations (#9632)
+
+// important for dynamic transitions!
+
+// important: remove merged hook to ensure it's called only once
+
+// in a Vue.extend merge, both should be functions
+
+// in a locale-dependent way, using a comma instead of a dot.
+
+// in case of component :is set to falsy value
+
+// in case the child is also an abstract component, e.g. <keep-alive>
+
+// in case the object is already observed...
+
+// in case the options rendered by v-for have changed,
+
+// in each iteration - which helps prevent layout thrashing.
+
+// in some cases, the event used has to be determined at runtime
+
+// in that case we can just return the element and be done.
+
+// in this case we want to make sure we are able to get a hold to the
+
+// increase the listeners count
+
+// init parent attached events
+
+// inject component registration as beforeCreate hook
+
+// inject component styles
+
+// inject is :any because flow is not smart enough to figure out cached
+
+// injected by v-model runtime
+
+// inline hooks to be invoked on component VNodes during patch
+
+// install component management hooks onto the placeholder node
+
+// install platform patch function
+
+// install platform runtime directives & components
+
+// install platform specific utils
+
+// install runtime convenience helpers
+
+// instance merge
+
+// instantiation here.
+
+// instead of a hash lookup
+
+// intented code blocks after 4 spaces; indent is always 1
+
+// internal component options needs special treatment.
+
+// internal version is used by render functions compiled from templates
+
+// interruption rules of commonmark and the original markdown spec:
+
+// invert: Remove suffix of non-c chars instead. Default falsey.
+
+// invoke callbacks only if this is not a synchronous resolve
+
+// invoke destroy hooks on current rendered tree
+
+// invoke insert hooks that may have been merged by create hooks.
+
+// is applied.
+
+// is needed to cater to all possible types of children values.
+
+// issue #9511
+
+// it can get stuck in a weird state where callbacks are pushed into the
+
+// it should've created a child instance and mounted it. the child
+
+// it's important to place the event as the first in the array because
+
+// it's possible that the value is out-of-sync with the rendered options.
+
+// items begin with at most one blank line
+
+// iterate and compare children lists
+
+// keep a copy of raw propsData
+
+// keep a reference to the super options at extension time.
+
+// keep copies of post queues before resetting state
+
+// keep-alive + HOCs. (#4590)
+
+// kept-alive components, treat as a patch
+
+// later at instantiation we can check if Super's options have
+
+// leading or trailing whitespace is ignored per the gfm spec
+
+// leaving transition. Only happens when combining transition +
+
+// lheading
+
+// link
+
+// list
+
+// list of modules that can skip create hook during hydration because they
+
+// list of punctuation marks from CommonMark spec
+
+// locate first non-abstract parent
+
+// longer than the virtual children list.
+
+// make current key freshest
+
+// make sure to clone it if it's reactive, since the user likely wants
+
+// make sure to invoke the insert hook
+
+// make sure to observe it.
+
+// manually mounted instance, call mounted on self
+
+// mark v-show
+
+// marker for reverse proxying v-slot without scope on this.$slots
+
+// may return an Array instead of a single root. In this case, just a simple
+
+// merge adjacent text nodes
+
+// merge options
+
+// merge static and dynamic style data on the same vnode
+
+// microtask queue but the queue isn't being flushed, until the browser
+
+// mounted is called for render-created child components in its inserted hook
+
+// mounting to a real element
+
+// multiple renders, cloning them avoids errors when DOM manipulations rely
+
+// named slots should only be respected if the vnode was rendered in the
+
+// necessary to ensure parent re-render when deep bindings like :style and
+
+// need to resolve new options.
+
+// needs to do some other work, e.g. handle a timer. Therefore we can
+
+// never gets called
+
+// new directive, bind
+
+// new parent vnode
+
+// newline
+
+// no bubbling, should always fire.
+
+// no default, return undefined
+
+// no existing hook
+
+// no longer present, unbind
+
+// no need for block level renderers
+
+// non-string values will be stringified
+
+// normalization is always applied for the public version, used in
+
+// normalization is needed - if any child is an Array, we flatten the whole
+
+// normalize possible array / string values into Object
+
+// normalize v-model event tokens that can only be determined at runtime.
+
+// not equal to the updated value
+
+// not included
+
+// note it doesn't support other MathML elements being component roots
+
+// note we only do this if the vnode is cloned -
+
+// notify change
+
+// now it's used as a new node, overwriting its elm would cause
+
+// object syntax in v-bind
+
+// observe data
+
+// of going through the normal attribute patching process.
+
+// on incorrect children. Instead we push them into a queue which will
+
+// on subsequent patches (#3360)
+
+// on their elm reference.
+
+// on this.$slots because the usage is semantically a normal slot.
+
+// onerror should only fire if it's a network error
+
+// only cast empty string / same name to boolean if
+
+// only need to normalize once
+
+// only used in dev mode
+
+// optimize hook:event cost by using a boolean flag marked at registration
+
+// optimize internal component instantiation
+
+// optimized shallow clone
+
+// option in the DOM.
+
+// options
+
+// or even between bubbling of the same event (#6566).
+
+// other than props & listeners & slot
+
+// otherwise, render a fresh tree.
+
+// out of sync with VDOM state due to focus, composition and modifiers.
+
+// parent container node also has transition, skip.
+
+// parse child tokens inside headers and cells
+
+// parse expression for getter
+
+// patch existing root node
+
+// pedantic allows starting angle bracket without ending angle bracket
+
+// plain options object: turn it into a constructor
+
+// potential patch errors down the road when it's used as an insertion
+
+// pre-resolve slots for renderSlot()
+
+// prevent inlineText consuming extensions by clipping 'src' to extension start
+
+// prevent paragraph consuming extensions by clipping 'src' to extension start
+
+// prevent triggering an input event for no reason
+
+// prop and event handler respectively.
+
+// props
+
+// proxy data on instance
+
+// prune oldest entry
+
+// public mount method
+
+// queue the flush
+
+// readystate handler is calling before onerror or ontimeout handlers,
+
+// real context instance.
+
+// record leaving element
+
+// recursively invoke hooks on child component root node
+
+// recursively search for possible transition defined inside the component root
+
+// ref #5318
+
+// reference node. Instead, we clone the node on-demand before creating
+
+// reflink, nolink
+
+// regex template, placeholders will be replaced according to different paragraph
+
+// register component module identifier for async chunk inferrence
+
+// register for functional component in vue file
+
+// reject.
+
+// release circular reference (#6759)
+
+// rely on checking whether it's in an inactive tree (e.g. router-view)
+
+// remove __vue__ reference
+
+// remove pending leave element on enter by injecting an insert hook
+
+// remove reference from data ob
+
+// remove self from parent
+
+// remove self from vm's watcher list
+
+// remove slot attribute if the node is resolved as a Vue slot node
+
+// remove trailing #s
+
+// render functions
+
+// replace old child transition data with fresh one
+
+// replace with listeners with .native modifier
+
+// replaced by innerHTML/textContent retains its parentNode property
+
+// replacing existing element
+
+// reset by the hot-reload-api and we need to do a proper re-render.
+
+// resolve constructor options in case global mixins are applied after
+
+// resolve injections before data/props
+
+// resolve provide after data/props
+
+// resolve slots + force update if has children
+
+// return a placeholder node for async component, which is rendered
+
+// return a placeholder vnode
+
+// return empty vnode in case the render function errored out
+
+// return handler return value for single handlers
+
+// return in case resolved synchronously
+
+// return placeholder node and queue update when leave finishes
+
+// return previous default value to avoid unnecessary watcher trigger
+
+// return true when textbox (.number and .trim) loses focus and its value is
+
+// reuse element for static trees.
+
+// root instance props should be converted
+
+// safe to exclude.
+
+// same context.
+
+// same key but different element. treat as new element
+
+// same timestamp type when saving the flush timestamp.
+
+// save current target element in closure
+
+// scoped slot
+
+// scopedId
+
+// see flow/vnode
+
+// separately from one another. Nested component's render fns are called
+
+// sequences em should skip over [title](link), `code`, <html>
+
+// sequential events (e.g. #4521, #6690, which have workarounds)
+
+// server build
+
+// set attribute for blank value
+
+// set new value
+
+// set parent
+
+// set parent vnode. this allows render functions to have access
+
+// set scope id attribute for scoped CSS.
+
+// set the class
+
+// setting _inactive to false here so that a render function can
+
+// since dynamic options merging is pretty slow, and none of the
+
+// since the default value is a fresh copy,
+
+// since the watcher's initial patch may call $forceUpdate (e.g. inside child
+
+// skip all element-related modules except for ref (#3455)
+
+// skip single * in __abc*abc__
+
+// skip the update if old and new VDOM state is the same.
+
+// smaller than it, it means the event is using a hi-res timestamp,
+
+// so it gets processed during parent component patch.
+
+// so that the transition module can hand over the control to the directive
+
+// so that we get proper render context inside it.
+
+// so we should call onloadend on the next 'tick'
+
+// so we used some reserved tokens during compile.
+
+// some property updates can throw
+
+// span level renderer
+
+// specific event
+
+// specific handler
+
+// split pedantic href and title
+
+// stabilize the subscriber list first
+
+// start at index 1 to avoid re-invoking component mounted hook
+
+// start enter transition
+
+// starting reference
+
+// stateful
+
+// static props are already proxied on the component's prototype
+
+// static style is pre-processed into an object during compilation
+
+// statically analyzing the template at compile time.
+
+// store normalized style under a different key for next diff
+
+// store value as _value as well since
+
+// super option changed,
+
+// support for compiled functional template
+
+// support single function children as default scoped slot
+
+// switching focus before confirming composition choice
+
+// table (gfm)
+
+// tag
+
+// teardown watchers
+
+// technically allowfullscreen is a boolean attribute for <iframe>,
+
+// text
+
+// that cannot be circumvented (e.g. #7109, #7153, #7546, #7834, #8109).
+
+// that should not be matched to match.
+
+// the Vue instances at extension time, on the extended prototype. This
+
+// the context vm passed in is a functional context as well.
+
+// the delayed leave may have already been cancelled
+
+// the following are added in 2.6
+
+// the information will be used for async server-rendering and hydration.
+
+// the object here.
+
+// the raw prop value was also undefined from previous render,
+
+// the result of another mergeOptions call.
+
+// the root of the child tree
+
+// the solution is simple: we save the timestamp when a handler is attached,
+
+// the whole point is ensuring the v-model callback gets called before
+
+// them unless you are aware of the risk.
+
+// there doesn't seem to be a better way to do it.
+
+// these are also reactive so they may trigger child update if the child
+
+// these are reserved for web because they are directly compiled away
+
+// they need to be reactive so that HOCs using them are always updated
+
+// thing with Array.prototype.concat. It is guaranteed to be only 1-level deep
+
+// this also fixes the issue where some browsers e.g. iOS Chrome
+
+// this is a slot using the new v-slot syntax without scope. although it is
+
+// this is a somewhat expensive operation so we skip it
+
+// this is implemented as a special case to avoid the overhead
+
+// this is just a safety net in case event.timeStamp is unreliable in
+
+// this is necessary for SSR hydration because text nodes are
+
+// this is used to identify the "base" constructor to extend all plain-object
+
+// this needs to be lazy-evaled because vue may be required before
+
+// throw error in case of non string input
+
+// timestamp can either be hi-res (relative to page load) or low-res
+
+// to mutate it.
+
+// to string and cause the type check to miss.
+
+// to the data on the placeholder node.
+
+// top-level paragraph
+
+// transform component v-model data into props & events
+
+// transform component v-model info (value and callback) into
+
+// transition at this very moment, we make a clone of it and remove
+
+// turn off all instance listeners.
+
+// two cases where extra normalization is needed:
+
+// uid for batching
+
+// unlike a newly created component,
+
+// update $attrs and $listeners hash
+
+// update __vue__ reference
+
+// update base extend options
+
+// update child tree's parent
+
+// update listeners
+
+// update parent placeholder node element, recursively
+
+// update props
+
+// update vm's placeholder node without re-render
+
+// updated listeners
+
+// updated props
+
+// updates
+
+// url (gfm)
+
+// urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+
+// use default namespace inside foreignObject
+
+// use getRealChild() to ignore abstract components e.g. keep-alive
+
+// use native Set when available.
+
+// used by ssr in case component is cached and beforeCreate
+
+// used for static nodes and slot nodes because they may be reused across
+
+// used them during render
+
+// user-attached handlers.
+
+// user-written render functions.
+
+// utils is a library of generic helper functions non-specific to axios
+
+// v-html and domProps: innerHTML
+
+// v-once cached trees
+
+// validation and default values are handled in the child
+
+// via either native Promise.then or MutationObserver.
+
+// vue-router#1212
+
+// vue-server-renderer can set VUE_ENV
+
+// warn against non-factory defaults for Object & Array
+
+// warn against non-primitive key
+
+// warn invalid mode
+
+// warn multiple elements
+
+// we are only extracting raw values here.
+
+// we can ignore everything in base after the last slash of its path component,
+
+// we can reuse the same tree.
+
+// we divide the work into three loops to avoid mixing DOM reads and writes
+
+// we have a recursively passed down rm callback
+
+// we know it's MountedComponentVNode but flow doesn't
+
+// we need to do this before overwriting $options._renderChildren.
+
+// we set this to vm._watcher inside the watcher's constructor
+
+// we want to recursively retrieve the real component to be rendered
+
+// webpackBootstrap
+
+// well.
+
+// when parent component is patched.
+
+// when the value is the same, because the value may
+
+// when using Object.defineProperty, so we have to procedurally build up
+
+// where microtasks have too high a priority and fire in between supposedly
+
+// whether the request URL is of the same origin as current location.
+
+// will return status as 0 even though it's a successful request
+
+// with hand-written render functions / JSX. In such cases a full normalization
+
+// without * and _ to handle the different emphasis markers * and _
+
+// without getting yelled at by flow
+
+// work around Firefox's Object.prototype.watch...
+
+// work around IE bug when accessing document.activeElement in an iframe
+
+// work around flow
+
+// wrapper function for providing a more flexible interface
+
+// wtf flow?
+
+// {display: ["-webkit-box", "-ms-flexbox", "flex"]}

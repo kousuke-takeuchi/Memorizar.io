@@ -22,6 +22,13 @@ class Question {
         }
     }
 
+    reindex() {
+        for (var i = 0; i < this.size; i++) {
+            var index = i + 1;
+            this.answers[i].index = index;
+        }
+    }
+
     addNewAnswer() {
         var index = this.size;
         this.answers.push(new Answer(index+1));
