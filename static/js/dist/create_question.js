@@ -2375,6 +2375,11 @@ class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_0__["default"] {
     return this.post(path, data);
   }
 
+  async deleteQuestion(workbookId, question) {
+    const path = `/api/workbooks/${workbookId}/questions/${question.question_id}/delete/`;
+    return this.post(path);
+  }
+
 }
 
 /***/ }),
@@ -2394,6 +2399,7 @@ class Answer {
   constructor(index) {
     this.index = index;
     this.sentense = '';
+    this.selected = false;
   }
 
 }
@@ -2409,9 +2415,10 @@ class Answer {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Question)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _Answer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Answer */ "./src/models/Answer.js");
+
 
 class Question {
   constructor(size) {
@@ -2454,7 +2461,37 @@ class Question {
     }
   }
 
+  selectAnswer(answerId) {
+    for (var answer of this.answers) {
+      answer.selected = false;
+
+      if (answer.answer_id == answerId) {
+        answer.selected = true;
+      }
+    }
+  }
+
 }
+
+Question.load_data = function (question_data, answers_data) {
+  const question = new Question(answers_data.length);
+  question.question_id = question_data.question_id;
+  question.sentense = question_data.sentense;
+  question.image_urls = question_data.image_urls;
+  question.answers = [];
+
+  for (var answer_data of answers_data) {
+    const answer = new _Answer__WEBPACK_IMPORTED_MODULE_0__["default"](answer_data.index);
+    answer.answer_id = answer_data.answer_id;
+    answer.title = answer_data.title;
+    answer.sentense = answer_data.sentense;
+    question.answers.push(answer);
+  }
+
+  return question;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Question);
 
 /***/ }),
 

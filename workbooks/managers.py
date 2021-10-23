@@ -54,6 +54,10 @@ class ChapterManager(BaseManager):
     pass
 
 
+class QuestionGroupManager(BaseManager):
+    pass
+
+
 class QuestionManager(BaseManager):
     pass
 

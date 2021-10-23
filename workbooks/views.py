@@ -102,7 +102,7 @@ class WorkbookDetailView(mixins.BaseMixin, View):
             )
             return render(request, self.template_name, context)
         training = form.save()
-        return redirect('workbooks:training_question', training_id=training.training_id)
+        return redirect('workbooks:training_question', workbook_id=training.workbook.workbook_id, training_id=training.training_id)
 
 
 class WorkbookCreateView(mixins.BaseMixin, View):
@@ -311,7 +311,7 @@ class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
     not_found_template_name = 'workbooks/trainings/question_not_found.html'
     
     # 問題を表示
-    def get(self, request, training_id):
+    def get(self, request, workbook_id, training_id):
         training = get_object_or_404(models.Training, training_id=training_id)
 
         # もし終了している場合は結果ページへ
@@ -333,7 +333,7 @@ class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
         return render(request, self.template_name, context)
     
     # 回答を送信
-    def post(self, request, training_id):
+    def post(self, request, workbook_id, training_id):
         training = get_object_or_404(models.Training, training_id=training_id)
 
         form = forms.WorkbookTrainingQuestionForm(request.POST, context={'request': request, 'training': training})
@@ -355,7 +355,7 @@ class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
 class WorkbookTrainingAnswerView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/answer.html'
     
-    def get(self, request, training_id, selection_id):
+    def get(self, request, workbook_id, training_id, selection_id):
         training_selection = get_object_or_404(models.TrainingSelection, training_selection_id=selection_id)
         answers = models.Answer.objects.filter(question=training_selection.question)
 
@@ -366,7 +366,7 @@ class WorkbookTrainingAnswerView(mixins.BaseMixin, View):
 class WorkbookTrainingResultView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/result.html'
     
-    def get(self, request, training_id):
+    def get(self, request, workbook_id, training_id):
         training = get_object_or_404(models.Training, training_id=training_id, done=True)
 
         # 正解数/回答数

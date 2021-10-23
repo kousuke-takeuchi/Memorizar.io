@@ -7,7 +7,7 @@
 <div id="token" data-value="{{ request.user.pk }}"></div>
 <div id="start_at" data-value="{{ start_at }}"></div>
 <div id="questions" data-value="{% to_json question 'question_id' 'sentense' 'image_urls' many=False %}"></div>
-<div id="answers" data-value="{% to_json answers 'answer_id' 'title' 'sentense' many=True to_str='answer_id' %}"></div>
+<div id="answers" data-value="{% to_json answers 'answer_id' 'title' 'sentense' 'index' many=True to_str='answer_id' %}"></div>
 <div id="main-content"></div>
 {% endblock %}
 

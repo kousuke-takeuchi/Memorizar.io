@@ -117,6 +117,17 @@ class QuestionDetailView(mixins.MemorizarBaseMixin, APIView):
         return SuccessResponse({})
 
 
+class QuestionDeleteView(mixins.MemorizarBaseMixin, APIView):
+    def get_querysets(self, workbook_id, question_id):
+        question = get_object_or_404(models.Question, question_id=question_id, workbook__workbook_id=workbook_id)
+        return question
+
+    def post(self, request, workbook_id, question_id):
+        question = self.get_querysets(workbook_id, question_id)
+        question.delete()
+        return SuccessResponse({})
+
+
 class TrainingListView(mixins.MemorizarBaseMixin, APIView):
     def get_querysets(self, workbook_id):
         workbook = get_object_or_404(models.Workbook, user=self.request.user, workbook_id=workbook_id)
@@ -133,7 +144,7 @@ class TrainingListView(mixins.MemorizarBaseMixin, APIView):
 
 class TrainingQuestionListView(mixins.MemorizarBaseMixin, APIView):
     def get_querysets(self, workbook_id, training_id):
-        training = get_object_or_404(workbook__workbook_id=workbook_id, training_id=training_id)
+        training = get_object_or_404(models.Training, workbook__workbook_id=workbook_id, training_id=training_id)
         questions = models.TrainingQuestion.objects.filter(training=training)
         return questions
         
@@ -145,7 +156,7 @@ class TrainingQuestionListView(mixins.MemorizarBaseMixin, APIView):
 
 class TrainingSelectionListView(mixins.MemorizarBaseMixin, APIView):
     def get_querysets(self, workbook_id, training_id):
-        training = get_object_or_404(workbook__workbook_id=workbook_id, training_id=training_id)
+        training = get_object_or_404(models.Training, workbook__workbook_id=workbook_id, training_id=training_id)
         return training
 
     def post(self, request, workbook_id, training_id):
@@ -153,5 +164,6 @@ class TrainingSelectionListView(mixins.MemorizarBaseMixin, APIView):
         serializer = serializers.TrainingSelectionSerializer(data=request.data, context={'request': request, 'training': training})
         if not serializer.is_valid(raise_exception=False):
             return ErrorResponse(serializer.errors)
-        serializer.save()
-        return SuccessResponse({})
+        selection = serializer.save()
+        serializer = serializers.TrainingSelectionSerializer(selection, context={'request': request, 'training': training})
+        return SuccessResponse({'selection': serializer.data})

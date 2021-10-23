@@ -1,5 +1,5 @@
-from livefield import LiveManager
+from django.db.models import Manager
 
 
-class BaseManager(LiveManager):
+class BaseManager(Manager):
     pass

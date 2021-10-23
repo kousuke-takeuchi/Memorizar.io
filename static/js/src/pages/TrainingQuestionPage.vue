@@ -21,7 +21,7 @@
 
                             <div class="card-body">
                                 <div class="row card-deck">
-                                    <div class="card answer pt-2 pb-2 py-md-2 py-2 col-6" :data-answer-id="answer.answer_id" :key="answer.answer_id" v-for="answer in answers">
+                                    <div class="card answer col-md-5 m-lg-1 col-12 m-1" :class="{ 'answer-selection':  answer.selected}" @click="selectAnswer(answer.answer_id)" :data-answer-id="answer.answer_id" :key="answer.answer_id" v-for="answer in question.answers">
                                         <div class="card-body">
                                             <h5 class="card-title">({{ answer.title }})</h5>
                                             <p class="card-text">{{ answer.sentense }}</p>
@@ -30,7 +30,7 @@
                                 </div>
                                 
                                 <div class="pb-4 py-md-4 py-4">
-                                    <button type="submit" class="btn btn-primary btn-block btn-lg" @click.prevent="sendSelection" disabled>回答を見る</button>
+                                    <button type="submit" class="btn btn-primary btn-block btn-lg" @click.prevent="sendSelection" :disabled="!didSelected">回答を見る</button>
                                 </div>
                             </div>
                         </form>
@@ -45,39 +45,42 @@
 <script lang="js">
 import marked from 'marked';
 
-import QuestionAPI from '../apis/QuestionAPI';
+import Question from '../models/Question';
+import TrainingAPI from '../apis/TrainingAPI';
 
-
-// $('.answer').on('click', function (e) {
-//     $('.answer').removeClass('answer-selection');
-//     $(e.currentTarget).addClass('answer-selection');
-//     $('input[name="selected_id"]').val($(e.currentTarget).data('answer-id'));
-//     $('button[type="submit"]').removeAttr('disabled');
-// });
 
 export default {
     name: 'TrainingQuestionPage',
     components: {
     },
     data: function () {
+        const question = Question.load_data(
+            JSON.parse(document.getElementById('questions').dataset.value),
+            JSON.parse(document.getElementById('answers').dataset.value)
+        );
         return {
             selected_answer: null,
-            question: JSON.parse(document.getElementById('questions').dataset.value),
-            answers: JSON.parse(document.getElementById('answers').dataset.value),
+            question: question,
             start_at: JSON.parse(document.getElementById('start_at').dataset.value),
+            didSelected: false,
         }
     },
     async beforeMount() {
     },
     methods: {
+        selectAnswer(answerId) {
+            this.question.selectAnswer(answerId);
+            this.didSelected = true;
+        },
         async sendSelection() {
-            const regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i
+            const regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/trainings\/([0-9a-z\-]+)\/question+/i
             const url = window.location.href;
             const workbookId = url.match(regex)[1];
-            const token = document.getElementById('token').dataset.value
-            const api = new QuestionAPI(token);
-            api.createQuestion(workbookId, this.question).then(data => {
-                window.location.href = window.location.href.replace('/questions/new', '');
+            const trainingId = url.match(regex)[2];
+            const token = document.getElementById('token').dataset.value;
+            const api = new TrainingAPI(token);
+            api.createSelection(workbookId, trainingId, this.question, this.start_at).then(selection => {
+                window.location.href = `/workbooks/${workbookId}/trainings/${trainingId}/selections/${selection.training_selection_id}/`;
             }).catch(error => {
                 console.log(error);
             })

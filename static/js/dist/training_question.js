@@ -2159,38 +2159,41 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var marked__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
 /* harmony import */ var marked__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(marked__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _apis_QuestionAPI__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../apis/QuestionAPI */ "./src/apis/QuestionAPI.js");
+/* harmony import */ var _models_Question__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/Question */ "./src/models/Question.js");
+/* harmony import */ var _apis_TrainingAPI__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../apis/TrainingAPI */ "./src/apis/TrainingAPI.js");
 
- // $('.answer').on('click', function (e) {
-//     $('.answer').removeClass('answer-selection');
-//     $(e.currentTarget).addClass('answer-selection');
-//     $('input[name="selected_id"]').val($(e.currentTarget).data('answer-id'));
-//     $('button[type="submit"]').removeAttr('disabled');
-// });
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'TrainingQuestionPage',
   components: {},
   data: function () {
+    const question = _models_Question__WEBPACK_IMPORTED_MODULE_1__["default"].load_data(JSON.parse(document.getElementById('questions').dataset.value), JSON.parse(document.getElementById('answers').dataset.value));
     return {
       selected_answer: null,
-      question: JSON.parse(document.getElementById('questions').dataset.value),
-      answers: JSON.parse(document.getElementById('answers').dataset.value),
-      start_at: JSON.parse(document.getElementById('start_at').dataset.value)
+      question: question,
+      start_at: JSON.parse(document.getElementById('start_at').dataset.value),
+      didSelected: false
     };
   },
 
   async beforeMount() {},
 
   methods: {
+    selectAnswer(answerId) {
+      this.question.selectAnswer(answerId);
+      this.didSelected = true;
+    },
+
     async sendSelection() {
-      const regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i;
+      const regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/trainings\/([0-9a-z\-]+)\/question+/i;
       const url = window.location.href;
       const workbookId = url.match(regex)[1];
+      const trainingId = url.match(regex)[2];
       const token = document.getElementById('token').dataset.value;
-      const api = new _apis_QuestionAPI__WEBPACK_IMPORTED_MODULE_1__["default"](token);
-      api.createQuestion(workbookId, this.question).then(data => {
-        window.location.href = window.location.href.replace('/questions/new', '');
+      const api = new _apis_TrainingAPI__WEBPACK_IMPORTED_MODULE_2__["default"](token);
+      api.createSelection(workbookId, trainingId, this.question, this.start_at).then(selection => {
+        window.location.href = `/workbooks/${workbookId}/trainings/${trainingId}/selections/${selection.training_selection_id}/`;
       }).catch(error => {
         console.log(error);
       });
@@ -2251,103 +2254,39 @@ class API {
 
 /***/ }),
 
-/***/ "./src/apis/QuestionAPI.js":
+/***/ "./src/apis/TrainingAPI.js":
 /*!*********************************!*\
-  !*** ./src/apis/QuestionAPI.js ***!
+  !*** ./src/apis/TrainingAPI.js ***!
   \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ QuestionAPI)
+/* harmony export */   "default": () => (/* binding */ TrainingAPI)
 /* harmony export */ });
 /* harmony import */ var _API__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./API */ "./src/apis/API.js");
-/* harmony import */ var _models_Question__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/Question */ "./src/models/Question.js");
 
-
-class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_0__["default"] {
-  async getQuestion(workbookId, questionId) {
-    const path = `/api/workbooks/${workbookId}/questions/${questionId}/`;
-    const resp = await this.get(path, {});
-    const questionData = resp.data.question;
-    const question = new _models_Question__WEBPACK_IMPORTED_MODULE_1__["default"]();
-    question.question_id = questionData.question_id;
-    question.title = questionData.title;
-    question.sentense = questionData.sentense;
-    question.chapter = questionData.chapter;
-    question.correct_index = questionData.correct_index;
-    question.commentary = questionData.commentary;
-    question.answers = questionData.answers;
-    return question;
-  }
-
-  async createQuestion(workbookId, question) {
-    const path = `/api/workbooks/${workbookId}/questions/`;
-    const {
-      title,
-      sentense,
-      chapter_id,
-      correct_index,
-      commentary
-    } = question;
-    const data = {
-      title,
-      sentense,
-      chapter_id,
-      correct_index,
-      commentary
-    };
-    data['answers'] = [];
+class TrainingAPI extends _API__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  async createSelection(workbookId, trainingId, question, started_at) {
+    var selected_id = undefined;
 
     for (var answer of question.answers) {
-      const {
-        index,
-        sentense
-      } = answer;
-      const answerForm = {
-        index,
-        sentense
-      };
-      data['answers'].push(answerForm);
+      if (answer.selected) {
+        selected_id = answer.answer_id;
+      }
     }
 
-    return this.post(path, data);
-  }
-
-  async editQuestion(workbookId, question) {
-    const path = `/api/workbooks/${workbookId}/questions/${question.question_id}/`;
     const {
-      title,
-      sentense,
-      chapter_id,
-      correct_index,
-      commentary
+      question_id
     } = question;
+    const path = `/api/workbooks/${workbookId}/trainings/${trainingId}/selections/`;
     const data = {
-      title,
-      sentense,
-      chapter_id,
-      correct_index,
-      commentary
+      selected_id,
+      question_id,
+      started_at
     };
-    data['answers'] = [];
-
-    for (var answer of question.answers) {
-      const {
-        answer_id,
-        index,
-        sentense
-      } = answer;
-      const answerForm = {
-        answer_id,
-        index,
-        sentense
-      };
-      data['answers'].push(answerForm);
-    }
-
-    return this.post(path, data);
+    return this.post(path, data).then(response => response.data.selection);
   }
 
 }
@@ -2369,6 +2308,7 @@ class Answer {
   constructor(index) {
     this.index = index;
     this.sentense = '';
+    this.selected = false;
   }
 
 }
@@ -2384,9 +2324,10 @@ class Answer {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Question)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _Answer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Answer */ "./src/models/Answer.js");
+
 
 class Question {
   constructor(size) {
@@ -2429,7 +2370,37 @@ class Question {
     }
   }
 
+  selectAnswer(answerId) {
+    for (var answer of this.answers) {
+      answer.selected = false;
+
+      if (answer.answer_id == answerId) {
+        answer.selected = true;
+      }
+    }
+  }
+
 }
+
+Question.load_data = function (question_data, answers_data) {
+  const question = new Question(answers_data.length);
+  question.question_id = question_data.question_id;
+  question.sentense = question_data.sentense;
+  question.image_urls = question_data.image_urls;
+  question.answers = [];
+
+  for (var answer_data of answers_data) {
+    const answer = new _Answer__WEBPACK_IMPORTED_MODULE_0__["default"](answer_data.index);
+    answer.answer_id = answer_data.answer_id;
+    answer.title = answer_data.title;
+    answer.sentense = answer_data.sentense;
+    question.answers.push(answer);
+  }
+
+  return question;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Question);
 
 /***/ }),
 
@@ -5574,13 +5545,19 @@ var render = function() {
                 _c(
                   "div",
                   { staticClass: "row card-deck" },
-                  _vm._l(_vm.answers, function(answer) {
+                  _vm._l(_vm.question.answers, function(answer) {
                     return _c(
                       "div",
                       {
                         key: answer.answer_id,
-                        staticClass: "card answer pt-2 pb-2 py-md-2 py-2 col-6",
-                        attrs: { "data-answer-id": answer.answer_id }
+                        staticClass: "card answer col-md-5 m-lg-1 col-12 m-1",
+                        class: { "answer-selection": answer.selected },
+                        attrs: { "data-answer-id": answer.answer_id },
+                        on: {
+                          click: function($event) {
+                            return _vm.selectAnswer(answer.answer_id)
+                          }
+                        }
                       },
                       [
                         _c("div", { staticClass: "card-body" }, [
@@ -5603,7 +5580,7 @@ var render = function() {
                     "button",
                     {
                       staticClass: "btn btn-primary btn-block btn-lg",
-                      attrs: { type: "submit", disabled: "" },
+                      attrs: { type: "submit", disabled: !_vm.didSelected },
                       on: {
                         click: function($event) {
                           $event.preventDefault()

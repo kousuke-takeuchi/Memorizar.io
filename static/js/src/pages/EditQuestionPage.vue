@@ -112,9 +112,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            {% csrf_token %}
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                            <button type="submit" class="btn btn-danger" id="start-delete-btn">削除</button>
+                            <button type="submit" class="btn btn-danger" id="start-delete-btn" @click.prevent="onClickDelete">削除</button>
                         </div>
                     </form>
                 </div>
@@ -166,6 +165,13 @@ export default {
         async editQuestion() {
             this.api.editQuestion(this.workbookId, this.question).then(data => {
                 window.location.href = window.location.href.replace('/questions/new', '');
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+        async onClickDelete() {
+            this.api.deleteQuestion(this.workbookId, this.question).then(data => {
+                window.location.href = `/workbooks/${this.workbookId}/`;
             }).catch(error => {
                 console.log(error);
             })

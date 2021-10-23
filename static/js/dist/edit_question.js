@@ -2230,6 +2230,14 @@ __webpack_require__.r(__webpack_exports__);
       }).catch(error => {
         console.log(error);
       });
+    },
+
+    async onClickDelete() {
+      this.api.deleteQuestion(this.workbookId, this.question).then(data => {
+        window.location.href = `/workbooks/${this.workbookId}/`;
+      }).catch(error => {
+        console.log(error);
+      });
     }
 
   }
@@ -2385,6 +2393,11 @@ class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_0__["default"] {
     return this.post(path, data);
   }
 
+  async deleteQuestion(workbookId, question) {
+    const path = `/api/workbooks/${workbookId}/questions/${question.question_id}/delete/`;
+    return this.post(path);
+  }
+
 }
 
 /***/ }),
@@ -2404,6 +2417,7 @@ class Answer {
   constructor(index) {
     this.index = index;
     this.sentense = '';
+    this.selected = false;
   }
 
 }
@@ -2419,9 +2433,10 @@ class Answer {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Question)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _Answer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Answer */ "./src/models/Answer.js");
+
 
 class Question {
   constructor(size) {
@@ -2464,7 +2479,37 @@ class Question {
     }
   }
 
+  selectAnswer(answerId) {
+    for (var answer of this.answers) {
+      answer.selected = false;
+
+      if (answer.answer_id == answerId) {
+        answer.selected = true;
+      }
+    }
+  }
+
 }
+
+Question.load_data = function (question_data, answers_data) {
+  const question = new Question(answers_data.length);
+  question.question_id = question_data.question_id;
+  question.sentense = question_data.sentense;
+  question.image_urls = question_data.image_urls;
+  question.answers = [];
+
+  for (var answer_data of answers_data) {
+    const answer = new _Answer__WEBPACK_IMPORTED_MODULE_0__["default"](answer_data.index);
+    answer.answer_id = answer_data.answer_id;
+    answer.title = answer_data.title;
+    answer.sentense = answer_data.sentense;
+    question.answers.push(answer);
+  }
+
+  return question;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Question);
 
 /***/ }),
 
@@ -6767,7 +6812,65 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
-    _vm._m(3)
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "deleteQuestionModal",
+          tabindex: "-1",
+          "aria-labelledby": "delete-modal",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _vm._m(3),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: {
+                  method: "POST",
+                  action:
+                    "{% url 'workbooks:question_delete' workbook_id=workbook.workbook_id question_id=question.question_id %}"
+                }
+              },
+              [
+                _vm._m(4),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button", "data-bs-dismiss": "modal" }
+                    },
+                    [_vm._v("キャンセル")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-danger",
+                      attrs: { type: "submit", id: "start-delete-btn" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.onClickDelete.apply(null, arguments)
+                        }
+                      }
+                    },
+                    [_vm._v("削除")]
+                  )
+                ])
+              ]
+            )
+          ])
+        ])
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -6833,85 +6936,32 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "modal fade",
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "delete-modal" } }, [
+        _vm._v("チャプターを削除")
+      ]),
+      _vm._v(" "),
+      _c("button", {
+        staticClass: "btn-close",
         attrs: {
-          id: "deleteQuestionModal",
-          tabindex: "-1",
-          "aria-labelledby": "delete-modal",
-          "aria-hidden": "true"
+          type: "button",
+          "data-bs-dismiss": "modal",
+          "aria-label": "Close"
         }
-      },
-      [
-        _c("div", { staticClass: "modal-dialog" }, [
-          _c("div", { staticClass: "modal-content" }, [
-            _c("div", { staticClass: "modal-header" }, [
-              _c(
-                "h5",
-                { staticClass: "modal-title", attrs: { id: "delete-modal" } },
-                [_vm._v("チャプターを削除")]
-              ),
-              _vm._v(" "),
-              _c("button", {
-                staticClass: "btn-close",
-                attrs: {
-                  type: "button",
-                  "data-bs-dismiss": "modal",
-                  "aria-label": "Close"
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c(
-              "form",
-              {
-                attrs: {
-                  method: "POST",
-                  action:
-                    "{% url 'workbooks:question_delete' workbook_id=workbook.workbook_id question_id=question.question_id %}"
-                }
-              },
-              [
-                _c("div", { staticClass: "modal-body" }, [
-                  _c("p", [
-                    _vm._v(
-                      "一度削除すると元に戻すことはできません。(実施履歴は残ります)"
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("p", [_vm._v("削除してもよろしいですか？")])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "modal-footer" }, [
-                  _vm._v(
-                    "\n                        {% csrf_token %}\n                        "
-                  ),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-secondary",
-                      attrs: { type: "button", "data-bs-dismiss": "modal" }
-                    },
-                    [_vm._v("キャンセル")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-danger",
-                      attrs: { type: "submit", id: "start-delete-btn" }
-                    },
-                    [_vm._v("削除")]
-                  )
-                ])
-              ]
-            )
-          ])
-        ])
-      ]
-    )
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-body" }, [
+      _c("p", [
+        _vm._v("一度削除すると元に戻すことはできません。(実施履歴は残ります)")
+      ]),
+      _vm._v(" "),
+      _c("p", [_vm._v("削除してもよろしいですか？")])
+    ])
   }
 ]
 render._withStripped = true

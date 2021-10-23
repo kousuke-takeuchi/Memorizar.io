@@ -1,3 +1,5 @@
+import time
+
 from django.utils import timezone
 
 from rest_framework import serializers
@@ -129,8 +131,8 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class TrainingSerializer(serializers.ModelSerializer):
-    chapters = ChapterSerializer(many=True)
-    questions = QuestionSerializer(many=True)
+    chapter_ids = ChapterSerializer(many=True, write_only=True)
+    questions = QuestionSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Training
@@ -163,14 +165,21 @@ class TrainingQuestionSerializer(serializers.ModelSerializer):
 
 
 class TrainingSelectionSerializer(serializers.ModelSerializer):
-    selected_id = serializers.CharField(required=True)
-    question_id = serializers.CharField(required=True)
-    started_at = serializers.IntegerField(required=True)
+    selected_id = serializers.CharField(required=True, write_only=True)
+    question_id = serializers.CharField(required=True, write_only=True)
+    started_at = serializers.FloatField(required=True, write_only=True)
+
+    training = TrainingSerializer(read_only=True)
+    question = QuestionSerializer(read_only=True)
+    answer = AnswerSerializer(read_only=True)
 
     class Meta:
-        model = models.Training
-        read_only_fields = ()
-        write_only_fields = ('selected_id', 'question_id', 'started_id',)
+        model = models.TrainingSelection
+        read_only_fields = (
+            'training_selection_id', 'training', 'question',
+            'answer', 'correct', 'duration',
+        )
+        write_only_fields = ('selected_id', 'question_id', 'started_at',)
         fields = read_only_fields + write_only_fields + ()
         extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
     
@@ -190,7 +199,7 @@ class TrainingSelectionSerializer(serializers.ModelSerializer):
 
     def validate_started_at(self, started_at):
         current_time = int(timezone.now().timestamp())
-        if started_at <= current_time:
+        if started_at >= current_time:
             raise serializers.ValidationError('過去のUnixtimeを指定してください')
         return current_time - started_at
 
@@ -203,7 +212,7 @@ class TrainingSelectionSerializer(serializers.ModelSerializer):
             question=question,
             answer=selected_answer,
             correct=selected_answer.is_true,
-            duration=validated_data['started_at'],
+            duration=time.time() - validated_data['started_at'],
         )
 
         return training_selection

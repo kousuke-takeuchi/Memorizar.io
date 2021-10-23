@@ -44,6 +44,22 @@ class Chapter(BaseModel, models.Model):
         return str(self.title)
 
 
+class QuestionGroup(BaseModel, models.Model):
+    question_group_id = models.UUIDField('問題グループID', default=uuid.uuid4, unique=True, db_index=True)
+    workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
+    title = models.CharField('タイトル', max_length=250, db_index=True)
+    description = models.TextField('問題説明文')
+
+    objects = managers.QuestionGroupManager()
+
+    class Meta:
+        verbose_name = 'question_groups'
+        verbose_name_plural = 'QuestionGroup'
+
+    def __str__(self):
+        return str(self.title)
+
+
 class Question(BaseModel, models.Model):
     question_id = models.CharField('問題識別子', default=uuid.uuid4, max_length=100, unique=True, db_index=True)
     chapter = models.ForeignKey('workbooks.Chapter', db_index=True, on_delete=models.CASCADE, null=True, default=None, blank=True)

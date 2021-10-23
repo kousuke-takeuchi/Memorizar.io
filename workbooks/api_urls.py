@@ -13,7 +13,8 @@ urlpatterns = [
     path('<str:workbook_id>/chapters/<str:chapter_id>/', views.ChapterDetailView.as_view(), name='chapter_detail'),
     path('<str:workbook_id>/questions/', views.QuestionListView.as_view(), name='quetion_list'),
     path('<str:workbook_id>/questions/<str:question_id>/', views.QuestionDetailView.as_view(), name='quetion_detail'),
+    path('<str:workbook_id>/questions/<str:question_id>/delete/', views.QuestionDeleteView.as_view(), name='quetion_delete'),
     path('<str:workbook_id>/trainings/', views.TrainingListView.as_view(), name='training_list'),
-    path('<str:workbook_id>/trainings/<str:training_id>/questions', views.TrainingQuestionListView.as_view(), name='training_question_list'),
-    path('<str:workbook_id>/trainings/<str:training_id>/selections', views.TrainingSelectionListView.as_view(), name='training_selection_list'),
+    path('<str:workbook_id>/trainings/<str:training_id>/questions/', views.TrainingQuestionListView.as_view(), name='training_question_list'),
+    path('<str:workbook_id>/trainings/<str:training_id>/selections/', views.TrainingSelectionListView.as_view(), name='training_selection_list'),
 ]

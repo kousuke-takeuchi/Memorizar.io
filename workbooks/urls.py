@@ -8,9 +8,6 @@ app_name = 'workbooks'
 
 urlpatterns = [
     path('', views.WorkbookListView.as_view(), name='list'),
-    path('trainings/<str:training_id>/question', views.WorkbookTrainingQuestionView.as_view(), name='training_question'),
-    path('trainings/<str:training_id>/selections/<str:selection_id>', views.WorkbookTrainingAnswerView.as_view(), name='training_answer'),
-    path('trainings/<str:training_id>/', views.WorkbookTrainingResultView.as_view(), name='training_result'),
     path('new/', views.WorkbookCreateView.as_view(), name='create'),
     path('import/', views.WorkbookImportView.as_view(), name='import'),
     path('<str:workbook_id>/', views.WorkbookDetailView.as_view(), name='detail'),
@@ -23,4 +20,8 @@ urlpatterns = [
     path('<str:workbook_id>/chapters/<str:chapter_id>/edit/', views.ChapterEditView.as_view(), name='chapter_edit'),
     path('<str:workbook_id>/chapters/<str:chapter_id>/delete/', views.ChapterDeleteView.as_view(), name='chapter_delete'),
     path('<str:workbook_id>/trainings/select_chapters', views.WorkbookTrainingSelectChapterView.as_view(), name='training_select_chapter'),
+    path('<str:workbook_id>/trainings/<str:training_id>/', views.WorkbookTrainingResultView.as_view(), name='training_result'),
+    path('<str:workbook_id>/trainings/<str:training_id>/question/', views.WorkbookTrainingQuestionView.as_view(), name='training_question'),
+    path('<str:workbook_id>/trainings/<str:training_id>/selections/<str:selection_id>/', views.WorkbookTrainingAnswerView.as_view(), name='training_answer'),
+    
 ]

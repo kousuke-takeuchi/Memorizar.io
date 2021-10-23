@@ -1,7 +1,7 @@
 import Answer from './Answer';
 
 
-export default class Question {
+class Question {
     constructor(size) {
         this.question_id = null;
         this.title = null;
@@ -39,4 +39,34 @@ export default class Question {
             }
         }
     }
+
+    selectAnswer(answerId) {
+        for (var answer of this.answers) {
+            answer.selected = false;
+            if (answer.answer_id == answerId) {
+                answer.selected = true;
+            }
+        }
+    }
 }
+
+
+Question.load_data = function (question_data, answers_data) {
+    const question = new Question(answers_data.length);
+    question.question_id = question_data.question_id;
+    question.sentense = question_data.sentense;
+    question.image_urls = question_data.image_urls;
+
+    question.answers = [];
+    for (var answer_data of answers_data) {
+        const answer = new Answer(answer_data.index);
+        answer.answer_id = answer_data.answer_id;
+        answer.title = answer_data.title;
+        answer.sentense = answer_data.sentense;
+        question.answers.push(answer);
+    }
+
+    return question;
+}
+
+export default Question;

@@ -82,4 +82,9 @@ export default class QuestionAPI extends API {
         }
         return this.post(path, data);
     }
+
+    async deleteQuestion(workbookId, question) {
+        const path = `/api/workbooks/${workbookId}/questions/${question.question_id}/delete/`;
+        return this.post(path);
+    }
 }
