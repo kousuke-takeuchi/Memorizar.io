@@ -18,13 +18,15 @@
                 <div class="row">
                     <div class="mb-3 col-12 col-md-6">
                         <label class="form-label" for="title">Title</label>
-                        <input type="text" v-model="question.title" name="title" class="form-control" placeholder="タイトル" required>
+                        <input type="text" v-model="question.title" name="title" class="form-control" :class="{'is-invalid': errors.title}" placeholder="タイトル" required>
+                        <div id="validationTitleFeedback" class="invalid-feedback" v-if="errors.title">{{ errors.title }}</div>
                     </div>
                 </div>
 
                 <div class="mb-12 col-12 col-md-12">
                     <label class="form-label" for="sentense">Sentense</label>
-                    <textarea name="sentense" cols="30" rows="10" class="form-control" placeholder="問題本文" v-model="question.sentense" required></textarea>
+                    <textarea name="sentense" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.description}" placeholder="問題本文" v-model="question.sentense" required></textarea>
+                    <div id="validationDescriptionFeedback" class="invalid-feedback" v-if="errors.description">{{ errors.description }}</div>
                 </div>
 
                 <div class="row">
@@ -73,7 +75,8 @@
                 
                 <div class="mb-3 col-12 col-md-12">
                     <label class="form-label" for="commentary">Commentary</label>
-                    <textarea name="commentary" cols="30" rows="10" class="form-control" placeholder="問題本文" v-model="question.commentary" required></textarea>
+                    <textarea name="commentary" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.commentary}" placeholder="問題本文" v-model="question.commentary" required></textarea>
+                    <div id="validationCommentaryFeedback" class="invalid-feedback" v-if="errors.commentary">{{ errors.commentary }}</div>
                 </div>
 
                 <div class="custom-file mb-3 col-12 col-md-6">
@@ -112,6 +115,7 @@ export default {
         return {
             question: new Question(),
             chapters: JSON.parse(document.getElementById('chapters').dataset.value),
+            errors: {},
         }
     },
     methods: {
@@ -127,7 +131,10 @@ export default {
             api.createQuestion(workbookId, this.question).then(data => {
                 window.location.href = window.location.href.replace('/questions/new', '');
             }).catch(error => {
-                console.log(error);
+                this.errors = {};
+                for (let error of error.data.errors) {
+                    this.errors[error.field] = error.message;
+                }
             })
         }
     },
