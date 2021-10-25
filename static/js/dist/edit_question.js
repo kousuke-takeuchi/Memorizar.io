@@ -2168,7 +2168,12 @@ __webpack_require__.r(__webpack_exports__);
 
   async beforeMount() {},
 
-  methods: {}
+  methods: {
+    onClickDelete(index) {
+      this.$emit('clickDelete', index);
+    }
+
+  }
 });
 
 /***/ }),
@@ -2476,7 +2481,7 @@ class Question {
 
   deleteAnswer(index) {
     if (this.size > 0) {
-      this.answers = this.answers.splice(index);
+      this.answers.splice(index - 1, 1);
       this.size--;
 
       for (var i = 0; i < this.size; i++) {
@@ -6415,9 +6420,70 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "mb-3 col-12 col-md-6" }, [
     _c("div", { staticClass: "mb-3 col-12 col-md-12" }, [
-      _c("label", { staticClass: "form-label", attrs: { for: "sentense" } }, [
-        _vm._v("(" + _vm._s(_vm.answer.index) + ")")
-      ]),
+      _c(
+        "label",
+        {
+          staticClass: "form-label",
+          staticStyle: { width: "100%" },
+          attrs: { for: "sentense" }
+        },
+        [
+          _vm._v(
+            "\n            (" + _vm._s(_vm.answer.index) + ")\n            "
+          ),
+          _c(
+            "span",
+            {
+              staticClass: "dropdown dropstart",
+              staticStyle: { float: "right" }
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "text-muted text-decoration-none",
+                  attrs: {
+                    href: "#",
+                    role: "button",
+                    id: "question-menu-" + _vm.answer.index,
+                    "data-bs-toggle": "dropdown",
+                    "data-bs-offset": "-20,20",
+                    "aria-expanded": "false"
+                  }
+                },
+                [_c("i", { staticClass: "fe fe-more-vertical" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  staticClass: "dropdown-menu",
+                  attrs: {
+                    "aria-labelledby": "question-menu-" + _vm.answer.index
+                  }
+                },
+                [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "dropdown-item",
+                      on: {
+                        click: function($event) {
+                          return _vm.onClickDelete(_vm.answer.index)
+                        }
+                      }
+                    },
+                    [
+                      _c("i", { staticClass: "fe fe-edit dropdown-item-icon" }),
+                      _vm._v("削除")
+                    ]
+                  )
+                ]
+              )
+            ]
+          )
+        ]
+      ),
       _vm._v(" "),
       _c("textarea", {
         directives: [

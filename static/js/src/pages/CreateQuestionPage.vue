@@ -51,7 +51,7 @@
                 <p class="mb-4">回答選択肢 (4つ)</p>
 
                 <draggable class="row" v-model="question.answers" @change="onChangedAnswers">
-                    <AnswerForm :answer="answer" :key="answer.index" v-for="answer in question.answers" />
+                    <AnswerForm :answer="answer" :key="answer.index" v-for="answer in question.answers" @clickDelete="deleteQuestion" />
                 </draggable>
 
                 <div class="row">
@@ -139,6 +139,9 @@ export default {
     methods: {
         onChangedAnswers() {
             this.question.reindex();
+        },
+        deleteQuestion(index) {
+            this.question.deleteAnswer(index);
         },
         async createQuestion() {
             this.api.createQuestion(workbookId, this.question).then(data => {

@@ -2367,7 +2367,7 @@ class Question {
 
   deleteAnswer(index) {
     if (this.size > 0) {
-      this.answers = this.answers.splice(index);
+      this.answers.splice(index - 1, 1);
       this.size--;
 
       for (var i = 0; i < this.size; i++) {
