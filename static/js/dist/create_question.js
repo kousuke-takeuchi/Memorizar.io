@@ -2200,24 +2200,40 @@ __webpack_require__.r(__webpack_exports__);
     draggable: (vuedraggable__WEBPACK_IMPORTED_MODULE_0___default())
   },
   data: function () {
+    let regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i;
+    let url = window.location.href;
+    let workbookId = url.match(regex)[1];
+    let token = document.getElementById('token').dataset.value;
+    let api = new _apis_QuestionAPI__WEBPACK_IMPORTED_MODULE_3__["default"](token);
     return {
+      workbookId: workbookId,
+      api: api,
       question: new _models_Question__WEBPACK_IMPORTED_MODULE_1__["default"](),
       chapters: JSON.parse(document.getElementById('chapters').dataset.value),
       errors: {}
     };
   },
+
+  beforeMount() {
+    // question_idが指定されている場合は複製する
+    let uri = window.location.search.substring(1);
+    let params = new URLSearchParams(uri);
+    let questionId = params.get("question_id");
+
+    if (questionId) {
+      this.api.getQuestion(this.workbookId, questionId).then(question => {
+        this.question = question;
+      });
+    }
+  },
+
   methods: {
     onChangedAnswers() {
       this.question.reindex();
     },
 
     async createQuestion() {
-      const regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i;
-      const url = window.location.href;
-      const workbookId = url.match(regex)[1];
-      const token = document.getElementById('token').dataset.value;
-      const api = new _apis_QuestionAPI__WEBPACK_IMPORTED_MODULE_3__["default"](token);
-      api.createQuestion(workbookId, this.question).then(data => {
+      this.api.createQuestion(workbookId, this.question).then(data => {
         window.location.href = window.location.href.replace('/questions/new', '');
       }).catch(error => {
         this.errors = {};

@@ -163,17 +163,10 @@ class QuestionCreateView(mixins.BaseMixin, View):
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
         return workbook
     
-    def get_question(self, question_id):
-        if question_id is None:
-            return None
-        return get_object_or_404(models.Question, question_id=question_id)
-    
     def get(self, request, workbook_id):
         workbook = self.get_querysets(workbook_id)
-        # question_idが指定されている場合は、問題を複製
-        original_question = self.get_question(request.GET.get('question_id'))
         form = forms.QuestionCreateForm()
-        context = dict(original_question=original_question, workbook=workbook, form=form)
+        context = dict(workbook=workbook, form=form)
         return render(request, self.template_name, context)
     
     def post(self, request, workbook_id):
