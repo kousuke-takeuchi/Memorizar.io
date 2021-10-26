@@ -2186,7 +2186,7 @@ __webpack_require__.r(__webpack_exports__);
     },
 
     async sendSelection() {
-      const regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/trainings\/([0-9a-z\-]+)\/question+/i;
+      const regex = /.*\/workbooks\/([0-9a-z\-]+)\/trainings\/([0-9a-z\-]+)\/question+/i;
       const url = window.location.href;
       const workbookId = url.match(regex)[1];
       const trainingId = url.match(regex)[2];

@@ -112,7 +112,7 @@ export default {
         draggable,
     },
     data: function () {
-        let regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i
+        let regex = /.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i
         let url = window.location.href;
         let workbookId = url.match(regex)[1];
         let token = document.getElementById('token').dataset.value

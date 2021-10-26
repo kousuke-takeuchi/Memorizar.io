@@ -139,7 +139,7 @@ export default {
         draggable,
     },
     data: function () {
-        const regex = /http:\/\/.*\/workbooks\/([0-9a-z\-]+)\/questions\/([0-9a-z\-]+)\/edit\/+/i
+        const regex = /.*\/workbooks\/([0-9a-z\-]+)\/questions\/([0-9a-z\-]+)\/edit\/+/i
         const url = window.location.href;
         const workbookId = url.match(regex)[1];
         const questionId = url.match(regex)[2];
