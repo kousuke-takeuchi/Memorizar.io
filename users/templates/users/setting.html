@@ -20,12 +20,18 @@
 
                 <div class="mb-3 col-12 col-md-6">
                     <label class="form-label" for="first_name">Name</label>
-                    <input type="text" name="first_name" value="{{ request.user.first_name }}" class="form-control" placeholder="名前" required>
+                    <input type="text" name="first_name" value="{{ request.user.first_name }}" class="form-control{% if form.errors.first_name %} is-invalid{% endif %}" placeholder="名前" required>
+                    {% if form.errors.first_name %}
+                        <div id="validationTitleFeedback" class="invalid-feedback">{{ form.errors.first_name.0 }}</div>
+                    {% endif %}
                 </div>
 
                 <div class="mb-3 col-12 col-md-6">
                     <label class="form-label" for="email">Email</label>
-                    <input type="text" name="email" value="{{ request.user.email }}" class="form-control" placeholder="メールアドレス" required>
+                    <input type="text" name="email" value="{{ request.user.email }}" class="form-control{% if form.errors.email %} is-invalid{% endif %}" placeholder="メールアドレス" required>
+                    {% if form.errors.email %}
+                        <div id="validationTitleFeedback" class="invalid-feedback">{{ form.errors.email.0 }}</div>
+                    {% endif %}
                 </div>
 
                 <div class="col-12">
