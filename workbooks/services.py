@@ -230,13 +230,13 @@ class TrainingService:
             chapters = training.chapters.all()
             questions = models.Question.objects.filter(workbook=training.workbook)
         elif training.training_type == models.Training.TrainingTypes.REVIEW_MISTAKE:
-            # 間違えた問題のみ取得
-            chapters = models.Chapter.objects.filter(workbook=training.workbook)
+            # 選択されたチャプターから間違えた問題のみ取得
+            chapters = training.chapters.all()
             wrong_selections = models.TrainingSelection.objects.filter(training__workbook=training.workbook, correct=False).order_by('question').distinct()
             questions = [wrong_selection.question for wrong_selection in wrong_selections]
         elif training.training_type == models.Training.TrainingTypes.ORDERED:
-            # すべての問題を順番に実行
-            chapters = models.Chapter.objects.filter(workbook=training.workbook)
+            # 選択されたチャプターから問題を順番に実行
+            chapters = training.chapters.all()
             questions = models.Question.objects.filter(workbook=training.workbook).order_by('index')
         else:
             # 指定されない場合はすべてのチャプターから問題を取得

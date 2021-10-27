@@ -288,15 +288,15 @@ class WorkbookTrainingSelectChapterView(mixins.BaseMixin, View):
     # チャプターを関連付けて問題を開始
     def post(self, request, workbook_id):
         workbook = self.get_querysets(workbook_id)
-
-        form = forms.WorkbookTrainingSelectChapterForm(request.POST, context={'request': request, 'workbook': workbook})
+        training_type = request.GET.get('training_type')
+        form = forms.WorkbookTrainingSelectChapterForm(request.POST, context={'request': request, 'workbook': workbook, 'training_type': training_type})
         if not form.is_valid():
             chapters = models.Chapter.objects.filter(workbook=workbook)
             context = dict(form=form, chapters=chapters)
             return render(request, self.template_name, context)
         training = form.save()
         # 問題ページに移動
-        return redirect('workbooks:training_question', training_id=training.training_id)
+        return redirect('workbooks:training_question', workbook_id=training.workbook.workbook_id, training_id=training.training_id)
 
 
 class WorkbookTrainingQuestionView(mixins.BaseMixin, View):

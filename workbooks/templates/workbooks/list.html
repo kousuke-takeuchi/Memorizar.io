@@ -50,22 +50,14 @@
 										<td>
 											<button type="button" class="btn btn-primary btn-sm dropdown-toggle" id="startMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">開始</button>
 											<div class="dropdown-menu" aria-labelledby="startMenu">
-												<a href="{% url 'workbooks:training_select_chapter' workbook.workbook_id %}" class="dropdown-item">チャプターを選択</a>
-												<form method="POST" action="{% url 'workbooks:detail' workbook.workbook_id %}">
-													{% csrf_token %}
-													<input type="hidden" name="training_type" value="ORDR">
-													<button type="submit" class="dropdown-item">1問目から順に出題</button>
-												</form>
 												<form method="POST" action="{% url 'workbooks:detail' workbook.workbook_id %}">
 													{% csrf_token %}
 													<input type="hidden" name="training_type" value="RAND">
-													<button type="submit" class="dropdown-item">ランダムに出題</button>
+													<button type="submit" class="dropdown-item">すべての問題からランダムに出題</button>
 												</form>
-												<form method="POST" action="{% url 'workbooks:detail' workbook.workbook_id %}">
-													{% csrf_token %}
-													<input type="hidden" name="training_type" value="MIST">
-													<button type="submit" class="dropdown-item">間違えた問題から出題</button>
-												</form>
+												<a href="{% url 'workbooks:training_select_chapter' workbook.workbook_id %}" class="dropdown-item">ランダムに出題</a>
+												<a href="{% url 'workbooks:training_select_chapter' workbook.workbook_id %}?training_type=ORDR" class="dropdown-item">1問目から順に出題</a>
+												<a href="{% url 'workbooks:training_select_chapter' workbook.workbook_id %}?training_type=MIST" class="dropdown-item">間違えた問題から出題</a>
 											</div>
 										</td>
 									</tr>

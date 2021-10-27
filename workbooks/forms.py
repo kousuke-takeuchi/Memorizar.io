@@ -322,10 +322,13 @@ class WorkbookTrainingSelectChapterForm(forms.Form):
 
     
     def save(self):
+        training_type = self.context.get('training_type')
+        if not training_type:
+            training_type = models.Training.TrainingTypes.SELECT_CHAPTER
         training = models.Training.objects.create(
             workbook=self.context['workbook'],
             user=self.context['request'].user,
-            training_type=models.Training.TrainingTypes.SELECT_CHAPTER,
+            training_type=training_type,
         )
         # 関連するチャプターを保存
         for chapter in self.cleaned_data.get('chapter_ids'):
