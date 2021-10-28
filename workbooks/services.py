@@ -274,6 +274,7 @@ class TrainingService:
             return True
         
         # 10問解いた場合も終了
-        if len(rest_questions) > 9:
+        selected_questions = models.TrainingSelection.objects.filter(training=training)
+        if len(selected_questions) > 9:
             return True
         return False
