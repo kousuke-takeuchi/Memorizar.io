@@ -207,6 +207,13 @@ class TrainingSelectionSerializer(serializers.ModelSerializer):
         question = validated_data['question_id']
         selected_answer = validated_data['selected_id']
 
+        # 同じ実施内で同じ問題を解いた場合は、過去の選択を削除する
+        duplicated_selections = models.TrainingSelection.objects.filter(
+            training=self.context['training'],
+            question=question,
+        )
+        duplicated_selections.delete()
+
         training_selection = models.TrainingSelection.objects.create(
             training=self.context['training'],
             question=question,
