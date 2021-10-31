@@ -207,7 +207,29 @@ class WorkbookService:
         weeks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         dates = [weeks[date.weekday()] for date in dates]
         return (dates, learning_counts, correct_counts)
+    
 
+    def get_wrong_question(self, current_question_id=None):
+        wrong_questions = []
+        for selection in models.TrainingSelection.objects.filter(correct=False):
+            if not selection.question in wrong_questions:
+                wrong_questions.append(selection.question)
+        
+        if current_question_id:
+            current_question = models.Question.objects.get(current_question_id)
+            current_question_idx = None
+            for idx, question in enumerate(wrong_questions):
+                if wrong_questions.question_id == question.question_id:
+                    current_question_idx = idx
+                    break
+            wrong_questions = wrong_questions[idx:]
+        
+        if len(wrong_questions) > 1:
+            return wrong_questions[0], wrong_questions[1]
+        elif len(wrong_questions) > 0:
+            return wrong_questions[0], None
+        else:
+            return None, None
 
     def notify_success(self, user, title):
         # 表題

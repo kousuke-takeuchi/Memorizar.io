@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
+from django.urls import reverse
 
 from lib import mixins
 from . import models, forms, services
@@ -402,6 +403,7 @@ class WorkbookTrainingAnswerView(mixins.BaseMixin, View):
         # 次の問題に移動
         return redirect('workbooks:training_question', workbook_id=training_selection.training.workbook.workbook_id, training_id=training_selection.training.training_id)
 
+
 class WorkbookTrainingResultView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/result.html'
     
@@ -414,4 +416,32 @@ class WorkbookTrainingResultView(mixins.BaseMixin, View):
         true_rate = math.floor(100 * true_count / selection_count)
 
         context = dict(training=training, selection_count=selection_count, true_count=true_count, true_rate=true_rate)
+        return render(request, self.template_name, context)
+
+
+class WorkbookWrongView(mixins.BaseMixin, View):
+    template_name = 'workbooks/trainings/wrong.html'
+
+    def get_queryset(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def get(self, request, workbook_id):
+        workbook = self.get_queryset(workbook_id)
+        
+        service = services.WorkbookService()
+        question, next_question = service.get_wrong_question(current_question_id=self.request.GET.get('qid'))
+
+        # 間違えた問題がない場合
+        if not question:
+            return redirect('workbooks:detail', kwargs=dict(workbook_id=workbook.workbook_id))
+
+        answers = models.Answer.objects.filter(question=question)
+
+        next_url = None
+        if next_question:
+            next_url = reverse('workbooks:wrongs', kwargs=dict(workbook_id=workbook.workbook_id))
+            next_url = '{}?qid={}'.format(next_url, next_question.question_id)
+
+        context = dict(workbook=workbook, question=question, answers=answers, next_url=next_url)
         return render(request, self.template_name, context)
