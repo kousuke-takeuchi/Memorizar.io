@@ -215,17 +215,17 @@ class WorkbookService:
         return (dates, learning_counts, correct_counts)
     
 
-    def get_wrong_question(self, current_question_id=None):
+    def get_wrong_question(self, workbook, current_question_id=None):
         wrong_questions = []
-        for selection in models.TrainingSelection.objects.filter(correct=False):
+        for selection in models.TrainingSelection.objects.filter(training__workbook=workbook, correct=False):
             if not selection.question in wrong_questions:
                 wrong_questions.append(selection.question)
         
         if current_question_id:
-            current_question = models.Question.objects.get(current_question_id)
+            current_question = models.Question.objects.get(question_id=current_question_id)
             current_question_idx = None
             for idx, question in enumerate(wrong_questions):
-                if wrong_questions.question_id == question.question_id:
+                if current_question.question_id == question.question_id:
                     current_question_idx = idx
                     break
             wrong_questions = wrong_questions[current_question_idx:]

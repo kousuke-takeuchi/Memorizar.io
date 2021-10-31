@@ -430,7 +430,7 @@ class WorkbookWrongView(mixins.BaseMixin, View):
         workbook = self.get_queryset(workbook_id)
         
         service = services.WorkbookService()
-        question, next_question = service.get_wrong_question(current_question_id=self.request.GET.get('qid'))
+        question, next_question = service.get_wrong_question(workbook, current_question_id=self.request.GET.get('qid'))
 
         # 間違えた問題がない場合
         if not question:
