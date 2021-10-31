@@ -17,7 +17,7 @@
 					<div class="card-body">
 						<div class="row card-deck">
 							{% for answer in answers %}
-								<div class="card answer answer-success col-md-5 m-lg-1 col-12 m-1">
+								<div class="card answer {% if answer.is_true %}answer-success{% endif %} col-md-5 m-lg-1 col-12 m-1">
 									<div class="card-body">
 										<h5 class="card-title">{{ answer.title }}</h5>
 										<p class="card-text">{{ answer.sentense }}</p>
@@ -29,7 +29,7 @@
 						<div class="col-12 pb-4 py-md-4 py-4">
 							<h3 class="mb-2">解説</h3>
 							<span id="commentary">{{ question.commentary }}</span>
-							{% if question.commentary_image_urls %}
+							{% if question.commentary_image_urls.0 %}
                                 <div class="mb-3">
                                     <img src="{{ question.commentary_image_urls.0 }}" style="max-height: 300px; max-width: 100%;" />
                                 </div>
