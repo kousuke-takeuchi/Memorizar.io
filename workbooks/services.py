@@ -180,9 +180,15 @@ class WorkbookService:
             # 実施回数
             learning_count = models.TrainingSelection.objects.filter(question__chapter=chapter).distinct('training').count()
             # 実施率 = 実施回数 / 問題数
-            training_rate = training_question_count / question_count
+            if question_count > 0:
+                training_rate = training_question_count / question_count
+            else:
+                training_rate = 0
             # 正解率 = 正解数 / 実施回数
-            correct_rate = correct_count / training_count
+            if training_count:
+                correct_rate = correct_count / training_count
+            else:
+                correct_rate = 0
 
             chapters_data[chapter] = {
                 'learning_count': learning_count,
@@ -222,7 +228,7 @@ class WorkbookService:
                 if wrong_questions.question_id == question.question_id:
                     current_question_idx = idx
                     break
-            wrong_questions = wrong_questions[idx:]
+            wrong_questions = wrong_questions[current_question_idx:]
         
         if len(wrong_questions) > 1:
             return wrong_questions[0], wrong_questions[1]
