@@ -19,6 +19,7 @@ module.exports = {
   entry: {
     create_question: './src/create_question.js',
     edit_question: './src/edit_question.js',
+    scan_question: './src/scan_question.js',
     training_question: './src/training_question.js',
     training_answer: './src/training_answer.js',
   },

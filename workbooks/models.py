@@ -159,6 +159,7 @@ class TrainingSelection(BaseModel, models.Model):
     question = models.ForeignKey('workbooks.Question', db_index=True, on_delete=models.CASCADE)
     answer = models.ForeignKey('workbooks.Answer', db_index=True, on_delete=models.CASCADE)
     correct = models.BooleanField('正解かどうか', default=False)
+    confident = models.BooleanField('迷いがなかったかどうか', default=True)
     duration = models.IntegerField('かかった時間[ms]')
 
     objects = managers.TrainingSelectionManager()

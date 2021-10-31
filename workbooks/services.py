@@ -267,8 +267,12 @@ class TrainingService:
             questions = models.Question.objects.filter(workbook=training.workbook)
 
         # すでに回答された問題
+        print("training:", training.training_id)
+        print("models.TrainingSelection.objects.filter(training=training)", models.TrainingSelection.objects.filter(training=training))
         answered_question_ids = models.TrainingSelection.objects.filter(training=training).values_list('question__question_id')
+        print(models.TrainingSelection.objects.filter(training=training))
         answered_question_ids = [x[0] for x in answered_question_ids]
+        print("answered_question_ids:", answered_question_ids)
         # 選択されたチャプターのID
         chapter_ids = chapters.values_list('chapter_id')
         chapter_ids = [x[0] for x in chapter_ids]
@@ -277,8 +281,8 @@ class TrainingService:
         for question in questions:
             if not question.question_id in answered_question_ids and question.chapter.chapter_id in chapter_ids:
                 rest_questions.append(question)
+        print("rest_questions", rest_questions)
         return rest_questions
-
 
     def select_question(self, training):
         # まだ回答されていない問題から、ランダムに問題を取得する

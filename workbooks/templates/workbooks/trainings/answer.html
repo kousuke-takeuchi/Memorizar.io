@@ -42,13 +42,25 @@
 						{% endif %}
 						</div>
 
-						<div class="pb-4 py-md-4 py-4">
-							{% if training_selection.training.done %}
-								<a href="{% url 'workbooks:training_result' training_selection.training.workbook.workbook_id training_selection.training.training_id %}" class="btn btn-primary btn-block btn-lg">結果を見る</a>
-							{% else %}
-								<a href="{% url 'workbooks:training_question' training_selection.training.workbook.workbook_id training_selection.training.training_id %}" class="btn btn-primary btn-block btn-lg">次の問題</a>
-							{% endif %}
-						</div>
+						<form method="POST">
+							{% csrf_token %}
+
+							<div class="form-check">
+								<input class="form-check-input" name="not_confident" type="checkbox" value="" id="not_confident">
+								<label class="form-check-label" for="not_confident">
+								  まよった
+								</label>
+							</div>
+
+							<div class="pb-4 py-md-4 py-4">
+								{% if training_selection.training.done %}
+									<a href="{% url 'workbooks:training_result' training_selection.training.workbook.workbook_id training_selection.training.training_id %}" class="btn btn-primary btn-block btn-lg">結果を見る</a>
+								{% else %}
+									<button type="submit" class="btn btn-primary btn-block btn-lg">次の問題</button>
+								{% endif %}
+							</div>
+						</form>
+
 					</div>
 				</div>
 			</div>

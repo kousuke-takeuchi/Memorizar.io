@@ -81,6 +81,7 @@
 									<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
 									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 										<a class="dropdown-item" href="{% url 'workbooks:question_new' workbook.workbook_id %}">問題を追加</a>
+										<a class="dropdown-item" href="{% url 'workbooks:question_new_scan' workbook.workbook_id %}">問題をスキャン</a>
 										<a class="dropdown-item" href="{% url 'workbooks:chapter_new' workbook.workbook_id %}">チャプターを追加</a>
 									</div>
 								</div>

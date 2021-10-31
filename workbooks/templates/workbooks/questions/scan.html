@@ -1,0 +1,14 @@
+{% extends "memorizar/base.html" %}
+{% load static %}
+{% load memorizar %}
+{% block title %}Workbooks{% endblock %}
+
+{% block content %}
+<div id="token" data-value="{{ request.user.pk }}"></div>
+<div id="chapters" data-value="{% to_json workbook.chapter_set.all 'chapter_id' 'title' %}"></div>
+<div id="main-content"></div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/dist/scan_question.js' %}"></script>
+{% endblock %}

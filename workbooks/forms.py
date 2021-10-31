@@ -373,3 +373,24 @@ class WorkbookTrainingQuestionForm(forms.Form):
             duration=time.time() - self.cleaned_data['start_at'],
         )
         return selection
+
+
+class WorkbookTrainingAnswerForm(forms.Form):
+    not_confident = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(WorkbookTrainingAnswerForm, self).__init__(*args, **kwargs)
+
+    def clean_not_confident(self):
+        not_confident = self.cleaned_data['not_confident']
+        if not_confident == True:
+            return True
+        else:
+            return False
+
+    def save(self):
+        training_selection = self.context['training_selection']
+        training_selection.confident = not self.cleaned_data['not_confident']
+        training_selection.save()
+        return training_selection

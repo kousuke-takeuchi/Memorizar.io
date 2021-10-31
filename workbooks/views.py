@@ -183,6 +183,29 @@ class QuestionCreateView(mixins.BaseMixin, View):
         return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
 
 
+class QuestionScanView(mixins.BaseMixin, View):
+    template_name = 'workbooks/questions/scan.html'
+
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def get(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        form = forms.QuestionCreateForm()
+        context = dict(workbook=workbook, form=form)
+        return render(request, self.template_name, context)
+    
+    def post(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        form = forms.QuestionCreateForm(request.POST, request.FILES, context={'request': request, 'workbook': workbook})
+        if not form.is_valid():
+            context = dict(workbook=workbook, form=form)
+            return render(request, self.template_name, context)
+        form.save()
+        return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
+
+
 class QuestionEditView(mixins.BaseMixin, View):
     template_name = 'workbooks/questions/edit.html'
 
@@ -353,14 +376,31 @@ class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
 
 class WorkbookTrainingAnswerView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/answer.html'
+
+    def get_queryset(self, selection_id):
+        training_selection = get_object_or_404(models.TrainingSelection, training_selection_id=selection_id)
+        return training_selection
     
     def get(self, request, workbook_id, training_id, selection_id):
-        training_selection = get_object_or_404(models.TrainingSelection, training_selection_id=selection_id)
+        training_selection = self.get_queryset(selection_id)
         answers = models.Answer.objects.filter(question=training_selection.question)
 
         context = dict(training_selection=training_selection, answers=answers)
         return render(request, self.template_name, context)
 
+    def post(self, request, workbook_id, training_id, selection_id):
+        training_selection = self.get_queryset(selection_id)
+
+        form = forms.WorkbookTrainingAnswerForm(request.POST, context={'request': request, 'training_selection': training_selection})
+        if not form.is_valid():
+            answers = models.Answer.objects.filter(question=training_selection.question)
+            context = dict(training_selection=training_selection, answers=answers)
+            return render(request, self.template_name, context)
+
+        form.save()
+
+        # 次の問題に移動
+        return redirect('workbooks:training_question', workbook_id=training_selection.training.workbook.workbook_id, training_id=training_selection.training.training_id)
 
 class WorkbookTrainingResultView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/result.html'
