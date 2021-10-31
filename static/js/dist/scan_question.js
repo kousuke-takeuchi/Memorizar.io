@@ -2193,7 +2193,11 @@ var image = null;
 
     if (navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices.getUserMedia({
-        video: true
+        video: {
+          facingMode: {
+            exact: 'environment'
+          }
+        }
       }).then(stream => {
         // this.$refs.videoRef.srcObject = stream;
         this.canvas = this.$refs.canvas;

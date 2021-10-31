@@ -64,7 +64,13 @@ export default {
         this.status = 'initialize';
         
         if (navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({video: true}).then((stream)=>{
+            navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: {
+                        exact: 'environment'
+                    }
+                }
+            }).then((stream)=>{
                 // this.$refs.videoRef.srcObject = stream;
                 this.canvas = this.$refs.canvas;
                 this.context = this.canvas.getContext('2d');
