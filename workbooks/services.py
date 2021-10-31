@@ -167,6 +167,29 @@ class WorkbookService:
                 question1=question1,
                 question2=question2,
             )
+    
+    def get_chapters(self, workbook):
+        chapters = workbook.chapter_set.all()
+        chapters_data = {}
+        for chapter in chapters:
+            training_count = models.TrainingSelection.objects.filter(question__chapter=chapter).count()
+            training_question_count = models.TrainingSelection.objects.filter(question__chapter=chapter).distinct('question').count()
+            question_count = models.Question.objects.filter(workbook=workbook).count()
+            correct_count = models.TrainingSelection.objects.filter(question__chapter=chapter, correct=True).count()
+
+            # 実施回数
+            learning_count = models.TrainingSelection.objects.filter(question__chapter=chapter).distinct('training').count()
+            # 実施率 = 実施回数 / 問題数
+            training_rate = training_question_count / question_count
+            # 正解率 = 正解数 / 実施回数
+            correct_rate = correct_count / training_count
+
+            chapters_data[chapter] = {
+                'learning_count': learning_count,
+                'training_rate': round(training_rate*100),
+                'correct_rate': round(correct_rate*100),
+            }
+        return chapters_data
 
 
     def aggregate_daily(self, workbook):

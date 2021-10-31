@@ -136,15 +136,21 @@
 								<tr>
 									<th scope="col" class="border-bottom-0">ID</th>
 									<th scope="col" class="border-bottom-0">タイトル</th>
+									<th scope="col" class="border-bottom-0">実施回数</th>
+									<th scope="col" class="border-bottom-0">実施率</th>
+									<th scope="col" class="border-bottom-0">正解率</th>
 									<th scope="col" class="border-bottom-0">作成日</th>
 									<th scope="col" class="border-bottom-0"></th>
 								</tr>
 							</thead>
 							<tbody>
-								{% for chapter in workbook.chapter_set.all %}
+								{% for chapter, chapter_data in chapters.items %}
 									<tr>
 										<td>{{ chapter.chapter_id }}</td>
 										<td>{{ chapter.title }}</td>
+										<td>{{ chapter_data.learning_count }}回</td>
+										<td><span class="badge {% if chapter_data.training_rate >= 80 %}bg-success{% elif chapter_data.training_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.training_rate }}%</span></td>
+										<td><span class="badge {% if chapter_data.correct_rate >= 80 %}bg-success{% elif chapter_data.correct_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.correct_rate }}%</span></td>
 										<td>{{ chapter.created_at|date:"Y年n月j日" }}</td>
 										<td class="text-muted align-middle border-top-0">
 											<span class="dropdown dropstart">

@@ -73,9 +73,11 @@ class WorkbookDetailView(mixins.BaseMixin, View):
         # 問題集の実施結果集計
         workbook, trainings, questions = self.get_querysets(workbook_id)
         service = services.WorkbookService()
+        chapters = service.get_chapters(workbook)
         dates, learning_counts, correct_counts = service.aggregate_daily(workbook)
         context = dict(
                 workbook=workbook,
+                chapters=chapters,
                 trainings=trainings,
                 questions=questions,
                 dates=dates,
@@ -91,9 +93,11 @@ class WorkbookDetailView(mixins.BaseMixin, View):
         if not form.is_valid():
             workbook, trainings, questions = self.get_querysets(workbook_id)
             service = services.WorkbookService()
+            chapters = service.get_chapters(workbook)
             dates, learning_counts, correct_counts = service.aggregate_daily(workbook)
             context = dict(
                 workbook=workbook,
+                chapters=chapters,
                 trainings=trainings,
                 questions=questions,
                 dates=dates,
@@ -280,7 +284,8 @@ class WorkbookTrainingSelectChapterView(mixins.BaseMixin, View):
     # チャプター一覧を表示
     def get(self, request, workbook_id):
         workbook = self.get_querysets(workbook_id)
-        chapters = models.Chapter.objects.filter(workbook=workbook)
+        service = services.WorkbookService()
+        chapters = service.get_chapters(workbook)
         form = forms.WorkbookTrainingSelectChapterForm(context={'request': request})
         context = dict(form=form, chapters=chapters)
         return render(request, self.template_name, context)
@@ -291,7 +296,8 @@ class WorkbookTrainingSelectChapterView(mixins.BaseMixin, View):
         training_type = request.GET.get('training_type')
         form = forms.WorkbookTrainingSelectChapterForm(request.POST, context={'request': request, 'workbook': workbook, 'training_type': training_type})
         if not form.is_valid():
-            chapters = models.Chapter.objects.filter(workbook=workbook)
+            service = services.WorkbookService()
+            chapters = service.get_chapters(workbook)
             context = dict(form=form, chapters=chapters)
             return render(request, self.template_name, context)
         training = form.save()
