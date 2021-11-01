@@ -8,6 +8,35 @@ from lib.models import BaseModel
 from . import managers
 
 
+class Category(BaseModel, models.Model):
+    workbook_id = models.UUIDField('問題集識別子', default=uuid.uuid4, unique=True, db_index=True)
+    user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
+    title = models.CharField('タイトル', max_length=250, db_index=True)
+    description = models.TextField('詳細説明文', default=None, null=True, blank=True)
+    image_url = models.URLField('問題集画像', default=None, null=True, blank=True)
+
+    workbooks = models.ManyToManyField('workbooks.Workbook', through='workbooks.WorkbookCategory')
+
+    objects = managers.CategoryManager()
+
+    class Meta:
+        verbose_name = 'categories'
+        verbose_name_plural = 'Category'
+
+    def __str__(self):
+        return str(self.title)
+
+
+class WorkbookCategory(BaseModel, models.Model):
+    workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
+    category = models.ForeignKey('workbooks.Category', db_index=True, on_delete=models.CASCADE)
+
+    objects = managers.WorkbookCategoryManager()
+
+    class Meta:
+        verbose_name = 'workbook_categories'
+        verbose_name_plural = 'WorkbookCategory'
+
 
 class Workbook(BaseModel, models.Model):
     workbook_id = models.UUIDField('問題集識別子', default=uuid.uuid4, unique=True, db_index=True)
@@ -15,6 +44,8 @@ class Workbook(BaseModel, models.Model):
     title = models.CharField('タイトル', max_length=250, db_index=True)
     description = models.TextField('詳細説明文', default=None, null=True, blank=True)
     image_url = models.URLField('問題集画像', default=None, null=True, blank=True)
+
+    categories = models.ManyToManyField('workbooks.Category', through='workbooks.WorkbookCategory')
     
     objects = managers.WorkbookManager()
 

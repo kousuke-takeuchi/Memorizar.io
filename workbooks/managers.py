@@ -5,6 +5,14 @@ from django.db.models import Sum, Count, Case, When, Value
 from lib.managers import BaseManager
 
 
+class CategoryManager(BaseManager):
+    pass
+
+
+class WorkbookCategoryManager(BaseManager):
+    pass
+
+
 class WorkbookManager(BaseManager):
     def aggregate_training(self, **kwargs):
         from . import models
