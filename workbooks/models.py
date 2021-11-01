@@ -14,7 +14,8 @@ class Workbook(BaseModel, models.Model):
     user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     title = models.CharField('タイトル', max_length=250, db_index=True)
     description = models.TextField('詳細説明文', default=None, null=True, blank=True)
-
+    image_url = models.URLField('問題集画像', default=None, null=True, blank=True)
+    
     objects = managers.WorkbookManager()
 
     class Meta:

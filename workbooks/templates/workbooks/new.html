@@ -26,6 +26,19 @@
                     {% endif %}
                 </div>
 
+                <div class="mb-2 col-12 col-md-12">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea name="description" cols="30" rows="10" class="form-control {% if form.errors.description %}is-invalid{% endif %}" placeholder="説明文" required></textarea>
+                    {% if form.errors.descrition %}
+                        <small class="text-danger">{{ form.errors.descrition.0 }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="custom-file mb-4 col-12 col-md-6">
+                    <label class="form-label" for="chapter_id">画像 (Option)</label>
+                    <input type="file" class="form-control custom-file-input" name="image">
+                </div>
+
                 <div class="col-12">
                     <!-- Button -->
                     <button class="btn btn-primary" type="submit">

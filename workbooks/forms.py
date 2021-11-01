@@ -14,6 +14,8 @@ from . import models, tasks
 
 class WorkbookCreateForm(forms.Form):
     title = forms.CharField(required=True)
+    description = forms.CharField(required=True)
+    image = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.context = kwargs.pop('context', {})
@@ -23,6 +25,7 @@ class WorkbookCreateForm(forms.Form):
         workbook = models.Workbook.objects.create(
             user=self.context['request'].user,
             title=self.cleaned_data.get('title'),
+            description=self.cleaned_data.get('description'),
         )
         return workbook
 
@@ -63,6 +66,8 @@ class WorkbookImportForm(forms.Form):
 
 class WorkbookUpdateForm(forms.Form):
     title = forms.CharField(required=True)
+    description = forms.CharField(required=True)
+    image = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.context = kwargs.pop('context', {})
@@ -71,6 +76,7 @@ class WorkbookUpdateForm(forms.Form):
     def save(self):
         workbook = self.context['workbook']
         workbook.title = self.cleaned_data.get('title')
+        workbook.description = self.cleaned_data.get('description')
         workbook.save()
         return workbook
 
