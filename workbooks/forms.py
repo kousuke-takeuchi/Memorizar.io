@@ -9,6 +9,7 @@ from django import forms
 from django.core.files.storage import default_storage
 from multivaluefield import MultiValueField
 
+from lib.forms import MultiValueField
 from . import models, tasks
 
 
@@ -16,17 +17,37 @@ class WorkbookCreateForm(forms.Form):
     title = forms.CharField(required=True)
     description = forms.CharField(required=True)
     image = forms.CharField(required=False)
+    category_id = MultiValueField(forms.CharField(), 'category_id')
+    publish = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.context = kwargs.pop('context', {})
         super(WorkbookCreateForm, self).__init__(*args, **kwargs)
+    
+    def clean_publish(self):
+        publish = self.cleaned_data.get('publish', False)
+        return publish == True
+    
+    def clean_category_id(self):
+        categories = []
+        category_ids = self.cleaned_data.get('category_id')
+        for category_id in category_ids:
+            try:
+                category = models.Category.objects.get(category_id=category_id)
+            except models.Category.DoesNotExist:
+                raise forms.ValidationError('存在しないIDです')
+            categories.append(category)
+        return categories
 
     def save(self):
         workbook = models.Workbook.objects.create(
             user=self.context['request'].user,
             title=self.cleaned_data.get('title'),
             description=self.cleaned_data.get('description'),
+            publish=self.cleaned_data.get('publish'),
         )
+        workbook.categories.add(*self.cleaned_data.get('category_id', []))
+        workbook.save()
         return workbook
 
 
@@ -68,15 +89,38 @@ class WorkbookUpdateForm(forms.Form):
     title = forms.CharField(required=True)
     description = forms.CharField(required=True)
     image = forms.CharField(required=False)
+    category_id = MultiValueField(forms.CharField(), 'category_id')
+    publish = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.context = kwargs.pop('context', {})
         super(WorkbookUpdateForm, self).__init__(*args, **kwargs)
+    
+    def clean_category_id(self):
+        categories = []
+        category_ids = self.cleaned_data.get('category_id')
+        for category_id in category_ids:
+            try:
+                category = models.Category.objects.get(category_id=category_id)
+            except models.Category.DoesNotExist:
+                raise forms.ValidationError('存在しないIDです')
+            categories.append(category)
+        return categories
+
+    def clean_publish(self):
+        publish = self.cleaned_data.get('publish', False)
+        return publish == True
 
     def save(self):
         workbook = self.context['workbook']
         workbook.title = self.cleaned_data.get('title')
         workbook.description = self.cleaned_data.get('description')
+        workbook.publish = self.cleaned_data.get('publish')
+
+        models.WorkbookCategory.objects.filter(workbook=workbook).delete()
+        categories = self.cleaned_data.get('category_id', [])
+        workbook.categories.add(*categories)
+
         workbook.save()
         return workbook
 

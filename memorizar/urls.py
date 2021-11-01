@@ -24,6 +24,7 @@ urlpatterns = [
     path('privacy_policy/', views.PrivacyPolicyView.as_view(), name='privacy_policy'),
     path('agreement/', views.AgreementView.as_view(), name='agreement'),
     path('admin/', admin.site.urls),
+    path('socials/', include('socials.urls', namespace='socials')),
     path('users/', include('users.urls', namespace='users')),
     path('workbooks/', include('workbooks.urls', namespace='workbooks')),
 ]

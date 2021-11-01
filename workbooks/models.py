@@ -9,11 +9,11 @@ from . import managers
 
 
 class Category(BaseModel, models.Model):
-    workbook_id = models.UUIDField('問題集識別子', default=uuid.uuid4, unique=True, db_index=True)
+    category_id = models.UUIDField('カテゴリ識別子', default=uuid.uuid4, unique=True, db_index=True)
     user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     title = models.CharField('タイトル', max_length=250, db_index=True)
     description = models.TextField('詳細説明文', default=None, null=True, blank=True)
-    image_url = models.URLField('問題集画像', default=None, null=True, blank=True)
+    image_url = models.URLField('カテゴリー画像', default=None, null=True, blank=True)
 
     workbooks = models.ManyToManyField('workbooks.Workbook', through='workbooks.WorkbookCategory')
 
@@ -44,6 +44,7 @@ class Workbook(BaseModel, models.Model):
     title = models.CharField('タイトル', max_length=250, db_index=True)
     description = models.TextField('詳細説明文', default=None, null=True, blank=True)
     image_url = models.URLField('問題集画像', default=None, null=True, blank=True)
+    publish = models.BooleanField('公開する', default=False)
 
     categories = models.ManyToManyField('workbooks.Category', through='workbooks.WorkbookCategory')
     

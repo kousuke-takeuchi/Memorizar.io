@@ -37,10 +37,30 @@
                             <small class="text-danger">{{ form.errors.descrition.0 }}</small>
                         {% endif %}
                     </div>
-    
-                    <div class="custom-file mb-4 col-12 col-md-6">
-                        <label class="form-label" for="chapter_id">画像 (Option)</label>
-                        <input type="file" class="form-control custom-file-input" name="image">
+
+                    <div class="row">
+                        <div class="mb-3 col-12 col-md-6">
+                            <label class="form-label" for="category_id">Category</label>
+                            <select class="form-select" name="category_id" data-width="100%" tabindex="null" multiple>
+                                {% with categories=workbook.categories.all %}
+                                    {% for category in categories %}
+                                        <option value="{{ category.category_id }}" {% if category in categories %}selected{% endif %}>{{ category.title }}</option>
+                                    {% endfor %}
+                                {% endwith %}
+                            </select>
+                        </div>
+        
+                        <div class="custom-file mb-4 col-12 col-md-6">
+                            <label class="form-label" for="chapter_id">画像 (Option)</label>
+                            <input type="file" class="form-control custom-file-input" name="image">
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-6">
+                        <input class="form-check-input" name="publish" type="checkbox" id="publish" {% if workbook.publish %}checked{% endif %}>
+                        <label class="form-check-label" for="publish">
+                            公開する
+                          </label>
                     </div>
                     
                     <div class="col-6">

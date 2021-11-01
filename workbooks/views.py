@@ -11,7 +11,6 @@ from lib import mixins
 from . import models, forms, services
 
 
-
 class WorkbookListView(mixins.BaseMixin, View):
     template_name = 'workbooks/list.html'
 
@@ -115,13 +114,15 @@ class WorkbookCreateView(mixins.BaseMixin, View):
     
     def get(self, request):
         form = forms.WorkbookCreateForm()
-        context = dict(form=form)
+        categories = models.Category.objects.all()
+        context = dict(form=form, categories=categories)
         return render(request, self.template_name, context)
     
     def post(self, request):
         form = forms.WorkbookCreateForm(request.POST, context={'request': request})
         if not form.is_valid():
-            context = dict(form=form)
+            categories = models.Category.objects.all()
+            context = dict(form=form, categories=categories)
             return render(request, self.template_name, context)
         workbook = form.save()
         return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
@@ -137,14 +138,16 @@ class WorkbookEditView(mixins.BaseMixin, View):
     def get(self, request, workbook_id):
         workbook = self.get_querysets(workbook_id)
         form = forms.WorkbookUpdateForm()
-        context = dict(workbook=workbook, form=form)
+        categories = models.Category.objects.all()
+        context = dict(workbook=workbook, form=form, categories=categories)
         return render(request, self.template_name, context)
     
     def post(self, request, workbook_id):
         workbook = self.get_querysets(workbook_id)
         form = forms.WorkbookUpdateForm(request.POST, context={'request': request, 'workbook': workbook})
         if not form.is_valid():
-            context = dict(workbook=workbook, form=form)
+            categories = models.Category.objects.all()
+            context = dict(workbook=workbook, form=form, categories=categories)
             return render(request, self.template_name, context)
         workbook = form.save()
         return redirect('workbooks:detail', workbook_id=workbook.workbook_id)

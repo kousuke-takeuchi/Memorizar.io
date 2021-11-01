@@ -29,8 +29,13 @@
                     <div class="dropdown-divider"></div>
                     <ul class="list-unstyled">
                         <li>
+                            <a class="dropdown-item" href="{% url 'workbooks:list' %}">
+                                <i class="fas fa-book-open mr-2"></i> My Workbooks
+                            </a>
+                        </li>
+                        <li>
                             <a class="dropdown-item" href="{% url 'users:setting' %}">
-                                <i class="fe fe-settings mr-2"></i>設定
+                                <i class="fe fe-settings mr-2"></i> 設定
                             </a>
                         </li>
                     </ul>
@@ -38,7 +43,7 @@
                     <ul class="list-unstyled">
                         <li>
                             <a class="dropdown-item" href="{% url 'users:logout' %}">
-                                <i class="fe fe-power nav-icon"></i>ログアウト
+                                <i class="fe fe-power nav-icon"></i> ログアウト
                             </a>
                         </li>
                     </ul>
@@ -58,9 +63,16 @@
                     <a class="nav-link" href="{% url 'index' %}">Dashboard <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'workbooks:list' %}">Workbooks <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="{% url 'socials:search' %}">Workbooks <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
+            <!-- search form -->
+            <form method="GET" action="{% url 'socials:search' %}" class="mt-3 mt-lg-0 ms-lg-3 d-flex align-items-center">
+				<span class="position-absolute ps-3 search-icon">
+					<i class="fe fe-search"></i>
+				</span>
+				<input type="search" class="form-control ps-6" placeholder="Search Workbooks" name="keyword" value="{{ request.GET.keyword }}">
+			</form>
             <!-- Profile -->
             <ul class="navbar-nav navbar-right-wrap ms-auto d-none d-lg-block">
                 <li class="dropdown d-inline-block stopevent">
@@ -85,8 +97,13 @@
                         <div class="dropdown-divider"></div>
                         <ul class="list-unstyled">
                             <li>
+                                <a class="dropdown-item" href="{% url 'workbooks:list' %}">
+                                    <i class="fas fa-book-open mr-2"></i> My Workbooks
+                                </a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="{% url 'users:setting' %}">
-                                    <i class="fe fe-settings mr-2"></i>設定
+                                    <i class="fe fe-settings mr-2"></i> 設定
                                 </a>
                             </li>
                         </ul>
@@ -94,7 +111,7 @@
                         <ul class="list-unstyled">
                             <li>
                                 <a class="dropdown-item" href="{% url 'users:logout' %}">
-                                    <i class="fe fe-power nav-icon"></i>ログアウト
+                                    <i class="fe fe-power nav-icon"></i> ログアウト
                                 </a>
                             </li>
                         </ul>

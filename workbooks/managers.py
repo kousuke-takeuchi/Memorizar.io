@@ -14,6 +14,9 @@ class WorkbookCategoryManager(BaseManager):
 
 
 class WorkbookManager(BaseManager):
+    def search(self, keyword):
+        return self.all()
+
     def aggregate_training(self, **kwargs):
         from . import models
 

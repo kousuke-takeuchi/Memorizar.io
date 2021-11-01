@@ -5,6 +5,36 @@ from import_export.admin import ImportExportModelAdmin
 from . import models
 
 
+@admin.register(models.Category)
+class CategoryAdmin(ImportExportModelAdmin):
+    date_heirarchy = (
+        'updated_at',
+    )
+    list_display = (
+        'category_id',
+        'user',
+        'title',
+        'description',
+    )
+    search_fields = (
+        'created_at',
+    )
+
+
+@admin.register(models.WorkbookCategory)
+class WorkbookCategoryAdmin(ImportExportModelAdmin):
+    date_heirarchy = (
+        'updated_at',
+    )
+    list_display = (
+        'workbook',
+        'category',
+    )
+    search_fields = (
+        'created_at',
+    )
+
+
 @admin.register(models.Workbook)
 class WorkbookAdmin(ImportExportModelAdmin):
     date_heirarchy = (
@@ -15,6 +45,7 @@ class WorkbookAdmin(ImportExportModelAdmin):
         'user',
         'title',
         'description',
+        'publish',
     )
     search_fields = (
         'created_at',
