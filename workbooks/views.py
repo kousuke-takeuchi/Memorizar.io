@@ -187,6 +187,19 @@ class QuestionCreateView(mixins.BaseMixin, View):
         return redirect('workbooks:detail', workbook_id=workbook.workbook_id)
 
 
+class QuestionGroupCreateView(mixins.BaseMixin, View):
+    template_name = 'workbooks/questions/new_group.html'
+
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def get(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        context = dict(workbook=workbook)
+        return render(request, self.template_name, context)
+
+
 class QuestionScanView(mixins.BaseMixin, View):
     template_name = 'workbooks/questions/scan.html'
 
