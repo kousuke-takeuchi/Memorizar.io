@@ -223,3 +223,46 @@ class TrainingSelectionSerializer(serializers.ModelSerializer):
         )
 
         return training_selection
+
+
+class QuestionGroupSerializer(serializers.ModelSerializer):
+    questions = QuestionSerializer(many=True)
+
+    class Meta:
+        model = models.QuestionGroup
+        read_only_fields = ('chapter',)
+        write_only_fields = ('chapter_id',)
+        fields = read_only_fields + write_only_fields + (
+            'image_urls', 'title', 'sentense',
+        )
+        extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
+
+
+    def create(self, validated_data):
+        question_group = models.QuestionGroup.objects.create(
+            workbook=self.context['workbook'],
+            title=validated_data['title'],
+            description=validated_data['description'],
+            image_urls=validated_data.get('image_urls', []),
+        )
+
+        for question_data in validated_data.get('questions', []):
+            question = models.Question.objects.create(
+                title=question_data['title'],
+                sentense=question_data['sentense'],
+                chapter=question_data['chapter_id'],
+                image_urls=question_data.get('image_urls', []),
+                commentary=question_data['commentary'],
+                commentary_image_urls=question_data.get('commentary_image_urls', []),
+                workbook=self.context['workbook'],
+                group=question_group,
+            )
+            for answer_data in question_data['answer_set']['all']:
+                models.Answer.objects.create(
+                    question=question,
+                    title=answer_data['index'],
+                    sentense=answer_data['sentense'],
+                    index=answer_data['index'],
+                    is_true=answer_data['index'] == validated_data['correct_index']
+                )
+        return question_group

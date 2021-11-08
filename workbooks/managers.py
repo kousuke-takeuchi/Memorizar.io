@@ -15,7 +15,7 @@ class WorkbookCategoryManager(BaseManager):
 
 class WorkbookManager(BaseManager):
     def search(self, keyword):
-        return self.all()
+        return self.filter(publish=True)
 
     def aggregate_training(self, **kwargs):
         from . import models
@@ -100,4 +100,8 @@ class TrainingSelectionManager(BaseManager):
 
 
 class TrainingChapterManager(BaseManager):
+    pass
+
+
+class RegistrationManager(BaseManager):
     pass

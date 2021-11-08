@@ -105,7 +105,7 @@
                                         <div class="card-body">
                                             <h4 class="mb-2 text-truncate-line-2 "><a href="{% url 'workbooks:detail' workbook.workbook_id %}" class="text-inherit">{{ workbook.title }}</a>
                                             </h4>
-                                            <!-- <div class="lh-1">
+                                            <div class="lh-1">
                                                 <span>
                                                     <i class="mdi mdi-star text-warning me-n1"></i>
                                                     <i class="mdi mdi-star text-warning me-n1"></i>
@@ -115,7 +115,7 @@
                                                 </span>
                                                 <span class="text-warning">4.5</span>
                                                 <span class="fs-6 text-muted">(7,700)</span>
-                                            </div> -->
+                                            </div>
                                         </div>
                                         <!-- Card footer -->
                                         <div class="card-footer">
@@ -129,9 +129,18 @@
                                                     <span>{{ request.user.first_name }}</span>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <a href="#" class="text-muted bookmark">
-                                                        <i class="fe fe-bookmark  "></i>
-                                                    </a>
+                                                    <span class="dropdown dropstart">
+                                                        <a class="text-muted text-decoration-none" href="#" role="button" id="workbook-menu-{{ workbook.workbook_id }}" data-bs-toggle="dropdown" data-bs-offset="-20,20" aria-expanded="false">
+                                                            <i class="fe fe-more-vertical"></i>
+                                                        </a>
+                                                        <span class="dropdown-menu" aria-labelledby="workbook-menu-{{ workbook.workbook_id }}">
+                                                            <span class="dropdown-header">メニュー </span>
+                                                            <form action="{% url 'socials:register' workbook.workbook_id %}" method="POST">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="dropdown-item"><i class="fe fe-edit dropdown-item-icon"></i> ワークブックに追加</button>
+                                                            </form>
+                                                        </span>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>

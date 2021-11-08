@@ -154,6 +154,7 @@ class TrainingSelectionAdmin(ImportExportModelAdmin):
         'created_at',
     )
 
+
 @admin.register(models.TrainingChapter)
 class TrainingChapterAdmin(ImportExportModelAdmin):
     date_heirarchy = (
@@ -162,6 +163,20 @@ class TrainingChapterAdmin(ImportExportModelAdmin):
     list_display = (
         'training',
         'chapter',
+    )
+    search_fields = (
+        'created_at',
+    )
+
+
+@admin.register(models.Registration)
+class RegistrationAdmin(ImportExportModelAdmin):
+    date_heirarchy = (
+        'updated_at',
+    )
+    list_display = (
+        'user',
+        'workbook',
     )
     search_fields = (
         'created_at',

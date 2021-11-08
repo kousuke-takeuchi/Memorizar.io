@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 from lib.models import BaseModel
 from . import managers
+import workbooks
 
 
 class Category(BaseModel, models.Model):
@@ -82,6 +83,7 @@ class QuestionGroup(BaseModel, models.Model):
     workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
     title = models.CharField('タイトル', max_length=250, db_index=True)
     description = models.TextField('問題説明文')
+    image_urls = ArrayField(models.URLField(), size=10, default=list)
 
     objects = managers.QuestionGroupManager()
 
@@ -104,6 +106,7 @@ class Question(BaseModel, models.Model):
     commentary = models.TextField('正解解説文章', default=None, null=True, blank=True)
     commentary_image_urls = ArrayField(models.URLField(), size=10, default=list)
     index = models.IntegerField('並び順', db_index=True, default=1)
+    group = models.ForeignKey('workbooks.QuestionGroup', null=True, default=None, blank=True, db_index=True, on_delete=models.SET_NULL)
 
     objects = managers.QuestionManager()
 
@@ -211,3 +214,14 @@ class TrainingChapter(BaseModel, models.Model):
     class Meta:
         verbose_name = 'training_chapters'
         verbose_name_plural = 'TrainingChapter'
+
+
+class Registration(BaseModel, models.Model):
+    user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
+    workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
+
+    objects = managers.RegistrationManager()
+
+    class Meta:
+        verbose_name = 'registrations'
+        verbose_name_plural = 'Registration'
