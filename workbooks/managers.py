@@ -26,6 +26,8 @@ class WorkbookManager(BaseManager):
         # querysets = querysets.order_by('-training__workbook__created_at')
         
         workbooks = self.filter(**kwargs)
+        registrations = models.Registration.objects.filter(**kwargs)
+        workbooks = list(workbooks) + [r.workbook for r in registrations]
         results = []
         for workbook in workbooks:
             querysets = models.TrainingSelection.objects.filter(training__workbook=workbook)

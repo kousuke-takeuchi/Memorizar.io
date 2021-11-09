@@ -2208,12 +2208,13 @@ __webpack_require__.r(__webpack_exports__);
     let regex = /.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i;
     let url = window.location.href;
     let workbookId = url.match(regex)[1];
+    let defaultAnswerCount = document.getElementById('default_answer_count').dataset.value;
     let token = document.getElementById('token').dataset.value;
     let api = new _apis_QuestionAPI__WEBPACK_IMPORTED_MODULE_3__["default"](token);
     return {
       workbookId: workbookId,
       api: api,
-      question: new _models_Question__WEBPACK_IMPORTED_MODULE_1__["default"](),
+      question: new _models_Question__WEBPACK_IMPORTED_MODULE_1__["default"](defaultAnswerCount),
       chapters: JSON.parse(document.getElementById('chapters').dataset.value),
       errors: {}
     };

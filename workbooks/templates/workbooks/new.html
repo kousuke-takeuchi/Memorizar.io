@@ -46,8 +46,14 @@
                     </div>
     
                     <div class="custom-file mb-4 col-12 col-md-6">
-                        <label class="form-label" for="chapter_id">画像 (Option)</label>
-                        <input type="file" class="form-control custom-file-input" name="image">
+                        <div class="row">
+                            <label class="form-label" for="image">画像 (Option)</label>
+                            <input type="file" class="form-control custom-file-input" name="image">
+                        </div>
+                        <div class="row mt-4">
+                            <label class="form-label" for="default_answer_count">デフォルトの回答選択肢数</label>
+                            <input type="number" class="form-control" name="default_answer_count" value=4>
+                        </div>
                     </div>
                 </div>
 

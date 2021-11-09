@@ -46,6 +46,7 @@ class Workbook(BaseModel, models.Model):
     description = models.TextField('詳細説明文', default=None, null=True, blank=True)
     image_url = models.URLField('問題集画像', default=None, null=True, blank=True)
     publish = models.BooleanField('公開する', default=False)
+    default_answer_count = models.IntegerField('回答選択肢の数', default=4)
 
     categories = models.ManyToManyField('workbooks.Category', through='workbooks.WorkbookCategory')
     

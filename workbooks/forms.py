@@ -19,6 +19,7 @@ class WorkbookCreateForm(forms.Form):
     image = forms.CharField(required=False)
     category_id = MultiValueField(forms.CharField(), 'category_id')
     publish = forms.BooleanField(required=False)
+    default_answer_count = forms.IntegerField(required=True)
 
     def __init__(self, *args, **kwargs):
         self.context = kwargs.pop('context', {})
@@ -45,6 +46,7 @@ class WorkbookCreateForm(forms.Form):
             title=self.cleaned_data.get('title'),
             description=self.cleaned_data.get('description'),
             publish=self.cleaned_data.get('publish'),
+            default_answer_count=self.cleaned_data['default_answer_count'],
         )
         workbook.categories.add(*self.cleaned_data.get('category_id', []))
         workbook.save()
@@ -91,6 +93,7 @@ class WorkbookUpdateForm(forms.Form):
     image = forms.CharField(required=False)
     category_id = MultiValueField(forms.CharField(), 'category_id')
     publish = forms.BooleanField(required=False)
+    default_answer_count = forms.IntegerField(required=True)
 
     def __init__(self, *args, **kwargs):
         self.context = kwargs.pop('context', {})
@@ -116,6 +119,7 @@ class WorkbookUpdateForm(forms.Form):
         workbook.title = self.cleaned_data.get('title')
         workbook.description = self.cleaned_data.get('description')
         workbook.publish = self.cleaned_data.get('publish')
+        workbook.default_answer_count = self.cleaned_data.get('default_answer_count')
 
         models.WorkbookCategory.objects.filter(workbook=workbook).delete()
         categories = self.cleaned_data.get('category_id', [])

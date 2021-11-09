@@ -115,12 +115,13 @@ export default {
         let regex = /.*\/workbooks\/([0-9a-z\-]+)\/questions\/new\/+/i
         let url = window.location.href;
         let workbookId = url.match(regex)[1];
+        let defaultAnswerCount = document.getElementById('default_answer_count').dataset.value
         let token = document.getElementById('token').dataset.value
         let api = new QuestionAPI(token);
         return {
             workbookId: workbookId,
             api: api,
-            question: new Question(),
+            question: new Question(defaultAnswerCount),
             chapters: JSON.parse(document.getElementById('chapters').dataset.value),
             errors: {},
         }
