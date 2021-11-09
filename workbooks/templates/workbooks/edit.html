@@ -42,9 +42,9 @@
                         <div class="mb-3 col-12 col-md-6">
                             <label class="form-label" for="category_id">Category</label>
                             <select class="form-select" name="category_id" data-width="100%" tabindex="null" multiple>
-                                {% with categories=workbook.categories.all %}
+                                {% with workbook_categories=workbook.categories.all %}
                                     {% for category in categories %}
-                                        <option value="{{ category.category_id }}" {% if category in categories %}selected{% endif %}>{{ category.title }}</option>
+                                        <option value="{{ category.category_id }}" {% if category in workbook_categories %}selected{% endif %}>{{ category.title }}</option>
                                     {% endfor %}
                                 {% endwith %}
                             </select>
