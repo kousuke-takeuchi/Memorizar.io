@@ -2194,7 +2194,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _models_QuestionGroup__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/QuestionGroup */ "./src/models/QuestionGroup.js");
 /* harmony import */ var _models_Question__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/Question */ "./src/models/Question.js");
 /* harmony import */ var _components_AnswerForm__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/AnswerForm */ "./src/components/AnswerForm.vue");
-/* harmony import */ var _apis_QuestionAPI__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../apis/QuestionAPI */ "./src/apis/QuestionAPI.js");
+/* harmony import */ var _apis_QuestionGroupAPI__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../apis/QuestionGroupAPI */ "./src/apis/QuestionGroupAPI.js");
 
 
 
@@ -2211,7 +2211,7 @@ __webpack_require__.r(__webpack_exports__);
     let url = window.location.href;
     let workbookId = url.match(regex)[1];
     let token = document.getElementById('token').dataset.value;
-    let api = new _apis_QuestionAPI__WEBPACK_IMPORTED_MODULE_4__["default"](token);
+    let api = new _apis_QuestionGroupAPI__WEBPACK_IMPORTED_MODULE_4__["default"](token);
     return {
       workbookId: workbookId,
       api: api,
@@ -2228,7 +2228,7 @@ __webpack_require__.r(__webpack_exports__);
     let questionGroupId = params.get("question_group_id");
 
     if (questionGroupId) {
-      this.api.getQuestionGroup(this.workbookId, questionGroupId).then(questionGroup => {
+      this.api.QuestionGroupAPI(this.workbookId, questionGroupId).then(questionGroup => {
         this.questionGroup = questionGroup;
       });
     }
@@ -2239,14 +2239,22 @@ __webpack_require__.r(__webpack_exports__);
       this.questionGroup.addNewQuestion();
     },
 
+    selectedChapter(e) {
+      this.questionGroup.setChapter(e.target.value);
+    },
+
+    onChangedAnswers(question) {
+      question.reindex();
+    },
+
     async createQuestionGroup() {
-      this.api.createQuestion(workbookId, this.question).then(data => {
-        window.location.href = window.location.href.replace('/questions/new', '');
+      this.api.createQuestionGroup(this.workbookId, this.questionGroup).then(data => {
+        window.location.href = window.location.href.replace('/questions/new_group', '');
       }).catch(error => {
         this.errors = {};
 
-        for (let error of error.data.errors) {
-          this.errors[error.field] = error.message;
+        for (let e of error.data.errors) {
+          this.errors[e.field] = e.message;
         }
       });
     }
@@ -2305,100 +2313,98 @@ class API {
 
 /***/ }),
 
-/***/ "./src/apis/QuestionAPI.js":
-/*!*********************************!*\
-  !*** ./src/apis/QuestionAPI.js ***!
-  \*********************************/
+/***/ "./src/apis/QuestionGroupAPI.js":
+/*!**************************************!*\
+  !*** ./src/apis/QuestionGroupAPI.js ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ QuestionAPI)
+/* harmony export */   "default": () => (/* binding */ QuestionGroupAPI)
 /* harmony export */ });
 /* harmony import */ var _API__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./API */ "./src/apis/API.js");
-/* harmony import */ var _models_Question__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/Question */ "./src/models/Question.js");
+/* harmony import */ var _models_QuestionGroup__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/QuestionGroup */ "./src/models/QuestionGroup.js");
 
 
-class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_0__["default"] {
-  async getQuestion(workbookId, questionId) {
-    const path = `/api/workbooks/${workbookId}/questions/${questionId}/`;
+class QuestionGroupAPI extends _API__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  async getQuestionGroup(workbookId, questionGroupId) {
+    const path = `/api/workbooks/${workbookId}/question_groups/${questionGroupId}/`;
     const resp = await this.get(path, {});
-    const questionData = resp.data.question;
-    const question = new _models_Question__WEBPACK_IMPORTED_MODULE_1__["default"]();
-    question.question_id = questionData.question_id;
-    question.title = questionData.title;
-    question.sentense = questionData.sentense;
-    question.chapter = questionData.chapter;
-    question.correct_index = questionData.correct_index;
-    question.commentary = questionData.commentary;
-    question.answers = questionData.answers;
-    return question;
+    const questionGroupData = resp.data.question_group;
+    const questionGroup = new _models_QuestionGroup__WEBPACK_IMPORTED_MODULE_1__["default"]();
+    return questionGroup;
   }
 
-  async createQuestion(workbookId, question) {
-    const path = `/api/workbooks/${workbookId}/questions/`;
-    const {
-      title,
-      sentense,
-      chapter_id,
-      correct_index,
-      commentary
-    } = question;
-    const data = {
-      title,
-      sentense,
-      chapter_id,
-      correct_index,
-      commentary
+  async createQuestionGroup(workbookId, questionGroup) {
+    let path = `/api/workbooks/${workbookId}/question_groups/`;
+    let data = {
+      'title': questionGroup.title,
+      'sentense': questionGroup.sentense,
+      'chapter_id': questionGroup.chapter_id,
+      'questions': []
     };
-    data['answers'] = [];
 
-    for (var answer of question.answers) {
-      const {
-        index,
-        sentense
-      } = answer;
-      const answerForm = {
-        index,
-        sentense
+    for (let question of questionGroup.questions) {
+      let questionForm = {
+        'title': question.title,
+        'sentense': question.sentense,
+        'chapter_id': question.chapter_id,
+        'correct_index': question.correct_index,
+        'commentary': question.commentary
       };
-      data['answers'].push(answerForm);
+      questionForm['answers'] = [];
+
+      for (var answer of question.answers) {
+        let answerForm = {
+          'index': answer.index,
+          'sentense': answer.sentense
+        };
+        questionForm['answers'].push(answerForm);
+      }
+
+      data['questions'].push(questionForm);
     }
 
     return this.post(path, data);
   }
 
-  async editQuestion(workbookId, question) {
-    const path = `/api/workbooks/${workbookId}/questions/${question.question_id}/`;
-    const {
+  async editQuestionGroup(workbookId, questionGroup) {
+    let path = `/api/workbooks/${workbookId}/question_groups/${questionGroup.group_id}`;
+    let {
       title,
       sentense,
-      chapter_id,
-      correct_index,
-      commentary
-    } = question;
-    const data = {
+      chapter_id
+    } = questionGroup;
+    let data = {
       title,
       sentense,
-      chapter_id,
-      correct_index,
-      commentary
+      chapter_id
     };
-    data['answers'] = [];
+    data['questions'] = [];
 
-    for (var answer of question.answers) {
-      const {
-        answer_id,
-        index,
-        sentense
-      } = answer;
-      const answerForm = {
-        answer_id,
-        index,
-        sentense
+    for (let question of questionGroup.questions) {
+      let questionForm = {
+        'question_id': question.question_id,
+        'title': question.title,
+        'sentense': question.sentense,
+        'chapter_id': question.chapter_id,
+        'correct_index': question.correct_index,
+        'commentary': question.commentary
       };
-      data['answers'].push(answerForm);
+      questionForm['answers'] = [];
+
+      for (var answer of question.answers) {
+        let answerForm = {
+          'answer_id': answer.answer_id,
+          'index': answer.index,
+          'sentense': answer.sentense
+        };
+        questionForm['answers'].push(answerForm);
+      }
+
+      data['questions'].push(questionForm);
     }
 
     return this.post(path, data);
@@ -2454,10 +2460,12 @@ class Question {
     this.question_id = null;
     this.title = null;
     this.sentense = null;
-    this.chapter_id = null;
     this.chapter = null;
     this.correct_index = null;
     this.commentary = null;
+    this.image_urls = [];
+    this.commentary_image_urls = [];
+    this.chapter_id = null;
 
     if (size === undefined) {
       size = 4;
@@ -2507,6 +2515,11 @@ class Question {
     }
   }
 
+  async upload(api, file) {
+    let resp = await api.uploadImage(file);
+    return resp.data.url;
+  }
+
 }
 
 Question.load_data = function (question_data, answers_data) {
@@ -2514,6 +2527,8 @@ Question.load_data = function (question_data, answers_data) {
   question.question_id = question_data.question_id;
   question.sentense = question_data.sentense;
   question.image_urls = question_data.image_urls;
+  question.commentary = question_data.commentary;
+  question.commentary_image_urls = question_data.commentary_image_urls;
   question.answers = [];
 
   for (var answer_data of answers_data) {
@@ -2556,6 +2571,14 @@ class QuestionGroup {
 
   addNewQuestion() {
     this.questions.push(new _Question__WEBPACK_IMPORTED_MODULE_0__["default"](4));
+  }
+
+  setChapter(chapterId) {
+    this.chapter_id = chapterId;
+
+    for (let question of this.questions) {
+      question.chapter_id = chapterId;
+    }
   }
 
 }
@@ -6508,6 +6531,7 @@ var render = function() {
                       staticClass: "dropdown-item",
                       on: {
                         click: function($event) {
+                          $event.preventDefault()
                           return _vm.onClickDelete(_vm.answer.index)
                         }
                       }
@@ -6599,6 +6623,14 @@ var render = function() {
                 ),
                 _vm._v(" "),
                 _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.questionGroup.title,
+                      expression: "questionGroup.title"
+                    }
+                  ],
                   staticClass: "form-control",
                   class: { "is-invalid": _vm.errors.title },
                   attrs: {
@@ -6606,6 +6638,15 @@ var render = function() {
                     name: "title",
                     placeholder: "タイトル",
                     required: ""
+                  },
+                  domProps: { value: _vm.questionGroup.title },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.questionGroup, "title", $event.target.value)
+                    }
                   }
                 }),
                 _vm._v(" "),
@@ -6630,25 +6671,42 @@ var render = function() {
               ),
               _vm._v(" "),
               _c("textarea", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.questionGroup.sentense,
+                    expression: "questionGroup.sentense"
+                  }
+                ],
                 staticClass: "form-control",
-                class: { "is-invalid": _vm.errors.description },
+                class: { "is-invalid": _vm.errors.sentense },
                 attrs: {
                   name: "sentense",
                   cols: "30",
                   rows: "10",
-                  placeholder: "問題本文",
+                  placeholder: "問題グループ本文",
                   required: ""
+                },
+                domProps: { value: _vm.questionGroup.sentense },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.questionGroup, "sentense", $event.target.value)
+                  }
                 }
               }),
               _vm._v(" "),
-              _vm.errors.description
+              _vm.errors.sentense
                 ? _c(
                     "div",
                     {
                       staticClass: "invalid-feedback",
-                      attrs: { id: "validationDescriptionFeedback" }
+                      attrs: { id: "validationSentenseFeedback" }
                     },
-                    [_vm._v(_vm._s(_vm.errors.description))]
+                    [_vm._v(_vm._s(_vm.errors.sentense))]
                   )
                 : _vm._e()
             ]),
@@ -6669,6 +6727,12 @@ var render = function() {
                       name: "chapter_id",
                       "data-width": "100%",
                       tabindex: "null"
+                    },
+                    on: {
+                      change: function($event) {
+                        $event.preventDefault()
+                        return _vm.selectedChapter.apply(null, arguments)
+                      }
                     }
                   },
                   [
@@ -6716,6 +6780,14 @@ var render = function() {
                       ),
                       _vm._v(" "),
                       _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: question.title,
+                            expression: "question.title"
+                          }
+                        ],
                         staticClass: "form-control",
                         class: { "is-invalid": _vm.errors.title },
                         attrs: {
@@ -6723,6 +6795,15 @@ var render = function() {
                           name: "title",
                           placeholder: "タイトル",
                           required: ""
+                        },
+                        domProps: { value: question.title },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(question, "title", $event.target.value)
+                          }
                         }
                       }),
                       _vm._v(" "),
@@ -6747,25 +6828,42 @@ var render = function() {
                     ),
                     _vm._v(" "),
                     _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: question.sentense,
+                          expression: "question.sentense"
+                        }
+                      ],
                       staticClass: "form-control",
-                      class: { "is-invalid": _vm.errors.description },
+                      class: { "is-invalid": _vm.errors.sentense },
                       attrs: {
                         name: "sentense",
                         cols: "30",
                         rows: "10",
                         placeholder: "問題本文",
                         required: ""
+                      },
+                      domProps: { value: question.sentense },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(question, "sentense", $event.target.value)
+                        }
                       }
                     }),
                     _vm._v(" "),
-                    _vm.errors.description
+                    _vm.errors.sentense
                       ? _c(
                           "div",
                           {
                             staticClass: "invalid-feedback",
-                            attrs: { id: "validationDescriptionFeedback" }
+                            attrs: { id: "validationSentenseFeedback" }
                           },
-                          [_vm._v(_vm._s(_vm.errors.description))]
+                          [_vm._v(_vm._s(_vm.errors.sentense))]
                         )
                       : _vm._e()
                   ]),
@@ -6787,7 +6885,7 @@ var render = function() {
                       on: {
                         change: function($event) {
                           $event.preventDefault()
-                          return _vm.onChangedAnswers.apply(null, arguments)
+                          return _vm.onChangedAnswers(question)
                         }
                       }
                     },
@@ -6814,12 +6912,39 @@ var render = function() {
                       _c(
                         "select",
                         {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: question.correct_index,
+                              expression: "question.correct_index"
+                            }
+                          ],
                           staticClass: "form-select",
                           attrs: {
                             name: "correct_index",
                             "data-width": "100%",
                             tabindex: "null",
                             required: ""
+                          },
+                          on: {
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.$set(
+                                question,
+                                "correct_index",
+                                $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              )
+                            }
                           }
                         },
                         _vm._l(question.answers, function(answer) {
@@ -6837,7 +6962,21 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(3, true),
+                  _c("div", { staticClass: "col-12" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return question.addNewAnswer()
+                          }
+                        }
+                      },
+                      [_vm._v("Add Selection")]
+                    )
+                  ]),
                   _vm._v(" "),
                   _c("hr", { staticClass: "my-5" }),
                   _vm._v(" "),
@@ -6860,6 +6999,14 @@ var render = function() {
                     ),
                     _vm._v(" "),
                     _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: question.commentary,
+                          expression: "question.commentary"
+                        }
+                      ],
                       staticClass: "form-control",
                       class: { "is-invalid": _vm.errors.commentary },
                       attrs: {
@@ -6868,6 +7015,15 @@ var render = function() {
                         rows: "10",
                         placeholder: "問題本文",
                         required: ""
+                      },
+                      domProps: { value: question.commentary },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(question, "commentary", $event.target.value)
+                        }
                       }
                     }),
                     _vm._v(" "),
@@ -6883,7 +7039,7 @@ var render = function() {
                       : _vm._e()
                   ]),
                   _vm._v(" "),
-                  _vm._m(4, true),
+                  _vm._m(3, true),
                   _vm._v(" "),
                   _c("hr", { staticClass: "my-5" })
                 ],
@@ -6980,16 +7136,6 @@ var staticRenderFns = [
           staticClass: "form-control custom-file-input",
           attrs: { type: "file", name: "image" }
         })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-12" }, [
-      _c("button", { staticClass: "btn btn-secondary" }, [
-        _vm._v("Add Selection")
       ])
     ])
   },

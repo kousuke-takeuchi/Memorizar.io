@@ -8,7 +8,7 @@
                         <i class="fe fe-more-vertical"></i>
                     </a>
                     <span class="dropdown-menu" :aria-labelledby="`question-menu-${answer.index}`" style="">
-                        <a class="dropdown-item" @click="onClickDelete(answer.index)"><i class="fe fe-edit dropdown-item-icon"></i>削除</a>
+                        <a class="dropdown-item" @click.prevent="onClickDelete(answer.index)"><i class="fe fe-edit dropdown-item-icon"></i>削除</a>
                     </span>
                 </span>
             </label>

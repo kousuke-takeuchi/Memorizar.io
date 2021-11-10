@@ -7,7 +7,9 @@ export default class API {
     }
 
     getHeader() {
-        return {'Authorization': `Token ${this.token}`};
+        return {
+            'Authorization': `Token ${this.token}`
+        };
     }
 
     async get(path, params = {}) {

@@ -17,21 +17,21 @@
                 <div class="row">
                     <div class="mb-3 col-12 col-md-6">
                         <label class="form-label" for="title">Title</label>
-                        <input type="text" name="title" class="form-control" :class="{'is-invalid': errors.title}" placeholder="タイトル" required>
+                        <input type="text" name="title" class="form-control" :class="{'is-invalid': errors.title}" v-model="questionGroup.title" placeholder="タイトル" required>
                         <div id="validationTitleFeedback" class="invalid-feedback" v-if="errors.title">{{ errors.title }}</div>
                     </div>
                 </div>
 
                 <div class="mb-12 col-12 col-md-12">
                     <label class="form-label" for="sentense">Sentense</label>
-                    <textarea name="sentense" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.description}" placeholder="問題本文" required></textarea>
-                    <div id="validationDescriptionFeedback" class="invalid-feedback" v-if="errors.description">{{ errors.description }}</div>
+                    <textarea name="sentense" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.sentense}" v-model="questionGroup.sentense" placeholder="問題グループ本文" required></textarea>
+                    <div id="validationSentenseFeedback" class="invalid-feedback" v-if="errors.sentense">{{ errors.sentense }}</div>
                 </div>
 
                 <div class="row">
                     <div class="mb-3 col-12 col-md-6">
                         <label class="form-label" for="chapter_id">Chapter</label>
-                        <select class="form-select" name="chapter_id" data-width="100%" tabindex="null">
+                        <select class="form-select" name="chapter_id" data-width="100%" tabindex="null" @change.prevent="selectedChapter">
                             <option value="" selected disabled>チャプターを選択してください</option>
                             <option :value="chapter.chapter_id" :key="chapter.chapter_id" v-for="chapter in chapters">{{ chapter.title }}</option>
                         </select>
@@ -53,15 +53,15 @@
                     <div class="row">
                         <div class="mb-3 col-12 col-md-6">
                             <label class="form-label" for="title">Title</label>
-                            <input type="text" name="title" class="form-control" :class="{'is-invalid': errors.title}" placeholder="タイトル" required>
+                            <input type="text" name="title" class="form-control" :class="{'is-invalid': errors.title}" v-model="question.title" placeholder="タイトル" required>
                             <div id="validationTitleFeedback" class="invalid-feedback" v-if="errors.title">{{ errors.title }}</div>
                         </div>
                     </div>
 
                     <div class="mb-12 col-12 col-md-12">
                         <label class="form-label" for="sentense">Sentense</label>
-                        <textarea name="sentense" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.description}" placeholder="問題本文" required></textarea>
-                        <div id="validationDescriptionFeedback" class="invalid-feedback" v-if="errors.description">{{ errors.description }}</div>
+                        <textarea name="sentense" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.sentense}" v-model="question.sentense" placeholder="問題本文" required></textarea>
+                        <div id="validationSentenseFeedback" class="invalid-feedback" v-if="errors.sentense">{{ errors.sentense }}</div>
                     </div>
 
                     <div class="row">
@@ -77,21 +77,21 @@
                     <h4 class="mb-0">Selections</h4>
                     <p class="mb-4">回答選択肢 (4つ)</p>
 
-                    <draggable class="row" @change.prevent="onChangedAnswers">
+                    <draggable class="row" @change.prevent="onChangedAnswers(question)">
                         <AnswerForm :answer="answer" :key="answer.index" v-for="answer in question.answers" />
                     </draggable>
 
                     <div class="row">
                         <div class="mb-3 col-12 col-md-6">
                             <label class="form-label" for="correct_index">Correct Answer</label>
-                            <select class="form-select" name="correct_index" data-width="100%" tabindex="null" required>
+                            <select class="form-select" name="correct_index" data-width="100%" tabindex="null" v-model="question.correct_index" required>
                                 <option :value="answer.index" :key="answer.index" v-for="answer in question.answers">選択肢{{ answer.index }}</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="col-12">
-                        <button class="btn btn-secondary">Add Selection</button>
+                        <button class="btn btn-secondary"  @click.prevent="question.addNewAnswer()">Add Selection</button>
                     </div>
 
                     <hr class="my-5">
@@ -102,7 +102,7 @@
                     
                     <div class="mb-3 col-12 col-md-12">
                         <label class="form-label" for="commentary">Commentary</label>
-                        <textarea name="commentary" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.commentary}" placeholder="問題本文" required></textarea>
+                        <textarea name="commentary" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.commentary}" v-model="question.commentary" placeholder="問題本文" required></textarea>
                         <div id="validationCommentaryFeedback" class="invalid-feedback" v-if="errors.commentary">{{ errors.commentary }}</div>
                     </div>
 
@@ -138,7 +138,7 @@ import draggable from 'vuedraggable';
 import QuestionGroup from '../models/QuestionGroup';
 import Question from '../models/Question';
 import AnswerForm from '../components/AnswerForm';
-import QuestionAPI from '../apis/QuestionAPI';
+import QuestionGroupAPI from '../apis/QuestionGroupAPI';
 
 
 export default {
@@ -152,7 +152,7 @@ export default {
         let url = window.location.href;
         let workbookId = url.match(regex)[1];
         let token = document.getElementById('token').dataset.value
-        let api = new QuestionAPI(token);
+        let api = new QuestionGroupAPI(token);
         return {
             workbookId: workbookId,
             api: api,
@@ -167,7 +167,7 @@ export default {
         let params = new URLSearchParams(uri);
         let questionGroupId = params.get("question_group_id");
         if (questionGroupId) {
-            this.api.getQuestionGroup(this.workbookId, questionGroupId).then(questionGroup => {
+            this.api.QuestionGroupAPI(this.workbookId, questionGroupId).then(questionGroup => {
                 this.questionGroup = questionGroup;
             });
         }
@@ -176,13 +176,19 @@ export default {
         addQuestion() {
             this.questionGroup.addNewQuestion();
         },
+        selectedChapter(e) {
+            this.questionGroup.setChapter(e.target.value)
+        },
+        onChangedAnswers(question) {
+            question.reindex();
+        },
         async createQuestionGroup() {
-            this.api.createQuestion(workbookId, this.question).then(data => {
-                window.location.href = window.location.href.replace('/questions/new', '');
+            this.api.createQuestionGroup(this.workbookId, this.questionGroup).then(data => {
+                window.location.href = window.location.href.replace('/questions/new_group', '');
             }).catch(error => {
                 this.errors = {};
-                for (let error of error.data.errors) {
-                    this.errors[error.field] = error.message;
+                for (let e of error.data.errors) {
+                    this.errors[e.field] = e.message;
                 }
             })
         }

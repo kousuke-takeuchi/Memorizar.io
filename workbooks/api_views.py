@@ -7,6 +7,14 @@ from lib.responses import SuccessResponse, ErrorResponse
 from . import models, serializers
 
 
+class FileUploadView(mixins.MemorizarBaseMixin, APIView):
+    def post(self, request):
+        serializer = serializers.FileUploadSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid(raise_exception=False):
+            return ErrorResponse(serializer.errors)
+        url = serializer.save()
+        return SuccessResponse({'url': url})
+
 
 class WorkbookListView(mixins.MemorizarBaseMixin, APIView):
     def get_querysets(self):
@@ -124,6 +132,30 @@ class QuestionDeleteView(mixins.MemorizarBaseMixin, APIView):
     def post(self, request, workbook_id, question_id):
         question = self.get_querysets(workbook_id, question_id)
         question.delete()
+        return SuccessResponse({})
+
+
+class QuestionGroupListView(mixins.MemorizarBaseMixin, APIView):
+    def get_querysets(self, workbook_id):
+        questionGroup = models.QuestionGroup.objects.filter(user=self.request.user, workbook__workbook_id=workbook_id)
+        return questionGroup
+
+    def get_workbook(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+        
+    def get(self, request, workbook_id):
+        querysets = self.get_querysets(workbook_id)
+        serializer = serializers.QuestionGroupSerializer(querysets, many=True, context={'request': request})
+        return SuccessResponse({'question_groups': serializer.data})
+    
+    def post(self, request, workbook_id):
+        print(request.data)
+        workbook = self.get_workbook(workbook_id)
+        serializer = serializers.QuestionGroupSerializer(data=request.data, context={'request': request, 'workbook': workbook})
+        if not serializer.is_valid(raise_exception=False):
+            return ErrorResponse(serializer.errors)
+        serializer.save()
         return SuccessResponse({})
 
 

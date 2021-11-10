@@ -2322,52 +2322,59 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ QuestionAPI)
 /* harmony export */ });
-/* harmony import */ var _API__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./API */ "./src/apis/API.js");
-/* harmony import */ var _models_Question__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/Question */ "./src/models/Question.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _API__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./API */ "./src/apis/API.js");
+/* harmony import */ var _models_Question__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/Question */ "./src/models/Question.js");
 
 
-class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_0__["default"] {
+
+class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  async uploadImage(file) {
+    let path = `/api/workbooks/upload/`;
+    let headers = this.getHeader();
+    headers['Content-Type'] = 'multipart/form-data';
+    let formData = new FormData();
+    formData.append('file', file);
+    return axios__WEBPACK_IMPORTED_MODULE_0___default().post(path, formData, {
+      headers
+    });
+  }
+
   async getQuestion(workbookId, questionId) {
-    const path = `/api/workbooks/${workbookId}/questions/${questionId}/`;
-    const resp = await this.get(path, {});
-    const questionData = resp.data.question;
-    const question = new _models_Question__WEBPACK_IMPORTED_MODULE_1__["default"]();
+    let path = `/api/workbooks/${workbookId}/questions/${questionId}/`;
+    let resp = await this.get(path, {});
+    let questionData = resp.data.question;
+    let question = new _models_Question__WEBPACK_IMPORTED_MODULE_2__["default"]();
     question.question_id = questionData.question_id;
     question.title = questionData.title;
     question.sentense = questionData.sentense;
     question.chapter = questionData.chapter;
+    question.image_urls = questionData.image_urls;
     question.correct_index = questionData.correct_index;
     question.commentary = questionData.commentary;
+    question.commentary_image_urls = questionData.commentary_image_urls;
     question.answers = questionData.answers;
     return question;
   }
 
   async createQuestion(workbookId, question) {
-    const path = `/api/workbooks/${workbookId}/questions/`;
-    const {
-      title,
-      sentense,
-      chapter_id,
-      correct_index,
-      commentary
-    } = question;
-    const data = {
-      title,
-      sentense,
-      chapter_id,
-      correct_index,
-      commentary
+    let path = `/api/workbooks/${workbookId}/questions/`;
+    let data = {
+      'title': question.title,
+      'sentense': question.sentense,
+      'chapter_id': question.chapter_id,
+      'correct_index': question.correct_index,
+      'image_urls': question.image_urls,
+      'commentary': question.commentary,
+      'commentary_image_urls': question.commentary_image_urls,
+      'answers': []
     };
-    data['answers'] = [];
 
-    for (var answer of question.answers) {
-      const {
-        index,
-        sentense
-      } = answer;
-      const answerForm = {
-        index,
-        sentense
+    for (let answer of question.answers) {
+      let answerForm = {
+        'index': answer.index,
+        'sentense': answer.sentense
       };
       data['answers'].push(answerForm);
     }
@@ -2376,33 +2383,21 @@ class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_0__["default"] {
   }
 
   async editQuestion(workbookId, question) {
-    const path = `/api/workbooks/${workbookId}/questions/${question.question_id}/`;
-    const {
-      title,
-      sentense,
-      chapter_id,
-      correct_index,
-      commentary
-    } = question;
-    const data = {
-      title,
-      sentense,
-      chapter_id,
-      correct_index,
-      commentary
+    let path = `/api/workbooks/${workbookId}/questions/${question.question_id}/`;
+    let data = {
+      'title': question.title,
+      'sentense': question.sentense,
+      'chapter_id': question.chapter_id,
+      'correct_index': question.correct_index,
+      'commentary': question.commentary,
+      'answers': []
     };
-    data['answers'] = [];
 
     for (var answer of question.answers) {
-      const {
-        answer_id,
-        index,
-        sentense
-      } = answer;
-      const answerForm = {
-        answer_id,
-        index,
-        sentense
+      let answerForm = {
+        'answer_id': answer.answer_id,
+        'index': answer.index,
+        'sentense': answer.sentense
       };
       data['answers'].push(answerForm);
     }
@@ -2411,7 +2406,7 @@ class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_0__["default"] {
   }
 
   async deleteQuestion(workbookId, question) {
-    const path = `/api/workbooks/${workbookId}/questions/${question.question_id}/delete/`;
+    let path = `/api/workbooks/${workbookId}/questions/${question.question_id}/delete/`;
     return this.post(path);
   }
 
@@ -2460,10 +2455,12 @@ class Question {
     this.question_id = null;
     this.title = null;
     this.sentense = null;
-    this.chapter_id = null;
     this.chapter = null;
     this.correct_index = null;
     this.commentary = null;
+    this.image_urls = [];
+    this.commentary_image_urls = [];
+    this.chapter_id = null;
 
     if (size === undefined) {
       size = 4;
@@ -2513,6 +2510,11 @@ class Question {
     }
   }
 
+  async upload(api, file) {
+    let resp = await api.uploadImage(file);
+    return resp.data.url;
+  }
+
 }
 
 Question.load_data = function (question_data, answers_data) {
@@ -2520,6 +2522,8 @@ Question.load_data = function (question_data, answers_data) {
   question.question_id = question_data.question_id;
   question.sentense = question_data.sentense;
   question.image_urls = question_data.image_urls;
+  question.commentary = question_data.commentary;
+  question.commentary_image_urls = question_data.commentary_image_urls;
   question.answers = [];
 
   for (var answer_data of answers_data) {

@@ -13,6 +13,13 @@ class QuestionGroup {
     addNewQuestion() {
         this.questions.push(new Question(4));
     }
+
+    setChapter(chapterId) {
+        this.chapter_id = chapterId;
+        for (let question of this.questions) {
+            question.chapter_id = chapterId;
+        }
+    }
 }
 
 export default QuestionGroup;

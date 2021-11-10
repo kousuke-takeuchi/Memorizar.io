@@ -81,9 +81,10 @@ class Chapter(BaseModel, models.Model):
 
 class QuestionGroup(BaseModel, models.Model):
     question_group_id = models.UUIDField('問題グループID', default=uuid.uuid4, unique=True, db_index=True)
+    chapter = models.ForeignKey('workbooks.Chapter', db_index=True, on_delete=models.CASCADE, null=True, default=None, blank=True)
     workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
     title = models.CharField('タイトル', max_length=250, db_index=True)
-    description = models.TextField('問題説明文')
+    sentense = models.TextField('問題説明文')
     image_urls = ArrayField(models.URLField(), size=10, default=list)
 
     objects = managers.QuestionGroupManager()

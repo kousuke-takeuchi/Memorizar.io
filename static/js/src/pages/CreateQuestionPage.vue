@@ -40,7 +40,7 @@
     
                     <div class="custom-file mb-3 col-12 col-md-6">
                         <label class="form-label" for="chapter_id">Figure (Option)</label>
-                        <input type="file" class="form-control custom-file-input" name="image">
+                        <input type="file" class="form-control custom-file-input" name="image" @change.prevent="changeImage">
                     </div>
                 </div>
 
@@ -51,7 +51,7 @@
                 <p class="mb-4">回答選択肢 (4つ)</p>
 
                 <draggable class="row" v-model="question.answers" @change="onChangedAnswers">
-                    <AnswerForm :answer="answer" :key="answer.index" v-for="answer in question.answers" @clickDelete="deleteQuestion" />
+                    <AnswerForm :answer="answer" :key="answer.index" v-for="answer in question.answers" @clickDelete="deleteAnswer" />
                 </draggable>
 
                 <div class="row">
@@ -81,14 +81,14 @@
 
                 <div class="custom-file mb-3 col-12 col-md-6">
                     <label class="form-label" for="chapter_id">Figure (Option)</label>
-                    <input type="file" class="form-control custom-file-input" name="commentary_image">
+                    <input type="file" class="form-control custom-file-input" name="commentary_image" @change="changeCommentaryImage">
                 </div>
 
                 <hr class="my-5">
 
                 <!-- 送信ボタン -->
                 <div class="col-12">
-                    <button class="btn btn-primary" @click="createQuestion">Create Question</button>
+                    <button class="btn btn-primary" @click.prevent="createQuestion">Create Question</button>
                 </div>
             </form>
         </div>
@@ -141,16 +141,27 @@ export default {
         onChangedAnswers() {
             this.question.reindex();
         },
-        deleteQuestion(index) {
+        deleteAnswer(index) {
             this.question.deleteAnswer(index);
         },
+        async changeImage(e) {
+            await this.question.upload(this.api, e.target.files[0]).then(url => {
+                this.question.image_urls.push(url);
+            });
+        },
+        async changeCommentaryImage(e) {
+            await this.question.upload(this.api, e.target.files[0]).then(url => {
+                this.question.commentary_image_urls.push(url);
+            });
+        },
         async createQuestion() {
-            this.api.createQuestion(workbookId, this.question).then(data => {
+            this.api.createQuestion(this.workbookId, this.question).then(data => {
                 window.location.href = window.location.href.replace('/questions/new', '');
             }).catch(error => {
+                console.log(error)
                 this.errors = {};
-                for (let error of error.data.errors) {
-                    this.errors[error.field] = error.message;
+                for (let e of error.data.errors) {
+                    this.errors[e.field] = e.message;
                 }
             })
         }

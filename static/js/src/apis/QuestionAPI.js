@@ -1,49 +1,52 @@
-import API from "./API";
+import axios from 'axios';
 
+import API from "./API";
 import Question from "../models/Question";
 
 
 export default class QuestionAPI extends API {
+    async uploadImage(file) {
+        let path = `/api/workbooks/upload/`;
+        let headers = this.getHeader();
+        headers['Content-Type'] = 'multipart/form-data';
+        let formData = new FormData();
+        formData.append('file', file);
+        return axios.post(path, formData, { headers });
+    }
+
     async getQuestion(workbookId, questionId) {
-        const path = `/api/workbooks/${workbookId}/questions/${questionId}/`;
-        const resp = await this.get(path, {});
-        const questionData = resp.data.question;
-        const question = new Question();
+        let path = `/api/workbooks/${workbookId}/questions/${questionId}/`;
+        let resp = await this.get(path, {});
+        let questionData = resp.data.question;
+        let question = new Question();
         question.question_id = questionData.question_id;
         question.title = questionData.title;
         question.sentense = questionData.sentense;
         question.chapter = questionData.chapter;
+        question.image_urls = questionData.image_urls;
         question.correct_index = questionData.correct_index;
         question.commentary = questionData.commentary;
+        question.commentary_image_urls = questionData.commentary_image_urls;
         question.answers = questionData.answers;
         return question;
     }
 
     async createQuestion(workbookId, question) {
-        const path = `/api/workbooks/${workbookId}/questions/`;
-        const {
-            title,
-            sentense,
-            chapter_id,
-            correct_index,
-            commentary,
-        } = question;
-        const data = {
-            title,
-            sentense,
-            chapter_id,
-            correct_index,
-            commentary,
+        let path = `/api/workbooks/${workbookId}/questions/`;
+        let data = {
+            'title': question.title,
+            'sentense': question.sentense,
+            'chapter_id': question.chapter_id,
+            'correct_index': question.correct_index,
+            'image_urls': question.image_urls,
+            'commentary': question.commentary,
+            'commentary_image_urls': question.commentary_image_urls,
+            'answers': [],
         }
-        data['answers'] = [];
-        for (var answer of question.answers) {
-            const {
-                index,
-                sentense,
-            } = answer;
-            const answerForm = {
-                index,
-                sentense,
+        for (let answer of question.answers) {
+            let answerForm = {
+                'index': answer.index,
+                'sentense': answer.sentense,
             };
             data['answers'].push(answerForm);
         }
@@ -51,32 +54,20 @@ export default class QuestionAPI extends API {
     }
 
     async editQuestion(workbookId, question) {
-        const path = `/api/workbooks/${workbookId}/questions/${question.question_id}/`;
-        const {
-            title,
-            sentense,
-            chapter_id,
-            correct_index,
-            commentary,
-        } = question;
-        const data = {
-            title,
-            sentense,
-            chapter_id,
-            correct_index,
-            commentary,
-        }
-        data['answers'] = [];
+        let path = `/api/workbooks/${workbookId}/questions/${question.question_id}/`;
+        let data = {
+            'title': question.title,
+            'sentense': question.sentense,
+            'chapter_id': question.chapter_id,
+            'correct_index': question.correct_index,
+            'commentary': question.commentary,
+            'answers': [],
+        };
         for (var answer of question.answers) {
-            const {
-                answer_id,
-                index,
-                sentense,
-            } = answer;
-            const answerForm = {
-                answer_id,
-                index,
-                sentense,
+            let answerForm = {
+                'answer_id': answer.answer_id,
+                'index': answer.index,
+                'sentense': answer.sentense,
             };
             data['answers'].push(answerForm);
         }
@@ -84,7 +75,7 @@ export default class QuestionAPI extends API {
     }
 
     async deleteQuestion(workbookId, question) {
-        const path = `/api/workbooks/${workbookId}/questions/${question.question_id}/delete/`;
+        let path = `/api/workbooks/${workbookId}/questions/${question.question_id}/delete/`;
         return this.post(path);
     }
 }

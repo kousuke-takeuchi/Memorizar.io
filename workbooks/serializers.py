@@ -1,10 +1,27 @@
 import time
+import uuid
 
 from django.utils import timezone
+from django.core.files.storage import default_storage
 
 from rest_framework import serializers
 
 from . import models
+
+
+class FileUploadSerializer(serializers.Serializer):
+    file = serializers.FileField(required=True)
+
+    def save(self):
+        inmemory_file = self.validated_data['file']
+        filename = inmemory_file.name.split('.')
+        filename[0] = str(uuid.uuid4())
+        filename = '.'.join(filename)
+        file_path = 'remote_files/' + filename
+        filename = default_storage.save(file_path, inmemory_file)
+        image_url = default_storage.url(filename)
+        image_url = image_url.split('?')[0]
+        return image_url
 
 
 class WorkbookSerializer(serializers.ModelSerializer):
@@ -86,9 +103,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         read_only_fields = ('question_id', 'chapter',)
         write_only_fields = ('chapter_id', 'correct_index',)
         fields = read_only_fields + write_only_fields + (
-            'image_urls', 'title', 'sentense',
-            'commentary', 'commentary_image_urls',
-            'answers',
+            'title', 'sentense', 'image_urls', 'commentary', 'commentary_image_urls', 'answers',
         )
         extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
     
@@ -227,13 +242,14 @@ class TrainingSelectionSerializer(serializers.ModelSerializer):
 
 class QuestionGroupSerializer(serializers.ModelSerializer):
     questions = QuestionSerializer(many=True)
+    chapter_id = serializers.CharField(write_only=True)
 
     class Meta:
         model = models.QuestionGroup
         read_only_fields = ('chapter',)
         write_only_fields = ('chapter_id',)
         fields = read_only_fields + write_only_fields + (
-            'image_urls', 'title', 'sentense',
+            'image_urls', 'title', 'sentense', 'questions',
         )
         extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
 
@@ -242,7 +258,7 @@ class QuestionGroupSerializer(serializers.ModelSerializer):
         question_group = models.QuestionGroup.objects.create(
             workbook=self.context['workbook'],
             title=validated_data['title'],
-            description=validated_data['description'],
+            sentense=validated_data['sentense'],
             image_urls=validated_data.get('image_urls', []),
         )
 
@@ -263,6 +279,6 @@ class QuestionGroupSerializer(serializers.ModelSerializer):
                     title=answer_data['index'],
                     sentense=answer_data['sentense'],
                     index=answer_data['index'],
-                    is_true=answer_data['index'] == validated_data['correct_index']
+                    is_true=answer_data['index'] == question_data['correct_index']
                 )
         return question_group
