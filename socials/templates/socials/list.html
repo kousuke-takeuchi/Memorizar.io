@@ -94,7 +94,7 @@
                                 <div class="col-lg-4 col-md-6 col-12">
                                     <!-- Card -->
                                     <div class="card  mb-4 card-hover">
-                                        <a href="{% url 'workbooks:detail' workbook.workbook_id %}" class="card-img-top">
+                                        <a href="{% url 'socials:detail' workbook.workbook_id %}" class="card-img-top">
                                             {% if workbook.image_url %}
                                                 <img src="{{ workbook.image_url }}" alt="" class="card-img-top rounded-top-md">
                                             {% else %}
@@ -103,7 +103,7 @@
                                         </a>
                                         <!-- Card body -->
                                         <div class="card-body">
-                                            <h4 class="mb-2 text-truncate-line-2 "><a href="{% url 'workbooks:detail' workbook.workbook_id %}" class="text-inherit">{{ workbook.title }}</a>
+                                            <h4 class="mb-2 text-truncate-line-2 "><a href="{% url 'socials:detail' workbook.workbook_id %}" class="text-inherit">{{ workbook.title }}</a>
                                             </h4>
                                             <div class="lh-1">
                                                 <span>
@@ -135,7 +135,7 @@
                                                         </a>
                                                         <span class="dropdown-menu" aria-labelledby="workbook-menu-{{ workbook.workbook_id }}">
                                                             <span class="dropdown-header">メニュー </span>
-                                                            <form action="{% url 'socials:register' workbook.workbook_id %}" method="POST">
+                                                            <form action="{% url 'socials:detail' workbook.workbook_id %}" method="POST">
                                                                 {% csrf_token %}
                                                                 <button type="submit" class="dropdown-item"><i class="fe fe-edit dropdown-item-icon"></i> ワークブックに追加</button>
                                                             </form>
@@ -156,18 +156,18 @@
                             <div class="card mb-4 card-hover">
                                 <div class="row g-0">
                                     {% if workbook.image_url %}
-                                        <a class="col-12 col-md-12 col-xl-3 col-lg-3 bg-cover img-left-rounded" style="background-image: url({{ workbook.image_url }});" href="{% url 'workbooks:detail' workbook.workbook_id %}">
+                                        <a class="col-12 col-md-12 col-xl-3 col-lg-3 bg-cover img-left-rounded" style="background-image: url({{ workbook.image_url }});" href="{% url 'socials:detail' workbook.workbook_id %}">
                                             <img src="{{ workbook.image_url }}" alt="..." class="img-fluid d-lg-none invisible">
                                         </a>
                                     {% else %}
-                                        <a class="col-12 col-md-12 col-xl-3 col-lg-3 bg-cover img-left-rounded" style="background-image: url(https://via.placeholder.com/300x200);" href="{% url 'workbooks:detail' workbook.workbook_id %}">
+                                        <a class="col-12 col-md-12 col-xl-3 col-lg-3 bg-cover img-left-rounded" style="background-image: url(https://via.placeholder.com/300x200);" href="{% url 'socials:detail' workbook.workbook_id %}">
                                             <img src="https://via.placeholder.com/300x200" alt="..." class="img-fluid d-lg-none invisible">
                                         </a>
                                     {% endif %}
                                     <div class="col-lg-9 col-md-12 col-12">
                                         <!-- Card body -->
                                         <div class="card-body">
-                                            <h3 class="mb-2 text-truncate-line-2 "><a href="{% url 'workbooks:detail' workbook.workbook_id %}" class="text-inherit">{{ workbook.title }}</a></h3>
+                                            <h3 class="mb-2 text-truncate-line-2 "><a href="{% url 'socials:detail' workbook.workbook_id %}" class="text-inherit">{{ workbook.title }}</a></h3>
                                             <!-- List inline -->
                                             <!-- <ul class="mb-5 list-inline">
                                                 <li class="list-inline-item"><i class="far fa-clock me-1"></i>3h 56m

@@ -1,0 +1,113 @@
+{% extends "memorizar/base.html" %}
+{% load static %}
+{% load memorizar %}
+{% block title %}Workbooks{% endblock %}
+
+{% block content %}
+
+<!-- メニュー -->
+<div class="py-md-5 py-5 container">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-12">
+			<!-- Bg -->
+			<div class="pt-16 rounded-top-md" style="
+						background: url(/static/images/profile-bg.jpg) no-repeat;
+						background-size: cover;
+					"></div>
+			<div class="d-flex justify-content-between bg-white px-4 pt-2 pb-4 rounded-none rounded-bottom shadow-sm card">
+				<div class="d-lg-flex justify-content-between align-items-center card-header" style="border: none;">
+					<div class="mb-3 mb-lg-0">
+						<h3 class="mb-0">{{ workbook.title|truncatechars:20 }}</h3>
+						<p class="mb-0 d-block">{{ workbook.created_at|date:"Y年n月j日" }}に作成</p>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 問題一覧 -->
+<div class="container pb-5">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-12">
+			<div class="card">
+				<div class="d-lg-flex justify-content-between align-items-center card-header">
+					<div class="mb-3 mb-lg-0">
+						<h3 class="mb-0">Questions</h3>
+						<span>問題</span>
+					</div>
+					<!-- Nav -->
+					<nav class="nav btn-group flex-nowrap">
+						<div>
+								<div class="nav nav-tabs btn-group flex-nowrap" id="nav-tab"  role="tablist">
+									<button class="btn btn-outline-white nav-link active" id="question-tab" data-bs-toggle="tab" data-bs-target="#question" role="tab" aria-controls="question" aria-selected="true">問題文</button>
+									<button class="btn btn-outline-white nav-link" id="chapter-tab" data-bs-toggle="tab" data-bs-target="#chapter" role="tab" aria-controls="chapter" aria-selected="false">チャプター</button>
+								</div>
+								
+						</div>
+					</nav>
+				</div>
+
+				<div class="tab-content">
+					<!-- 問題一覧タブ -->
+					<div class="table-responsive border-0 tab-pane fade show active" id="question" role="tabpanel" aria-labelledby="question">
+						<table class="table mb-0 text-nowrap">
+							<thead class="table-light">
+								<tr>
+									<th scope="col" class="border-bottom-0">タイトル</th>
+									<th scope="col" class="border-bottom-0">チャプター</th>
+									<th scope="col" class="border-bottom-0">問題文</th>
+									<th scope="col" class="border-bottom-0">作成日</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for question in workbook.question_set.all %}
+									<tr>
+										<td>{{ question.title }}</td>
+										<td>{{ question.chapter.title }}</td>
+										<td>{{ question.sentense|truncatechars:20 }}</td>
+										<td>{{ question.created_at|date:"Y年n月j日" }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						<div class="m-3">
+							{% include 'partials/paginator.html' with page_obj=workbook.question_set.all %}
+						</div>
+					</div>
+					<!-- チャプタータブ -->
+					<div class="table-responsive border-0 tab-pane fade show" id="chapter" role="tabpanel" aria-labelledby="chapter">
+						<table class="table mb-0 text-nowrap">
+							<thead class="table-light">
+								<tr>
+									<th scope="col" class="border-bottom-0">ID</th>
+									<th scope="col" class="border-bottom-0">タイトル</th>
+									<th scope="col" class="border-bottom-0">作成日</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for chapter in workbook.chapter_set.all %}
+									<tr>
+										<td>{{ chapter.chapter_id }}</td>
+										<td>{{ chapter.title }}</td>
+										<td>{{ chapter.created_at|date:"Y年n月j日" }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+                        <div class="m-3">
+							{% include 'partials/paginator.html' with page_obj=workbook.chapter_set.all %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script src="{% static 'js/workbook_detail.js' %}"></script>
+{% endblock %}

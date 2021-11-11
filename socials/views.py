@@ -34,3 +34,17 @@ class WorkbookRegistrationView(mixins.BaseMixin, View):
         workbook = self.get_querysets(workbook_id)
         models.Registration.objects.create(user=request.user, workbook=workbook)
         return redirect('workbooks:list')
+
+
+class WorkbookDetailView(mixins.BaseMixin, View):
+    template_name = 'socials/detail.html'
+
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def get(self, request, workbook_id):
+        # 問題集詳細
+        workbook = self.get_querysets(workbook_id)
+        context = dict(workbook=workbook)
+        return render(request, self.template_name, context)
