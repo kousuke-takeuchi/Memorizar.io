@@ -2318,12 +2318,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_1__["default"] {
-  async uploadImage(file) {
+  async uploadImage(file, width, height, left, top) {
     let path = `/api/workbooks/upload/`;
     let headers = this.getHeader();
     headers['Content-Type'] = 'multipart/form-data';
     let formData = new FormData();
     formData.append('file', file);
+    formData.append('width', width);
+    formData.append('height', height);
+    formData.append('left', left);
+    formData.append('top', top);
     return axios__WEBPACK_IMPORTED_MODULE_0___default().post(path, formData, {
       headers
     });
@@ -2498,8 +2502,8 @@ class Question {
     }
   }
 
-  async upload(api, file) {
-    let resp = await api.uploadImage(file);
+  async upload(api, file, width, height, left, top) {
+    let resp = await api.uploadImage(file, width, height, left, top);
     return resp.data.url;
   }
 
@@ -6490,7 +6494,7 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c("textarea", {
+      _c("input", {
         directives: [
           {
             name: "model",
@@ -6501,9 +6505,8 @@ var render = function() {
         ],
         staticClass: "form-control",
         attrs: {
+          type: "text",
           name: "sentense",
-          cols: "30",
-          rows: "3",
           placeholder: "回答選択肢",
           required: ""
         },

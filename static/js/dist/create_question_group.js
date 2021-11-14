@@ -2515,8 +2515,8 @@ class Question {
     }
   }
 
-  async upload(api, file) {
-    let resp = await api.uploadImage(file);
+  async upload(api, file, width, height, left, top) {
+    let resp = await api.uploadImage(file, width, height, left, top);
     return resp.data.url;
   }
 
@@ -6548,7 +6548,7 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c("textarea", {
+      _c("input", {
         directives: [
           {
             name: "model",
@@ -6559,9 +6559,8 @@ var render = function() {
         ],
         staticClass: "form-control",
         attrs: {
+          type: "text",
           name: "sentense",
-          cols: "30",
-          rows: "3",
           placeholder: "回答選択肢",
           required: ""
         },

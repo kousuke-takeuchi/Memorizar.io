@@ -12,7 +12,7 @@
                     </span>
                 </span>
             </label>
-            <textarea name="sentense" cols="30" rows="3" class="form-control" :placeholder="'回答選択肢'" v-model="answer.sentense" required></textarea>
+            <input type="text" v-model="answer.sentense" name="sentense" class="form-control" placeholder="回答選択肢" required />
         </div>
     </div>
 </template>

@@ -102,7 +102,7 @@ class Question(BaseModel, models.Model):
     chapter = models.ForeignKey('workbooks.Chapter', db_index=True, on_delete=models.CASCADE, null=True, default=None, blank=True)
     workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
     title = models.CharField('タイトル', max_length=250, db_index=True)
-    sentense = models.TextField('問題文')
+    sentense = models.TextField('問題文', default='', blank=True)
     image_urls = ArrayField(models.URLField(), size=10, default=list)
     hint = models.TextField('問題ヒント文章', default=None, null=True, blank=True)
     commentary = models.TextField('正解解説文章', default=None, null=True, blank=True)

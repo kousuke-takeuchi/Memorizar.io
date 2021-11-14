@@ -5,12 +5,16 @@ import Question from "../models/Question";
 
 
 export default class QuestionAPI extends API {
-    async uploadImage(file) {
+    async uploadImage(file, width, height, left, top) {
         let path = `/api/workbooks/upload/`;
         let headers = this.getHeader();
         headers['Content-Type'] = 'multipart/form-data';
         let formData = new FormData();
         formData.append('file', file);
+        formData.append('width', width);
+        formData.append('height', height);
+        formData.append('left', left);
+        formData.append('top', top);
         return axios.post(path, formData, { headers });
     }
 

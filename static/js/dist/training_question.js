@@ -2389,8 +2389,8 @@ class Question {
     }
   }
 
-  async upload(api, file) {
-    let resp = await api.uploadImage(file);
+  async upload(api, file, width, height, left, top) {
+    let resp = await api.uploadImage(file, width, height, left, top);
     return resp.data.url;
   }
 
