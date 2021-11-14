@@ -25,7 +25,7 @@
 
                         <div class="mb-3 col-12 col-md-6">
                             <label class="form-label" for="chapter_id">Chapter</label>
-                            <select class="selectpicker" name="chapter_id" data-width="100%" tabindex="null" v-model="question.chapter_id">
+                            <select class="form-select" name="chapter_id" data-width="100%" tabindex="null" v-model="question.chapter_id">
                                 <!-- <option value="" selected disabled>チャプターを選択してください</option> -->
                                 <option :value="chapter.chapter_id" :key="chapter.chapter_id" v-for="chapter in chapters">{{ chapter.title }}</option>
                             </select>

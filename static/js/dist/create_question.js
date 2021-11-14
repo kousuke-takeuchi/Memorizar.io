@@ -2217,6 +2217,16 @@ __webpack_require__.r(__webpack_exports__);
   },
 
   methods: {
+    defaultSize({
+      imageSize,
+      visibleArea
+    }) {
+      return {
+        width: (visibleArea || imageSize).width,
+        height: (visibleArea || imageSize).height
+      };
+    },
+
     change({
       coordinates,
       canvas
@@ -2453,11 +2463,11 @@ class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_1__["default"] {
     let question = new _models_Question__WEBPACK_IMPORTED_MODULE_2__["default"]();
     question.question_id = questionData.question_id;
     question.title = questionData.title;
-    question.sentense = questionData.sentense;
+    question.sentense = questionData.sentense ? questionData.sentense : '';
     question.chapter = questionData.chapter;
     question.image_urls = questionData.image_urls;
     question.correct_index = questionData.correct_index;
-    question.commentary = questionData.commentary;
+    question.commentary = questionData.commentary ? questionData.commentary : '';
     question.commentary_image_urls = questionData.commentary_image_urls;
     question.answers = questionData.answers;
     return question;
@@ -2467,11 +2477,11 @@ class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_1__["default"] {
     let path = `/api/workbooks/${workbookId}/questions/`;
     let data = {
       'title': question.title,
-      'sentense': question.sentense,
+      'sentense': question.sentense ? question.sentense : '',
       'chapter_id': question.chapter_id,
       'correct_index': question.correct_index,
       'image_urls': question.image_urls,
-      'commentary': question.commentary,
+      'commentary': question.commentary ? question.commentary : '',
       'commentary_image_urls': question.commentary_image_urls,
       'answers': []
     };
@@ -2774,7 +2784,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#image-crop-editor[data-v-60ac8412] {\r\n    position: fixed;\r\n    left: 0;\r\n    top: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    z-index: 100;\n}\n#image-crop-editor #close[data-v-60ac8412] {\r\n    position: fixed;\r\n    left: 10px;\r\n    top: 10px;\r\n    width: 25px;\r\n    height: 25px;\r\n    z-index: 101;\n}\n#image-crop-editor #submit[data-v-60ac8412] {\r\n    position: fixed;\r\n    right: 10px;\r\n    top: 10px;\r\n    z-index: 101;\n}\r\n", "",{"version":3,"sources":["webpack://./src/components/ImageCropModal.vue"],"names":[],"mappings":";AA+CA;IACA,eAAA;IACA,OAAA;IACA,MAAA;IACA,WAAA;IACA,YAAA;IACA,YAAA;AACA;AAEA;IACA,eAAA;IACA,UAAA;IACA,SAAA;IACA,WAAA;IACA,YAAA;IACA,YAAA;AACA;AAEA;IACA,eAAA;IACA,WAAA;IACA,SAAA;IACA,YAAA;AACA","sourcesContent":["<template>\r\n    <div id=\"image-crop-editor\">\r\n        <button id=\"close\" type=\"button\" class=\"btn-close\" aria-label=\"Close\"></button>\r\n        <cropper :src=\"data\" @change=\"change\" />\r\n        <button id=\"submit\" type=\"button\" class=\"btn btn-success\" @click.prevent=\"finish\">完了</button>\r\n    </div>  \r\n</template>\r\n\r\n\r\n<script lang=\"js\">\r\nimport { Cropper } from 'vue-advanced-cropper';\r\nimport 'vue-advanced-cropper/dist/style.css';\r\n\r\nexport default {\r\n    name: 'ImageCropModal',\r\n    components: {\r\n\t\tCropper,\r\n\t},\r\n    props: {\r\n        file: {\r\n            type: File,\r\n            required: true,\r\n        },\r\n        data: {\r\n            type: String,\r\n            required: true,\r\n        },\r\n    },\r\n    data() {\r\n        return {\r\n            coordinates: null,\r\n        }\r\n    },\r\n    methods: {\r\n        change({ coordinates, canvas }) {\r\n            this.coordinates = coordinates;\r\n\t\t},\r\n        finish() {\r\n            let { width, height, left, top } = this.coordinates;\r\n            this.$emit('crop', this.file, width, height, left, top);\r\n        },\r\n    },\r\n}\r\n</script>\r\n\r\n\r\n<style scoped>\r\n#image-crop-editor {\r\n    position: fixed;\r\n    left: 0;\r\n    top: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    z-index: 100;\r\n}\r\n\r\n#image-crop-editor #close {\r\n    position: fixed;\r\n    left: 10px;\r\n    top: 10px;\r\n    width: 25px;\r\n    height: 25px;\r\n    z-index: 101;\r\n}\r\n\r\n#image-crop-editor #submit {\r\n    position: fixed;\r\n    right: 10px;\r\n    top: 10px;\r\n    z-index: 101;\r\n}\r\n</style>"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#image-crop-editor[data-v-60ac8412] {\r\n    position: fixed;\r\n    left: 0;\r\n    top: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    z-index: 100;\n}\n#image-crop-editor #close[data-v-60ac8412] {\r\n    position: fixed;\r\n    left: 10px;\r\n    top: 10px;\r\n    width: 25px;\r\n    height: 25px;\r\n    z-index: 101;\n}\n#image-crop-editor #submit[data-v-60ac8412] {\r\n    position: fixed;\r\n    right: 10px;\r\n    top: 10px;\r\n    z-index: 101;\n}\n.vue-advanced-cropper[data-v-60ac8412] {\r\n    height: 100%;\n}\r\n", "",{"version":3,"sources":["webpack://./src/components/ImageCropModal.vue"],"names":[],"mappings":";AAqDA;IACA,eAAA;IACA,OAAA;IACA,MAAA;IACA,WAAA;IACA,YAAA;IACA,YAAA;AACA;AAEA;IACA,eAAA;IACA,UAAA;IACA,SAAA;IACA,WAAA;IACA,YAAA;IACA,YAAA;AACA;AAEA;IACA,eAAA;IACA,WAAA;IACA,SAAA;IACA,YAAA;AACA;AAEA;IACA,YAAA;AACA","sourcesContent":["<template>\r\n    <div id=\"image-crop-editor\">\r\n        <button id=\"close\" type=\"button\" class=\"btn-close\" aria-label=\"Close\"></button>\r\n        <cropper :src=\"data\" :default-size=\"defaultSize\" @change=\"change\" />\r\n        <button id=\"submit\" type=\"button\" class=\"btn btn-success btn-sm\" @click.prevent=\"finish\">完了</button>\r\n    </div>  \r\n</template>\r\n\r\n\r\n<script lang=\"js\">\r\nimport { Cropper } from 'vue-advanced-cropper';\r\nimport 'vue-advanced-cropper/dist/style.css';\r\n\r\nexport default {\r\n    name: 'ImageCropModal',\r\n    components: {\r\n\t\tCropper,\r\n\t},\r\n    props: {\r\n        file: {\r\n            type: File,\r\n            required: true,\r\n        },\r\n        data: {\r\n            type: String,\r\n            required: true,\r\n        },\r\n    },\r\n    data() {\r\n        return {\r\n            coordinates: null,\r\n        }\r\n    },\r\n    methods: {\r\n        defaultSize({ imageSize, visibleArea }) {\r\n\t\t\treturn {\r\n\t\t\t\twidth: (visibleArea || imageSize).width,\r\n\t\t\t\theight: (visibleArea || imageSize).height,\r\n\t\t\t};\r\n\t\t},\r\n        change({ coordinates, canvas }) {\r\n            this.coordinates = coordinates;\r\n\t\t},\r\n        finish() {\r\n            let { width, height, left, top } = this.coordinates;\r\n            this.$emit('crop', this.file, width, height, left, top);\r\n        },\r\n    },\r\n}\r\n</script>\r\n\r\n\r\n<style scoped>\r\n#image-crop-editor {\r\n    position: fixed;\r\n    left: 0;\r\n    top: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    z-index: 100;\r\n}\r\n\r\n#image-crop-editor #close {\r\n    position: fixed;\r\n    left: 10px;\r\n    top: 10px;\r\n    width: 25px;\r\n    height: 25px;\r\n    z-index: 101;\r\n}\r\n\r\n#image-crop-editor #submit {\r\n    position: fixed;\r\n    right: 10px;\r\n    top: 10px;\r\n    z-index: 101;\r\n}\r\n\r\n.vue-advanced-cropper {\r\n    height: 100%;\r\n}\r\n</style>"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -15265,12 +15275,15 @@ var render = function() {
         attrs: { id: "close", type: "button", "aria-label": "Close" }
       }),
       _vm._v(" "),
-      _c("cropper", { attrs: { src: _vm.data }, on: { change: _vm.change } }),
+      _c("cropper", {
+        attrs: { src: _vm.data, "default-size": _vm.defaultSize },
+        on: { change: _vm.change }
+      }),
       _vm._v(" "),
       _c(
         "button",
         {
-          staticClass: "btn btn-success",
+          staticClass: "btn btn-success btn-sm",
           attrs: { id: "submit", type: "button" },
           on: {
             click: function($event) {
@@ -15387,7 +15400,7 @@ var render = function() {
                           expression: "question.chapter_id"
                         }
                       ],
-                      staticClass: "selectpicker",
+                      staticClass: "form-select",
                       attrs: {
                         name: "chapter_id",
                         "data-width": "100%",

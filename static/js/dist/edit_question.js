@@ -2340,11 +2340,11 @@ class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_1__["default"] {
     let question = new _models_Question__WEBPACK_IMPORTED_MODULE_2__["default"]();
     question.question_id = questionData.question_id;
     question.title = questionData.title;
-    question.sentense = questionData.sentense;
+    question.sentense = questionData.sentense ? questionData.sentense : '';
     question.chapter = questionData.chapter;
     question.image_urls = questionData.image_urls;
     question.correct_index = questionData.correct_index;
-    question.commentary = questionData.commentary;
+    question.commentary = questionData.commentary ? questionData.commentary : '';
     question.commentary_image_urls = questionData.commentary_image_urls;
     question.answers = questionData.answers;
     return question;
@@ -2354,11 +2354,11 @@ class QuestionAPI extends _API__WEBPACK_IMPORTED_MODULE_1__["default"] {
     let path = `/api/workbooks/${workbookId}/questions/`;
     let data = {
       'title': question.title,
-      'sentense': question.sentense,
+      'sentense': question.sentense ? question.sentense : '',
       'chapter_id': question.chapter_id,
       'correct_index': question.correct_index,
       'image_urls': question.image_urls,
-      'commentary': question.commentary,
+      'commentary': question.commentary ? question.commentary : '',
       'commentary_image_urls': question.commentary_image_urls,
       'answers': []
     };

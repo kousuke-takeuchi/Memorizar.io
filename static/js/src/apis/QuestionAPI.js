@@ -25,11 +25,11 @@ export default class QuestionAPI extends API {
         let question = new Question();
         question.question_id = questionData.question_id;
         question.title = questionData.title;
-        question.sentense = questionData.sentense;
+        question.sentense = questionData.sentense ? questionData.sentense : '';
         question.chapter = questionData.chapter;
         question.image_urls = questionData.image_urls;
         question.correct_index = questionData.correct_index;
-        question.commentary = questionData.commentary;
+        question.commentary = questionData.commentary ? questionData.commentary : '';
         question.commentary_image_urls = questionData.commentary_image_urls;
         question.answers = questionData.answers;
         return question;
@@ -39,11 +39,11 @@ export default class QuestionAPI extends API {
         let path = `/api/workbooks/${workbookId}/questions/`;
         let data = {
             'title': question.title,
-            'sentense': question.sentense,
+            'sentense': question.sentense ? question.sentense : '',
             'chapter_id': question.chapter_id,
             'correct_index': question.correct_index,
             'image_urls': question.image_urls,
-            'commentary': question.commentary,
+            'commentary': question.commentary ? question.commentary : '',
             'commentary_image_urls': question.commentary_image_urls,
             'answers': [],
         }

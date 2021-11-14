@@ -106,7 +106,7 @@ class Question(BaseModel, models.Model):
     image_urls = ArrayField(models.URLField(), size=10, default=list)
     hint = models.TextField('問題ヒント文章', default=None, null=True, blank=True)
     commentary = models.TextField('正解解説文章', default=None, null=True, blank=True)
-    commentary_image_urls = ArrayField(models.URLField(), size=10, default=list)
+    commentary_image_urls = ArrayField(models.URLField(), size=10, default=list, blank=True)
     index = models.IntegerField('並び順', db_index=True, default=1)
     group = models.ForeignKey('workbooks.QuestionGroup', null=True, default=None, blank=True, db_index=True, on_delete=models.SET_NULL)
 

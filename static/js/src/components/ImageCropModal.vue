@@ -1,8 +1,8 @@
 <template>
     <div id="image-crop-editor">
         <button id="close" type="button" class="btn-close" aria-label="Close"></button>
-        <cropper :src="data" @change="change" />
-        <button id="submit" type="button" class="btn btn-success" @click.prevent="finish">完了</button>
+        <cropper :src="data" :default-size="defaultSize" @change="change" />
+        <button id="submit" type="button" class="btn btn-success btn-sm" @click.prevent="finish">完了</button>
     </div>  
 </template>
 
@@ -32,6 +32,12 @@ export default {
         }
     },
     methods: {
+        defaultSize({ imageSize, visibleArea }) {
+			return {
+				width: (visibleArea || imageSize).width,
+				height: (visibleArea || imageSize).height,
+			};
+		},
         change({ coordinates, canvas }) {
             this.coordinates = coordinates;
 		},
@@ -68,5 +74,9 @@ export default {
     right: 10px;
     top: 10px;
     z-index: 101;
+}
+
+.vue-advanced-cropper {
+    height: 100%;
 }
 </style>
