@@ -1,6 +1,11 @@
+import io
 import time
 import uuid
+import tempfile
 
+from PIL import Image
+
+from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.core.files.storage import default_storage
 
@@ -11,14 +16,26 @@ from . import models
 
 class FileUploadSerializer(serializers.Serializer):
     file = serializers.FileField(required=True)
+    width = serializers.IntegerField(required=False)
+    height = serializers.IntegerField(required=False)
+    top = serializers.IntegerField(required=False)
+    left = serializers.IntegerField(required=False)
 
     def save(self):
         inmemory_file = self.validated_data['file']
-        filename = inmemory_file.name.split('.')
-        filename[0] = str(uuid.uuid4())
-        filename = '.'.join(filename)
+        filename = str(uuid.uuid4()) + '.png'
         file_path = 'remote_files/' + filename
-        filename = default_storage.save(file_path, inmemory_file)
+
+        width = self.validated_data['width']
+        height = self.validated_data['height']
+        top = self.validated_data['top']
+        left = self.validated_data['left']
+        image = Image.open(inmemory_file)
+        image = image.crop((left, top, left+width, top+height))
+
+        imageBuffer = io.BytesIO()
+        image.save(imageBuffer, 'png')
+        filename = default_storage.save(file_path, ContentFile(imageBuffer.getvalue()))
         image_url = default_storage.url(filename)
         image_url = image_url.split('?')[0]
         return image_url
