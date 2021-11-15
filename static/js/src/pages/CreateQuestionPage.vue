@@ -188,7 +188,7 @@ export default {
                 if (this.editingImage.type == 'image') {
                     this.question.image_urls.push(url);
                 } else if (this.editingImage.type == 'commentary_image') {
-                    this.question.commentary_image_urls.push(url);
+                    this.question.commentary_image_urls = [url];
                 }
                 this.editingImage = {
                     data: null,
