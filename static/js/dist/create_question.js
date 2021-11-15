@@ -2581,7 +2581,7 @@ class Question {
       size = 4;
     }
 
-    this.size = size;
+    this.size = parseInt(size);
     this.answers = new Array();
 
     for (var i = 0; i < size; i++) {
