@@ -2342,7 +2342,7 @@ __webpack_require__.r(__webpack_exports__);
     async finishChangeImage(file, width, height, left, top) {
       await this.question.upload(this.api, file, width, height, left, top).then(url => {
         if (this.editingImage.type == 'image') {
-          this.question.image_urls.push(url);
+          this.question.image_urls = [url];
         } else if (this.editingImage.type == 'commentary_image') {
           this.question.commentary_image_urls = [url];
         }
