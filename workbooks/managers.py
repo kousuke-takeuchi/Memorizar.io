@@ -107,3 +107,11 @@ class TrainingChapterManager(BaseManager):
 
 class RegistrationManager(BaseManager):
     pass
+
+
+class FlashCardDeckManager(BaseManager):
+    pass
+
+
+class FlashCardManager(BaseManager):
+    pass

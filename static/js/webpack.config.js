@@ -23,6 +23,7 @@ module.exports = {
     scan_question: './src/scan_question.js',
     training_question: './src/training_question.js',
     training_answer: './src/training_answer.js',
+    create_flash_card: './src/create_flash_card.js',
   },
   // ファイルの出力設定
   output: {

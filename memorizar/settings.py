@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'django_celery_results',
 
+    'flash_cards',
     'memorizar',
     'socials',
     'users',

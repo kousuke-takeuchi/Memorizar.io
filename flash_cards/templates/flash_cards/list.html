@@ -1,0 +1,59 @@
+{% extends "memorizar/base.html" %}
+{% block title %}FlashCards{% endblock %}
+
+{% block content %}
+<!-- Page Content -->
+<div class="pb-5 py-md-5 py-5">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-12">
+				<div class="card">
+					<div class="d-lg-flex justify-content-between align-items-center card-header">
+						<div class="mb-3 mb-lg-0">
+							<h3 class="mb-0">Flash Cards</h3>
+							<span>フラッシュカード一覧</span>
+						</div>
+						<!-- Nav -->
+						<div class="nav btn-group flex-nowrap">
+							<div class="dropdown">
+								<a class="btn btn-outline-primary btn-sm" href="{% url 'flash_cards:create' %}">新規追加</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="table-responsive border-0">
+						<table class="table mb-0 text-nowrap">
+							<thead class="table-light">
+								<tr>
+									<th scope="col" class="border-bottom-0">タイトル</th>
+									<th scope="col" class="border-bottom-0"></th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for deck in decks %}
+									<tr>
+										<td><a href="#">{{ deck.title }}</a></td>
+										<td>
+											<button type="button" class="btn btn-primary btn-sm dropdown-toggle" id="startMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">開始</button>
+											<div class="dropdown-menu" aria-labelledby="startMenu">
+												<a href="#" class="dropdown-item">実施</a>
+											</div>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<div class="m-3">
+						{% include 'partials/paginator.html' with page_obj=decks %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+{% endblock %}

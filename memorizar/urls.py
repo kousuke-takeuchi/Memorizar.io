@@ -24,6 +24,7 @@ urlpatterns = [
     path('privacy_policy/', views.PrivacyPolicyView.as_view(), name='privacy_policy'),
     path('agreement/', views.AgreementView.as_view(), name='agreement'),
     path('admin/', admin.site.urls),
+    path('flash_cards/', include('flash_cards.urls', namespace='flash_cards')),
     path('socials/', include('socials.urls', namespace='socials')),
     path('users/', include('users.urls', namespace='users')),
     path('workbooks/', include('workbooks.urls', namespace='workbooks')),
@@ -32,4 +33,5 @@ urlpatterns = [
 urlpatterns += [
     path('api/upload/', api_views.MediaUploadView.as_view(), name='upload_api'),
     path('api/workbooks/', include('workbooks.api_urls', namespace='workbooks_api')),
+    path('api/flash_cards/', include('flash_cards.api_urls', namespace='flash_cards_api')),
 ]
