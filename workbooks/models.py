@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 
 from lib.models import BaseModel
 from . import managers
-import workbooks
 
 
 class Category(BaseModel, models.Model):

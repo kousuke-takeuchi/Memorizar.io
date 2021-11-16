@@ -64,7 +64,7 @@ class WorkbookDetailView(mixins.BaseMixin, View):
     def get_querysets(self, workbook_id):
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
         trainings = models.TrainingSelection.objects.aggregate(training__workbook=workbook)[:5]
-        questions = workbook.question_set.all()
+        questions = workbook.question_set.all().order_by('-created_at')
         p = Paginator(questions, 10)
         page = self.request.GET.get('page', 1)
         return workbook, trainings, p.page(page)
