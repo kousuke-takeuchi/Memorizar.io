@@ -13,7 +13,7 @@ class FlashCardSerializer(serializers.ModelSerializer):
 
 
 class FlashCardDeckSerializer(serializers.ModelSerializer):
-    flash_cards = FlashCardSerializer(many=True, source='flash_card_set.all')
+    flash_cards = FlashCardSerializer(many=True)
 
     class Meta:
         model = models.FlashCardDeck
@@ -28,7 +28,7 @@ class FlashCardDeckSerializer(serializers.ModelSerializer):
             title=validated_data['title'],
             user=self.context['request'].user,
         )
-        for flash_card_data in validated_data['flash_card_set']['all']:
+        for flash_card_data in validated_data['flash_cards']:
             models.FlashCard.objects.create(
                 deck=deck,
                 front_sentense=flash_card_data['front_sentense'],

@@ -1,0 +1,108 @@
+{% extends "memorizar/base.html" %}
+{% load static %}
+{% load memorizar %}
+{% block title %}Workbooks{% endblock %}
+
+{% block content %}
+
+<div id="dates" data-values="{{ dates }}"></div>
+<div id="learning_counts" data-values="{{ learning_counts }}"></div>
+<div id="correct_counts" data-values="{{ correct_counts }}"></div>
+
+<!-- メニュー -->
+<div class="py-md-5 py-5 container">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-12">
+			<!-- Bg -->
+			<div class="pt-16 rounded-top-md" style="
+						background: url(/static/images/profile-bg.jpg) no-repeat;
+						background-size: cover;
+					"></div>
+			<div class="d-flex justify-content-between bg-white px-4 pt-2 pb-4 rounded-none rounded-bottom shadow-sm card">
+				<div class="d-lg-flex justify-content-between align-items-center card-header" style="border: none;">
+					<div class="mb-3 mb-lg-0">
+						<h3 class="mb-0">{{ deck.title|truncatechars:20 }}</h3>
+						<p class="mb-0 d-block">{{ deck.created_at|date:"Y年n月j日" }}に作成</p>
+					</div>
+					<!-- Nav -->
+					<nav class="nav btn-group flex-nowrap">
+						<div>
+							<div class="nav nav-tabs btn-group flex-nowrap" id="nav-tab"  role="tablist">
+								<button type="button" class="btn btn-outline-white btn-md">開始</button>
+							</div>
+						</div>
+					</nav>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 問題一覧 -->
+<div class="container pb-5">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-12">
+			<div class="card">
+				<div class="d-lg-flex justify-content-between align-items-center card-header">
+					<div class="mb-3 mb-lg-0">
+						<h3 class="mb-0">FlashCards</h3>
+						<span>カード一覧</span>
+					</div>
+					<!-- Nav -->
+					<nav class="nav btn-group flex-nowrap">
+						<div>
+								<div class="nav nav-tabs btn-group flex-nowrap" id="nav-tab"  role="tablist">
+									<button type="button" class="btn btn-outline-white btn-md dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">メニュー</button>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+										<a class="dropdown-item" href="{% url 'flash_cards:create' %}">カードを追加</a>
+									</div>
+								</div>
+								
+						</div>
+					</nav>
+				</div>
+                <div class="table-responsive border-0 tab-pane fade show" id="chapter" role="tabpanel" aria-labelledby="chapter">
+                    <table class="table mb-0 text-nowrap">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="border-bottom-0">ID</th>
+                                <th scope="col" class="border-bottom-0">表</th>
+                                <th scope="col" class="border-bottom-0">裏</th>
+                                <th scope="col" class="border-bottom-0">作成日</th>
+                                <th scope="col" class="border-bottom-0"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for flash_card in deck.flash_cards %}
+                                <tr>
+                                    <td>{{ flash_card.flash_card_id }}</td>
+                                    <td>{{ flash_card.front_sentense }}</td>
+                                    <td>{{ flash_card.back_sentense }}</td>
+                                    <td>{{ flash_card.created_at|date:"Y年n月j日" }}</td>
+                                    <td class="text-muted align-middle border-top-0">
+                                        <span class="dropdown dropstart">
+                                            <a class="text-muted text-decoration-none" href="#" role="button" id="card-menu-{{ flash_card.flash_card_id }}" data-bs-toggle="dropdown" data-bs-offset="-20,20" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <span class="dropdown-menu" aria-labelledby="card-menu-{{ flash_card.flash_card_id }}" style="">
+                                                <span class="dropdown-header">設定 </span>
+                                                <a class="dropdown-item" href="#"><i class="fe fe-edit dropdown-item-icon"></i>編集</a>
+                                            </span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script src="{% static 'js/workbook_detail.js' %}"></script>
+{% endblock %}

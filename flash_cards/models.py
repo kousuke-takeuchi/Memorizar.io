@@ -17,6 +17,10 @@ class FlashCardDeck(BaseModel, models.Model):
     class Meta:
         verbose_name = 'flash_card_decks'
         verbose_name_plural = 'FlashCardDeck'
+    
+    @property
+    def flash_cards(self):
+        return FlashCard.objects.filter(deck=self)
 
     def __str__(self):
         return str(self.title)

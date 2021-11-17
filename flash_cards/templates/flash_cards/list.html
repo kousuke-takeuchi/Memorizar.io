@@ -32,12 +32,13 @@
 							<tbody>
 								{% for deck in decks %}
 									<tr>
-										<td><a href="#">{{ deck.title }}</a></td>
+										<td><a href="{% url 'flash_cards:detail' deck.deck_id %}">{{ deck.title }}</a></td>
 										<td>
-											<button type="button" class="btn btn-primary btn-sm dropdown-toggle" id="startMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">開始</button>
+											<a href="{% url 'flash_cards:training' deck.deck_id %}">開始</a>
+											<!-- <button type="button" class="btn btn-primary btn-sm dropdown-toggle" id="startMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">開始</button>
 											<div class="dropdown-menu" aria-labelledby="startMenu">
 												<a href="#" class="dropdown-item">実施</a>
-											</div>
+											</div> -->
 										</td>
 									</tr>
 								{% endfor %}

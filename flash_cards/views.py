@@ -33,3 +33,24 @@ class FlashCardDeckCreateView(mixins.BaseMixin, View):
     def get(self, request):
         context = dict()
         return render(request, self.template_name, context)
+
+
+class FlashCardDeckDetailView(mixins.BaseMixin, View):
+    template_name = 'flash_cards/detail.html'
+
+    def get_querysets(self, deck_id):
+        deck = get_object_or_404(models.FlashCardDeck, deck_id=deck_id)
+        return deck
+    
+    def get(self, request, deck_id):
+        deck = self.get_querysets(deck_id)
+        context = dict(deck=deck)
+        return render(request, self.template_name, context)
+
+
+class FlashCardTrainingView(mixins.BaseMixin, View):
+    template_name = 'flash_cards/training.html'
+    
+    def get(self, request, deck_id):
+        context = dict()
+        return render(request, self.template_name, context)

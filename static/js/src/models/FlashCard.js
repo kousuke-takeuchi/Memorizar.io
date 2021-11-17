@@ -1,5 +1,6 @@
 export class FlashCardDeck {
     constructor() {
+        this.deck_id = null;
         this.title = '';
         this.flash_cards = [];
         this.size = 0;
