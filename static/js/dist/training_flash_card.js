@@ -2172,6 +2172,9 @@ __webpack_require__.r(__webpack_exports__);
     let token = document.getElementById('token').dataset.value;
     let api = new _apis_FlashCardAPI__WEBPACK_IMPORTED_MODULE_1__["default"](token);
     return {
+      previousCard: null,
+      currentCard: null,
+      currentIndex: 0,
       deckId: deckId,
       deck: null,
       api: api
@@ -2181,10 +2184,49 @@ __webpack_require__.r(__webpack_exports__);
   async beforeMount() {
     this.api.getFlashCard(this.deckId).then(deck => {
       this.deck = deck;
+
+      if (this.deck.flash_cards.length > 0) {
+        this.currentCard = this.deck.flash_cards[0];
+        console.log(this.currentCard);
+      }
     });
   },
 
-  methods: {}
+  methods: {
+    back() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+        this.currentCard = this.deck.flash_cards[this.currentIndex];
+
+        if (this.currentIndex != 0) {
+          this.previousCard = this.deck.flash_cards[this.currentIndex - 1];
+        } else {
+          this.previousCard = null;
+        }
+      }
+    },
+
+    next() {
+      if (this.currentIndex < this.deck.flash_cards.length) {
+        this.currentIndex++;
+        this.currentCard = this.deck.flash_cards[this.currentIndex];
+        this.previousCard = this.deck.flash_cards[this.currentIndex - 1];
+      }
+    },
+
+    empty(pos) {
+      if (this.flash_cards === null) {
+        return 'empty';
+      }
+
+      if (pos == 'front') {
+        return this.currentIndex < this.deck.flash_cards.length ? '' : 'empty';
+      } else if (pos == 'back') {
+        return this.currentIndex > 0 ? '' : 'empty';
+      }
+    }
+
+  }
 });
 
 /***/ }),
@@ -2346,6 +2388,177 @@ class FlashCard {
   }
 
 }
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.flash-card[data-v-268816be] {\n    min-height: 150px;\n    position: relative;\n    box-shadow: 0 1px 3px rgb(3 0 71 / 30%);\n}\n.flash-card .dot[data-v-268816be] {\n    height: 25px;\n    width: 25px;\n    background-color: #efefef;\n    border: solid 1px #efefef;\n    border-radius: 50%;\n    display: inline-block;\n    position: absolute;\n    top: 40%;\n}\n.flash-card.flash-card-front .dot[data-v-268816be] {\n    left: 20px;\n}\n.flash-card.flash-card-back .dot[data-v-268816be] {\n    right: 20px;\n}\n.flash-card.empty[data-v-268816be] {\n    box-shadow: none;\n}\n.flash-card.empty .dot[data-v-268816be] {\n    display: none;\n}\n", "",{"version":3,"sources":["webpack://./src/pages/TrainingFlashCardPage.vue"],"names":[],"mappings":";AAmGA;IACA,iBAAA;IACA,kBAAA;IACA,uCAAA;AACA;AAEA;IACA,YAAA;IACA,WAAA;IACA,yBAAA;IACA,yBAAA;IACA,kBAAA;IACA,qBAAA;IACA,kBAAA;IACA,QAAA;AACA;AAEA;IACA,UAAA;AACA;AAEA;IACA,WAAA;AACA;AAEA;IACA,gBAAA;AACA;AAEA;IACA,aAAA;AACA","sourcesContent":["<template>\r\n    <div class=\"pb-5 py-md-5 py-5\" v-if=\"deck\">\r\n        <div class=\"container\">\r\n            <div class=\"row\">\r\n                <div class=\"col-lg-12 col-md-12 col-12\">\r\n                    <div class=\"card\">\r\n                        <div class=\"justify-content-between align-items-center card-header\">\r\n                            <div class=\"mb-3 mb-lg-0\">\r\n                                <h3 class=\"mb-0\">{{ deck.title }}</h3>\r\n                            </div>\r\n                        </div>\r\n                        <div class=\"card-body\">\r\n                            <div class=\"row\">\r\n                                <div class=\"card col-6 flash-card flash-card-back\" :class=\"empty('back')\" @click=\"back\">\r\n                                    <p>{{ previousCard ? previousCard.back_sentense : '' }}</p>\r\n                                    <span class=\"dot\"></span>\r\n                                </div>\r\n                                <div class=\"card col-6 flash-card flash-card-front\" :class=\"empty('front')\" @click=\"next\">\r\n                                    <p>{{ currentCard ? currentCard.front_sentense : '' }}</p>\r\n                                    <span class=\"dot\"></span>\r\n                                </div>\r\n                            </div>\r\n                            <a class=\"btn btn-primary mt-6\" href=\"/flash_cards/\">Finish</a>\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</template>\r\n\r\n\r\n<script lang=\"js\">\r\nimport marked from 'marked';\r\n\r\nimport FlashCardAPI from '../apis/FlashCardAPI';\r\n\r\n\r\nexport default {\r\n    name: 'TrainingFlashCardPage',\r\n    data() {\r\n        let regex = /.*\\/flash_cards\\/([0-9a-z\\-]+)\\/training+/i\r\n        let url = window.location.href;\r\n        let deckId = url.match(regex)[1];\r\n        let token = document.getElementById('token').dataset.value\r\n        let api = new FlashCardAPI(token);\r\n        return {\r\n            previousCard: null,\r\n            currentCard: null,\r\n            currentIndex: 0,\r\n            deckId: deckId,\r\n            deck: null,\r\n            api: api,\r\n        }\r\n    },\r\n    async beforeMount() {\r\n        this.api.getFlashCard(this.deckId).then(deck => {\r\n            this.deck = deck;\r\n            if (this.deck.flash_cards.length > 0) {\r\n                this.currentCard = this.deck.flash_cards[0];\r\n                console.log(this.currentCard)\r\n            }\r\n        });\r\n    },\r\n    methods: {\r\n        back() {\r\n            if (this.currentIndex > 0) {\r\n                this.currentIndex--;\r\n                this.currentCard = this.deck.flash_cards[this.currentIndex];\r\n                if (this.currentIndex != 0) {\r\n                    this.previousCard = this.deck.flash_cards[this.currentIndex-1];\r\n                } else {\r\n                    this.previousCard = null;\r\n                }\r\n            }\r\n        },\r\n        next() {\r\n            if (this.currentIndex < this.deck.flash_cards.length) {\r\n                this.currentIndex++;\r\n                this.currentCard = this.deck.flash_cards[this.currentIndex];\r\n                this.previousCard = this.deck.flash_cards[this.currentIndex-1];\r\n            }\r\n        },\r\n        empty(pos) {\r\n            if (this.flash_cards === null) {\r\n                return 'empty';\r\n            }\r\n            if (pos == 'front') {\r\n                return this.currentIndex < this.deck.flash_cards.length ? '' : 'empty';\r\n            } else if (pos == 'back') {\r\n                return this.currentIndex > 0 ? '' : 'empty';\r\n            }\r\n        }\r\n    },\r\n}\r\n</script>\r\n\r\n\r\n<style scoped>\r\n    .flash-card {\r\n        min-height: 150px;\r\n        position: relative;\r\n        box-shadow: 0 1px 3px rgb(3 0 71 / 30%);\r\n    }\r\n\r\n    .flash-card .dot {\r\n        height: 25px;\r\n        width: 25px;\r\n        background-color: #efefef;\r\n        border: solid 1px #efefef;\r\n        border-radius: 50%;\r\n        display: inline-block;\r\n        position: absolute;\r\n        top: 40%;\r\n    }\r\n\r\n    .flash-card.flash-card-front .dot {\r\n        left: 20px;\r\n    }\r\n\r\n    .flash-card.flash-card-back .dot {\r\n        right: 20px;\r\n    }\r\n\r\n    .flash-card.empty {\r\n        box-shadow: none;\r\n    }\r\n\r\n    .flash-card.empty .dot {\r\n        display: none;\r\n    }\r\n</style>"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/runtime/api.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/api.js ***!
+  \*****************************************************/
+/***/ ((module) => {
+
+"use strict";
+
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+*/
+module.exports = function (cssWithMappingToString) {
+  var list = []; // return the list of modules as css string
+
+  list.toString = function toString() {
+    return this.map(function (item) {
+      var content = "";
+      var needLayer = typeof item[5] !== "undefined";
+
+      if (item[4]) {
+        content += "@supports (".concat(item[4], ") {");
+      }
+
+      if (item[2]) {
+        content += "@media ".concat(item[2], " {");
+      }
+
+      if (needLayer) {
+        content += "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {");
+      }
+
+      content += cssWithMappingToString(item);
+
+      if (needLayer) {
+        content += "}";
+      }
+
+      if (item[2]) {
+        content += "}";
+      }
+
+      if (item[4]) {
+        content += "}";
+      }
+
+      return content;
+    }).join("");
+  }; // import a list of modules into the list
+
+
+  list.i = function i(modules, media, dedupe, supports, layer) {
+    if (typeof modules === "string") {
+      modules = [[null, modules, undefined]];
+    }
+
+    var alreadyImportedModules = {};
+
+    if (dedupe) {
+      for (var _i = 0; _i < this.length; _i++) {
+        var id = this[_i][0];
+
+        if (id != null) {
+          alreadyImportedModules[id] = true;
+        }
+      }
+    }
+
+    for (var _i2 = 0; _i2 < modules.length; _i2++) {
+      var item = [].concat(modules[_i2]);
+
+      if (dedupe && alreadyImportedModules[item[0]]) {
+        continue;
+      }
+
+      if (typeof layer !== "undefined") {
+        if (typeof item[5] === "undefined") {
+          item[5] = layer;
+        } else {
+          item[1] = "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {").concat(item[1], "}");
+          item[5] = layer;
+        }
+      }
+
+      if (media) {
+        if (!item[2]) {
+          item[2] = media;
+        } else {
+          item[1] = "@media ".concat(item[2], " {").concat(item[1], "}");
+          item[2] = media;
+        }
+      }
+
+      if (supports) {
+        if (!item[4]) {
+          item[4] = "".concat(supports);
+        } else {
+          item[1] = "@supports (".concat(item[4], ") {").concat(item[1], "}");
+          item[4] = supports;
+        }
+      }
+
+      list.push(item);
+    }
+  };
+
+  return list;
+};
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/runtime/sourceMaps.js":
+/*!************************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/sourceMaps.js ***!
+  \************************************************************/
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = function (item) {
+  var content = item[1];
+  var cssMapping = item[3];
+
+  if (!cssMapping) {
+    return content;
+  }
+
+  if (typeof btoa === "function") {
+    var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(cssMapping))));
+    var data = "sourceMappingURL=data:application/json;charset=utf-8;base64,".concat(base64);
+    var sourceMapping = "/*# ".concat(data, " */");
+    var sourceURLs = cssMapping.sources.map(function (source) {
+      return "/*# sourceURL=".concat(cssMapping.sourceRoot || "").concat(source, " */");
+    });
+    return [content].concat(sourceURLs).concat([sourceMapping]).join("\n");
+  }
+
+  return [content].join("\n");
+};
 
 /***/ }),
 
@@ -5355,23 +5568,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _TrainingFlashCardPage_vue_vue_type_template_id_268816be___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TrainingFlashCardPage.vue?vue&type=template&id=268816be& */ "./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be&");
+/* harmony import */ var _TrainingFlashCardPage_vue_vue_type_template_id_268816be_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TrainingFlashCardPage.vue?vue&type=template&id=268816be&scoped=true& */ "./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be&scoped=true&");
 /* harmony import */ var _TrainingFlashCardPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TrainingFlashCardPage.vue?vue&type=script&lang=js& */ "./src/pages/TrainingFlashCardPage.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _TrainingFlashCardPage_vue_vue_type_style_index_0_id_268816be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css& */ "./src/pages/TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
+;
 
 
 /* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _TrainingFlashCardPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _TrainingFlashCardPage_vue_vue_type_template_id_268816be___WEBPACK_IMPORTED_MODULE_0__.render,
-  _TrainingFlashCardPage_vue_vue_type_template_id_268816be___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  _TrainingFlashCardPage_vue_vue_type_template_id_268816be_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _TrainingFlashCardPage_vue_vue_type_template_id_268816be_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
   false,
   null,
-  null,
+  "268816be",
   null
   
 )
@@ -5399,27 +5614,44 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be&":
-/*!****************************************************************************!*\
-  !*** ./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be& ***!
-  \****************************************************************************/
+/***/ "./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be&scoped=true&":
+/*!****************************************************************************************!*\
+  !*** ./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be&scoped=true& ***!
+  \****************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_template_id_268816be___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_template_id_268816be___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_template_id_268816be_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_template_id_268816be_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_template_id_268816be___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TrainingFlashCardPage.vue?vue&type=template&id=268816be& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be&");
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_template_id_268816be_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TrainingFlashCardPage.vue?vue&type=template&id=268816be&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be&scoped=true&");
 
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be&":
-/*!*******************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be& ***!
-  \*******************************************************************************************************************************************************************************************************************/
+/***/ "./src/pages/TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css&":
+/*!******************************************************************************************************!*\
+  !*** ./src/pages/TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css& ***!
+  \******************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_style_index_0_id_268816be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-style-loader/index.js!../../node_modules/css-loader/dist/cjs.js!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css& */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_style_index_0_id_268816be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_style_index_0_id_268816be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_style_index_0_id_268816be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_TrainingFlashCardPage_vue_vue_type_style_index_0_id_268816be_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be&scoped=true&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=template&id=268816be&scoped=true& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -5451,7 +5683,64 @@ var render = function() {
                       ])
                     ])
                   ]
-                )
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-body" }, [
+                  _c("div", { staticClass: "row" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "card col-6 flash-card flash-card-back",
+                        class: _vm.empty("back"),
+                        on: { click: _vm.back }
+                      },
+                      [
+                        _c("p", [
+                          _vm._v(
+                            _vm._s(
+                              _vm.previousCard
+                                ? _vm.previousCard.back_sentense
+                                : ""
+                            )
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "dot" })
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "card col-6 flash-card flash-card-front",
+                        class: _vm.empty("front"),
+                        on: { click: _vm.next }
+                      },
+                      [
+                        _c("p", [
+                          _vm._v(
+                            _vm._s(
+                              _vm.currentCard
+                                ? _vm.currentCard.front_sentense
+                                : ""
+                            )
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "dot" })
+                      ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-primary mt-6",
+                      attrs: { href: "/flash_cards/" }
+                    },
+                    [_vm._v("Finish")]
+                  )
+                ])
               ])
             ])
           ])
@@ -5574,6 +5863,307 @@ function normalizeComponent (
     exports: scriptExports,
     options: options
   }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !!../../node_modules/css-loader/dist/cjs.js!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css& */ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/pages/TrainingFlashCardPage.vue?vue&type=style&index=0&id=268816be&scoped=true&lang=css&");
+if(content.__esModule) content = content.default;
+if(typeof content === 'string') content = [[module.id, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__(/*! !../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js")["default"]
+var update = add("119ed3d6", content, false, {});
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/lib/addStylesClient.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/vue-style-loader/lib/addStylesClient.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ addStylesClient)
+/* harmony export */ });
+/* harmony import */ var _listToStyles__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./listToStyles */ "./node_modules/vue-style-loader/lib/listToStyles.js");
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+var options = null
+var ssrIdKey = 'data-vue-ssr-id'
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+function addStylesClient (parentId, list, _isProduction, _options) {
+  isProduction = _isProduction
+
+  options = _options || {}
+
+  var styles = (0,_listToStyles__WEBPACK_IMPORTED_MODULE_0__["default"])(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = (0,_listToStyles__WEBPACK_IMPORTED_MODULE_0__["default"])(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+  if (options.ssrId) {
+    styleElement.setAttribute(ssrIdKey, obj.id)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/lib/listToStyles.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/vue-style-loader/lib/listToStyles.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ listToStyles)
+/* harmony export */ });
+/**
+ * Translates the list format produced by css-loader into something
+ * easier to manipulate.
+ */
+function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = {
+      id: parentId + ':' + i,
+      css: css,
+      media: media,
+      sourceMap: sourceMap
+    }
+    if (!newStyles[id]) {
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
 }
 
 
