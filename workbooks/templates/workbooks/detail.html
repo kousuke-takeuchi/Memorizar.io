@@ -137,7 +137,6 @@
 						<table class="table mb-0 text-nowrap">
 							<thead class="table-light">
 								<tr>
-									<th scope="col" class="border-bottom-0">ID</th>
 									<th scope="col" class="border-bottom-0">タイトル</th>
 									<th scope="col" class="border-bottom-0">実施回数</th>
 									<th scope="col" class="border-bottom-0">実施率</th>
@@ -149,7 +148,6 @@
 							<tbody>
 								{% for chapter, chapter_data in chapters.items %}
 									<tr>
-										<td>{{ chapter.chapter_id }}</td>
 										<td>{{ chapter.title }}</td>
 										<td>{{ chapter_data.learning_count }}回</td>
 										<td><span class="badge {% if chapter_data.training_rate >= 80 %}bg-success{% elif chapter_data.training_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.training_rate }}%</span></td>
