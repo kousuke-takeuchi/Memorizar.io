@@ -23,56 +23,54 @@
                 </div>
             </div>
             <!-- Card body -->
-            <div class="card-body">
+            <div class="card-body" style="padding-top: 0; padding-left: 0; padding-right: 0;">
                 <!-- List group -->
-                <!-- <ul class="list-group list-group-flush"> -->
-                <table class="table table-responsive mb-0 text-nowrap">
-                    <thead class="table-light">
-                        <th>チャプター名</th>
-                        <th>詳細</th>
-                        <th>実施回数</th>
-                        <th>実施率</th>
-                        <th>正解率</th>
-                        <th>選択</th>
-                    </thead>
-                    <tbody>
-                        {% for chapter, chapter_data in chapters.items %}
-                            <!-- List group item -->
-                            <!-- <li class="list-group-item d-flex align-items-center justify-content-between px-0 py-2"> -->
-                            <tr>
-                                <td>{{ chapter.title }}</td>
-                                <td>{% if chapter.description %}{{ chapter.description }}{% endif %}</td>
-                                <td>{{ chapter_data.learning_count }}回</td>
-                                <td><span class="badge {% if chapter_data.training_rate >= 80 %}bg-success{% elif chapter_data.training_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.training_rate }}%</span></td>
-                                <td><span class="badge {% if chapter_data.correct_rate >= 80 %}bg-success{% elif chapter_data.correct_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.correct_rate }}%</span></td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input select_chapter" name="{{ chapter.chapter_id }}">
-                                        <label class="form-check-label"></label>
+                <div class="table-responsive">
+                    <table class="table mb-0 text-nowrap">
+                        <thead class="table-light">
+                            <th>チャプター名</th>
+                            <th>実施回数</th>
+                            <th>実施率</th>
+                            <th>正解率</th>
+                            <th>選択</th>
+                        </thead>
+                        <tbody>
+                            {% for chapter, chapter_data in chapters.items %}
+                                <!-- List group item -->
+                                <!-- <li class="list-group-item d-flex align-items-center justify-content-between px-0 py-2"> -->
+                                <tr>
+                                    <td>{{ chapter.title }}</td>
+                                    <td>{{ chapter_data.learning_count }}回</td>
+                                    <td><span class="badge {% if chapter_data.training_rate >= 80 %}bg-success{% elif chapter_data.training_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.training_rate }}%</span></td>
+                                    <td><span class="badge {% if chapter_data.correct_rate >= 80 %}bg-success{% elif chapter_data.correct_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.correct_rate }}%</span></td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input type="checkbox" class="form-check-input select_chapter" name="{{ chapter.chapter_id }}">
+                                            <label class="form-check-label"></label>
+                                        </div>
+                                    </td>
+                                    <!-- <div>
+                                        <h5 class="mb-0">{{ chapter.title }}</h5>
+                                        <div class="mb-0">
+                                            <p>{% if chapter.description %}{{ chapter.description }}{% endif %}</p>
+                                            <p>実施回数: {{ chapter_data.learning_count }}回</p>
+                                            <p>実施率: <span class="badge {% if chapter_data.training_rate >= 80 %}bg-success{% elif chapter_data.training_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.training_rate }}%</span></p>
+                                            <p>正解率: <span class="badge {% if chapter_data.correct_rate >= 80 %}bg-success{% elif chapter_data.correct_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.correct_rate }}%</span></p>
+                                        </div>
+                                                
                                     </div>
-                                </td>
-                                <!-- <div>
-                                    <h5 class="mb-0">{{ chapter.title }}</h5>
-                                    <div class="mb-0">
-                                        <p>{% if chapter.description %}{{ chapter.description }}{% endif %}</p>
-                                        <p>実施回数: {{ chapter_data.learning_count }}回</p>
-                                        <p>実施率: <span class="badge {% if chapter_data.training_rate >= 80 %}bg-success{% elif chapter_data.training_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.training_rate }}%</span></p>
-                                        <p>正解率: <span class="badge {% if chapter_data.correct_rate >= 80 %}bg-success{% elif chapter_data.correct_rate > 40 %}bg-warning{% else %}bg-danger{% endif %}">{{ chapter_data.correct_rate }}%</span></p>
-                                    </div>
-                                            
-                                </div>
-                                <div>
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input select_chapter" name="{{ chapter.chapter_id }}">
-                                        <label class="form-check-label"></label>
-                                    </div>
-                                </div> -->
-                            </tr>
-                            <!-- </li> -->
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <!-- </ul> -->
+                                    <div>
+                                        <div class="form-check form-switch">
+                                            <input type="checkbox" class="form-check-input select_chapter" name="{{ chapter.chapter_id }}">
+                                            <label class="form-check-label"></label>
+                                        </div>
+                                    </div> -->
+                                </tr>
+                                <!-- </li> -->
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
                 <!-- 選択されたチャプター -->
                 <div id="selected_chapter_ids">
@@ -80,9 +78,7 @@
                 </div>
 
                 <!-- Button -->
-                <button class="btn btn-primary mt-4" type="submit">
-                    Start Training
-                </button>
+                <button class="btn btn-primary mt-4 ms-4" type="submit">Start Training</button>
                 </div>
             </div>
         </div>

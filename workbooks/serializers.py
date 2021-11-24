@@ -11,7 +11,7 @@ from django.core.files.storage import default_storage
 
 from rest_framework import serializers
 
-from . import models
+from . import models, services
 
 
 class FileUploadSerializer(serializers.Serializer):
@@ -230,7 +230,7 @@ class TrainingSelectionSerializer(serializers.ModelSerializer):
         return question
 
     def validate_started_at(self, started_at):
-        current_time = int(timezone.now().timestamp())
+        current_time = timezone.now().timestamp()
         if started_at >= current_time:
             raise serializers.ValidationError('過去のUnixtimeを指定してください')
         return current_time - started_at
@@ -251,8 +251,15 @@ class TrainingSelectionSerializer(serializers.ModelSerializer):
             question=question,
             answer=selected_answer,
             correct=selected_answer.is_true,
-            duration=time.time() - validated_data['started_at'],
+            duration=validated_data['started_at'],
         )
+
+        # 10問解いたら終了
+        training = self.context['training']
+        service = services.TrainingService()
+        if service.did_finish(training):
+            training.done = True
+            training.save()
 
         return training_selection
 
