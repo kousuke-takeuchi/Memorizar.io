@@ -109,7 +109,7 @@
     </div>
 
     <!-- 画像編集モーダル -->
-    <image-crop-modal :file="editingImage.file" :data="editingImage.data" v-if="editingImage.data" @crop="finishChangeImage" />
+    <image-crop-modal :file="editingImage.file" :data="editingImage.data" v-if="editingImage.data" @crop="finishChangeImage" @cancel="cancelChangeImage" />
 </div>
 </template>
 
@@ -184,6 +184,7 @@ export default {
             };
         },
         async finishChangeImage(file, width, height, left, top) {
+            this.$isLoading(true);
             await this.question.upload(this.api, file, width, height, left, top).then(url => {
                 if (this.editingImage.type == 'image') {
                     this.question.image_urls = [url];
@@ -195,7 +196,16 @@ export default {
                     file: null,
                     type: null,
                 }
+            }).finally(() => {
+                this.$isLoading(false);
             });
+        },
+        cancelChangeImage() {
+            this.editingImage = {
+                data: null,
+                file: null,
+                type: null,
+            }
         },
         async createQuestion() {
             this.api.createQuestion(this.workbookId, this.question).then(data => {

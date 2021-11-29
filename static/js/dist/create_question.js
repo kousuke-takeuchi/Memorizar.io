@@ -2234,6 +2234,10 @@ __webpack_require__.r(__webpack_exports__);
       this.coordinates = coordinates;
     },
 
+    cancel() {
+      this.$emit('cancel');
+    },
+
     finish() {
       let {
         width,
@@ -2340,6 +2344,7 @@ __webpack_require__.r(__webpack_exports__);
     },
 
     async finishChangeImage(file, width, height, left, top) {
+      this.$isLoading(true);
       await this.question.upload(this.api, file, width, height, left, top).then(url => {
         if (this.editingImage.type == 'image') {
           this.question.image_urls = [url];
@@ -2352,7 +2357,17 @@ __webpack_require__.r(__webpack_exports__);
           file: null,
           type: null
         };
+      }).finally(() => {
+        this.$isLoading(false);
       });
+    },
+
+    cancelChangeImage() {
+      this.editingImage = {
+        data: null,
+        file: null,
+        type: null
+      };
     },
 
     async createQuestion() {
@@ -2784,7 +2799,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#image-crop-editor[data-v-60ac8412] {\r\n    position: fixed;\r\n    left: 0;\r\n    top: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    z-index: 100;\n}\n#image-crop-editor #close[data-v-60ac8412] {\r\n    position: fixed;\r\n    left: 10px;\r\n    top: 10px;\r\n    width: 25px;\r\n    height: 25px;\r\n    z-index: 101;\n}\n#image-crop-editor #submit[data-v-60ac8412] {\r\n    position: fixed;\r\n    right: 10px;\r\n    top: 10px;\r\n    z-index: 101;\n}\n.vue-advanced-cropper[data-v-60ac8412] {\r\n    height: 100%;\n}\r\n", "",{"version":3,"sources":["webpack://./src/components/ImageCropModal.vue"],"names":[],"mappings":";AAqDA;IACA,eAAA;IACA,OAAA;IACA,MAAA;IACA,WAAA;IACA,YAAA;IACA,YAAA;AACA;AAEA;IACA,eAAA;IACA,UAAA;IACA,SAAA;IACA,WAAA;IACA,YAAA;IACA,YAAA;AACA;AAEA;IACA,eAAA;IACA,WAAA;IACA,SAAA;IACA,YAAA;AACA;AAEA;IACA,YAAA;AACA","sourcesContent":["<template>\r\n    <div id=\"image-crop-editor\">\r\n        <button id=\"close\" type=\"button\" class=\"btn-close\" aria-label=\"Close\"></button>\r\n        <cropper :src=\"data\" :default-size=\"defaultSize\" @change=\"change\" />\r\n        <button id=\"submit\" type=\"button\" class=\"btn btn-success btn-sm\" @click.prevent=\"finish\">完了</button>\r\n    </div>  \r\n</template>\r\n\r\n\r\n<script lang=\"js\">\r\nimport { Cropper } from 'vue-advanced-cropper';\r\nimport 'vue-advanced-cropper/dist/style.css';\r\n\r\nexport default {\r\n    name: 'ImageCropModal',\r\n    components: {\r\n\t\tCropper,\r\n\t},\r\n    props: {\r\n        file: {\r\n            type: File,\r\n            required: true,\r\n        },\r\n        data: {\r\n            type: String,\r\n            required: true,\r\n        },\r\n    },\r\n    data() {\r\n        return {\r\n            coordinates: null,\r\n        }\r\n    },\r\n    methods: {\r\n        defaultSize({ imageSize, visibleArea }) {\r\n\t\t\treturn {\r\n\t\t\t\twidth: (visibleArea || imageSize).width,\r\n\t\t\t\theight: (visibleArea || imageSize).height,\r\n\t\t\t};\r\n\t\t},\r\n        change({ coordinates, canvas }) {\r\n            this.coordinates = coordinates;\r\n\t\t},\r\n        finish() {\r\n            let { width, height, left, top } = this.coordinates;\r\n            this.$emit('crop', this.file, width, height, left, top);\r\n        },\r\n    },\r\n}\r\n</script>\r\n\r\n\r\n<style scoped>\r\n#image-crop-editor {\r\n    position: fixed;\r\n    left: 0;\r\n    top: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    z-index: 100;\r\n}\r\n\r\n#image-crop-editor #close {\r\n    position: fixed;\r\n    left: 10px;\r\n    top: 10px;\r\n    width: 25px;\r\n    height: 25px;\r\n    z-index: 101;\r\n}\r\n\r\n#image-crop-editor #submit {\r\n    position: fixed;\r\n    right: 10px;\r\n    top: 10px;\r\n    z-index: 101;\r\n}\r\n\r\n.vue-advanced-cropper {\r\n    height: 100%;\r\n}\r\n</style>"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#image-crop-editor[data-v-60ac8412] {\r\n    position: fixed;\r\n    left: 0;\r\n    top: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    z-index: 100;\n}\n#image-crop-editor #close[data-v-60ac8412] {\r\n    position: fixed;\r\n    left: 10px;\r\n    top: 10px;\r\n    width: 25px;\r\n    height: 25px;\r\n    z-index: 101;\n}\n#image-crop-editor #submit[data-v-60ac8412] {\r\n    position: fixed;\r\n    right: 10px;\r\n    top: 10px;\r\n    z-index: 101;\n}\n.vue-advanced-cropper[data-v-60ac8412] {\r\n    height: 100%;\n}\r\n", "",{"version":3,"sources":["webpack://./src/components/ImageCropModal.vue"],"names":[],"mappings":";AAwDA;IACA,eAAA;IACA,OAAA;IACA,MAAA;IACA,WAAA;IACA,YAAA;IACA,YAAA;AACA;AAEA;IACA,eAAA;IACA,UAAA;IACA,SAAA;IACA,WAAA;IACA,YAAA;IACA,YAAA;AACA;AAEA;IACA,eAAA;IACA,WAAA;IACA,SAAA;IACA,YAAA;AACA;AAEA;IACA,YAAA;AACA","sourcesContent":["<template>\r\n    <div id=\"image-crop-editor\">\r\n        <button id=\"close\" type=\"button\" class=\"btn-close\" aria-label=\"Close\" @click.prevent=\"cancel\"></button>\r\n        <cropper :src=\"data\" :default-size=\"defaultSize\" @change=\"change\" />\r\n        <button id=\"submit\" type=\"button\" class=\"btn btn-success btn-sm\" @click.prevent=\"finish\">完了</button>\r\n    </div>  \r\n</template>\r\n\r\n\r\n<script lang=\"js\">\r\nimport { Cropper } from 'vue-advanced-cropper';\r\nimport 'vue-advanced-cropper/dist/style.css';\r\n\r\nexport default {\r\n    name: 'ImageCropModal',\r\n    components: {\r\n\t\tCropper,\r\n\t},\r\n    props: {\r\n        file: {\r\n            type: File,\r\n            required: true,\r\n        },\r\n        data: {\r\n            type: String,\r\n            required: true,\r\n        },\r\n    },\r\n    data() {\r\n        return {\r\n            coordinates: null,\r\n        }\r\n    },\r\n    methods: {\r\n        defaultSize({ imageSize, visibleArea }) {\r\n\t\t\treturn {\r\n\t\t\t\twidth: (visibleArea || imageSize).width,\r\n\t\t\t\theight: (visibleArea || imageSize).height,\r\n\t\t\t};\r\n\t\t},\r\n        change({ coordinates, canvas }) {\r\n            this.coordinates = coordinates;\r\n\t\t},\r\n        cancel() {\r\n            this.$emit('cancel');\r\n        },\r\n        finish() {\r\n            let { width, height, left, top } = this.coordinates;\r\n            this.$emit('crop', this.file, width, height, left, top);\r\n        },\r\n    },\r\n}\r\n</script>\r\n\r\n\r\n<style scoped>\r\n#image-crop-editor {\r\n    position: fixed;\r\n    left: 0;\r\n    top: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    z-index: 100;\r\n}\r\n\r\n#image-crop-editor #close {\r\n    position: fixed;\r\n    left: 10px;\r\n    top: 10px;\r\n    width: 25px;\r\n    height: 25px;\r\n    z-index: 101;\r\n}\r\n\r\n#image-crop-editor #submit {\r\n    position: fixed;\r\n    right: 10px;\r\n    top: 10px;\r\n    z-index: 101;\r\n}\r\n\r\n.vue-advanced-cropper {\r\n    height: 100%;\r\n}\r\n</style>"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -15272,7 +15287,13 @@ var render = function() {
     [
       _c("button", {
         staticClass: "btn-close",
-        attrs: { id: "close", type: "button", "aria-label": "Close" }
+        attrs: { id: "close", type: "button", "aria-label": "Close" },
+        on: {
+          click: function($event) {
+            $event.preventDefault()
+            return _vm.cancel.apply(null, arguments)
+          }
+        }
       }),
       _vm._v(" "),
       _c("cropper", {
@@ -15689,7 +15710,7 @@ var render = function() {
       _vm.editingImage.data
         ? _c("image-crop-modal", {
             attrs: { file: _vm.editingImage.file, data: _vm.editingImage.data },
-            on: { crop: _vm.finishChangeImage }
+            on: { crop: _vm.finishChangeImage, cancel: _vm.cancelChangeImage }
           })
         : _vm._e()
     ],
@@ -24726,6 +24747,298 @@ if (inBrowser) {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Vue);
 
 
+/***/ }),
+
+/***/ "./node_modules/vuejs-loading-screen/dist/vuejs-loading-screen.esm.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/vuejs-loading-screen/dist/vuejs-loading-screen.esm.js ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var script = {
+  name: "VueLoading",
+
+  data() {
+    return {
+      isLoading: false,
+      options: {
+        bg: "#41b883ad",
+        icon: "fas fa-spinner",
+        size: "3",
+        icon_color: "#ffffff",
+        slot: null
+      }
+    };
+  },
+
+  methods: {
+    changeStatus(isLoading) {
+      this.isLoading = isLoading;
+    },
+
+    changeIsLoadingOptions(newOptions) {
+      Object.keys(this.options).forEach(key => {
+        if (newOptions[key]) {
+          this.options[key] = newOptions[key];
+        }
+      });
+    }
+
+  }
+};
+
+function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
+    if (typeof shadowMode !== 'boolean') {
+        createInjectorSSR = createInjector;
+        createInjector = shadowMode;
+        shadowMode = false;
+    }
+    // Vue.extend constructor export interop.
+    const options = typeof script === 'function' ? script.options : script;
+    // render functions
+    if (template && template.render) {
+        options.render = template.render;
+        options.staticRenderFns = template.staticRenderFns;
+        options._compiled = true;
+        // functional template
+        if (isFunctionalTemplate) {
+            options.functional = true;
+        }
+    }
+    // scopedId
+    if (scopeId) {
+        options._scopeId = scopeId;
+    }
+    let hook;
+    if (moduleIdentifier) {
+        // server build
+        hook = function (context) {
+            // 2.3 injection
+            context =
+                context || // cached call
+                    (this.$vnode && this.$vnode.ssrContext) || // stateful
+                    (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
+            // 2.2 with runInNewContext: true
+            if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+                context = __VUE_SSR_CONTEXT__;
+            }
+            // inject component styles
+            if (style) {
+                style.call(this, createInjectorSSR(context));
+            }
+            // register component module identifier for async chunk inference
+            if (context && context._registeredComponents) {
+                context._registeredComponents.add(moduleIdentifier);
+            }
+        };
+        // used by ssr in case component is cached and beforeCreate
+        // never gets called
+        options._ssrRegister = hook;
+    }
+    else if (style) {
+        hook = shadowMode
+            ? function (context) {
+                style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
+            }
+            : function (context) {
+                style.call(this, createInjector(context));
+            };
+    }
+    if (hook) {
+        if (options.functional) {
+            // register for functional component in vue file
+            const originalRender = options.render;
+            options.render = function renderWithStyleInjection(h, context) {
+                hook.call(context);
+                return originalRender(h, context);
+            };
+        }
+        else {
+            // inject component registration as beforeCreate hook
+            const existing = options.beforeCreate;
+            options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
+        }
+    }
+    return script;
+}
+
+const isOldIE = typeof navigator !== 'undefined' &&
+    /msie [6-9]\\b/.test(navigator.userAgent.toLowerCase());
+function createInjector(context) {
+    return (id, style) => addStyle(id, style);
+}
+let HEAD;
+const styles = {};
+function addStyle(id, css) {
+    const group = isOldIE ? css.media || 'default' : id;
+    const style = styles[group] || (styles[group] = { ids: new Set(), styles: [] });
+    if (!style.ids.has(id)) {
+        style.ids.add(id);
+        let code = css.source;
+        if (css.map) {
+            // https://developer.chrome.com/devtools/docs/javascript-debugging
+            // this makes source maps inside style tags work properly in Chrome
+            code += '\n/*# sourceURL=' + css.map.sources[0] + ' */';
+            // http://stackoverflow.com/a/26603875
+            code +=
+                '\n/*# sourceMappingURL=data:application/json;base64,' +
+                    btoa(unescape(encodeURIComponent(JSON.stringify(css.map)))) +
+                    ' */';
+        }
+        if (!style.element) {
+            style.element = document.createElement('style');
+            style.element.type = 'text/css';
+            if (css.media)
+                style.element.setAttribute('media', css.media);
+            if (HEAD === undefined) {
+                HEAD = document.head || document.getElementsByTagName('head')[0];
+            }
+            HEAD.appendChild(style.element);
+        }
+        if ('styleSheet' in style.element) {
+            style.styles.push(code);
+            style.element.styleSheet.cssText = style.styles
+                .filter(Boolean)
+                .join('\n');
+        }
+        else {
+            const index = style.ids.size - 1;
+            const textNode = document.createTextNode(code);
+            const nodes = style.element.childNodes;
+            if (nodes[index])
+                style.element.removeChild(nodes[index]);
+            if (nodes.length)
+                style.element.insertBefore(textNode, nodes[index]);
+            else
+                style.element.appendChild(textNode);
+        }
+    }
+}
+
+/* script */
+const __vue_script__ = script;
+/* template */
+
+var __vue_render__ = function () {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _c('div', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.isLoading,
+      expression: "isLoading"
+    }],
+    staticClass: "loading",
+    style: "background-color: " + _vm.options.bg + ";"
+  }, [_vm.options.slot ? [_c('div', {
+    domProps: {
+      "innerHTML": _vm._s(_vm.options.slot)
+    }
+  })] : [_c('i', {
+    staticClass: "fa-spin",
+    class: _vm.options.icon + " fa-" + _vm.options.size + "x",
+    style: "color: " + _vm.options.icon_color
+  }), _vm._v(" "), _c('span', {
+    staticClass: "sr-only"
+  }, [_vm._v("Loading...")])]], 2);
+};
+
+var __vue_staticRenderFns__ = [];
+/* style */
+
+const __vue_inject_styles__ = function (inject) {
+  if (!inject) return;
+  inject("data-v-45958956_0", {
+    source: ".loading[data-v-45958956]{position:fixed;left:0;top:0;right:0;bottom:0;height:100vh;z-index:99999!important;width:100%;display:flex;align-items:center;justify-content:center}.loading i[data-v-45958956]{position:absolute;opacity:1}",
+    map: undefined,
+    media: undefined
+  });
+};
+/* scoped */
+
+
+const __vue_scope_id__ = "data-v-45958956";
+/* module identifier */
+
+const __vue_module_identifier__ = undefined;
+/* functional template */
+
+const __vue_is_functional_template__ = false;
+/* style inject SSR */
+
+/* style inject shadow dom */
+
+const __vue_component__ = /*#__PURE__*/normalizeComponent({
+  render: __vue_render__,
+  staticRenderFns: __vue_staticRenderFns__
+}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, createInjector, undefined, undefined);
+
+var entry_esm = {
+  install(Vue, options) {
+    const myPluginVue = Vue.extend(__vue_component__);
+
+    Vue.prototype.$isLoading = function (isLoading) {
+      vm.changeStatus(isLoading);
+    };
+
+    Vue.prototype.$changeIsLoadingOptions = function (newOptions) {
+      vm.changeIsLoadingOptions(newOptions);
+    };
+
+    const vm = new myPluginVue({
+      data() {
+        return {
+          isLoading: false
+        };
+      }
+
+    }).$mount();
+    document.body.appendChild(vm.$el);
+
+    if (options) {
+      Object.keys(options).forEach(key => {
+        if (options[key]) {
+          vm.options[key] = options[key];
+        }
+      });
+    }
+  }
+
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (entry_esm);
+
+
 /***/ })
 
 /******/ 	});
@@ -24855,6 +25168,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var quill_dist_quill_bubble_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! quill/dist/quill.bubble.css */ "./node_modules/quill/dist/quill.bubble.css");
 /* harmony import */ var quill_dist_quill_bubble_css__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(quill_dist_quill_bubble_css__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var quill_markdown_shortcuts_for_vue_quill_editor__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! quill-markdown-shortcuts-for-vue-quill-editor */ "./node_modules/quill-markdown-shortcuts-for-vue-quill-editor/index.js");
+/* harmony import */ var vuejs_loading_screen__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vuejs-loading-screen */ "./node_modules/vuejs-loading-screen/dist/vuejs-loading-screen.esm.js");
+
 
 
 
@@ -24869,6 +25184,7 @@ quill__WEBPACK_IMPORTED_MODULE_3___default().register('modules/markdownShortcuts
 
 vue__WEBPACK_IMPORTED_MODULE_9__["default"].use(vue_axios__WEBPACK_IMPORTED_MODULE_0__["default"], (axios__WEBPACK_IMPORTED_MODULE_1___default()));
 vue__WEBPACK_IMPORTED_MODULE_9__["default"].use((vue_quill_editor__WEBPACK_IMPORTED_MODULE_4___default()));
+vue__WEBPACK_IMPORTED_MODULE_9__["default"].use(vuejs_loading_screen__WEBPACK_IMPORTED_MODULE_10__["default"]);
 new vue__WEBPACK_IMPORTED_MODULE_9__["default"]({
   el: '#main-content',
   components: {

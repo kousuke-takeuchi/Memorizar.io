@@ -1,6 +1,6 @@
 <template>
     <div id="image-crop-editor">
-        <button id="close" type="button" class="btn-close" aria-label="Close"></button>
+        <button id="close" type="button" class="btn-close" aria-label="Close" @click.prevent="cancel"></button>
         <cropper :src="data" :default-size="defaultSize" @change="change" />
         <button id="submit" type="button" class="btn btn-success btn-sm" @click.prevent="finish">完了</button>
     </div>  
@@ -41,6 +41,9 @@ export default {
         change({ coordinates, canvas }) {
             this.coordinates = coordinates;
 		},
+        cancel() {
+            this.$emit('cancel');
+        },
         finish() {
             let { width, height, left, top } = this.coordinates;
             this.$emit('crop', this.file, width, height, left, top);

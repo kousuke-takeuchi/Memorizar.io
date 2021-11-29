@@ -20,7 +20,8 @@
     "vue-advanced-cropper": "^1.8.2",
     "vue-axios": "^3.3.7",
     "vue-quill-editor": "^3.0.6",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^2.24.3",
+    "vuejs-loading-screen": "^1.10.1"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
