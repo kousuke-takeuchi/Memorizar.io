@@ -18,6 +18,7 @@ module.exports = {
   // エントリーポイント(メインのjsファイル)
   entry: {
     create_question: './src/create_question.js',
+    create_bulk_question: './src/create_bulk_question.js',
     create_question_group: './src/create_question_group.js',
     edit_question: './src/edit_question.js',
     scan_question: './src/scan_question.js',
