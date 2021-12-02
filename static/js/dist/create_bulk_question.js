@@ -14947,8 +14947,8 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row" }, [
-    _c("div", { staticClass: "mb-3 col-12 col-md-9" }, [
+  return _c("div", { staticClass: "row mb-2" }, [
+    _c("div", { staticClass: "col-12 col-md-5" }, [
       _c("label", { staticClass: "form-label", attrs: { for: "title" } }, [
         _vm._v("(" + _vm._s(_vm.index) + ") 問題タイトル")
       ]),
@@ -14959,16 +14959,99 @@ var render = function() {
       })
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "mb-3 col-12 col-md-3" }, [
-      _c("label", { staticClass: "form-label", attrs: { for: "title" } }, [
+    _c("div", { staticClass: "col-12 col-md-2" }, [
+      _c("label", { staticClass: "form-label", attrs: { for: "answer_num" } }, [
         _vm._v("回答選択肢数")
       ]),
       _vm._v(" "),
       _c("input", {
         staticClass: "form-control",
-        attrs: { type: "number", name: "title" },
+        attrs: { type: "number", name: "answer_num" },
         domProps: { value: _vm.question.answers.length }
       })
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-12 col-md-3" }, [
+      _c(
+        "label",
+        { staticClass: "form-label", attrs: { for: "correct_index" } },
+        [_vm._v("正解番号")]
+      ),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.question.correct_index,
+              expression: "question.correct_index"
+            }
+          ],
+          staticClass: "form-select",
+          attrs: {
+            name: "correct_index",
+            "data-width": "100%",
+            tabindex: "null",
+            required: ""
+          },
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.$set(
+                _vm.question,
+                "correct_index",
+                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+              )
+            }
+          }
+        },
+        _vm._l(_vm.question.answers, function(answer) {
+          return _c(
+            "option",
+            { key: answer.index, domProps: { value: answer.index } },
+            [_vm._v("選択肢" + _vm._s(answer.index))]
+          )
+        }),
+        0
+      )
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-12 col-md-2" }, [
+      _c(
+        "label",
+        { staticClass: "form-label", attrs: { for: "correct_index" } },
+        [_vm._v("対応する解説番号")]
+      ),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          staticClass: "form-select",
+          attrs: {
+            name: "correct_index",
+            "data-width": "100%",
+            tabindex: "null",
+            required: ""
+          }
+        },
+        _vm._l(_vm.question.answers, function(answer) {
+          return _c(
+            "option",
+            { key: answer.index, domProps: { value: answer.index } },
+            [_vm._v(_vm._s(answer.index))]
+          )
+        }),
+        0
+      )
     ])
   ])
 }
