@@ -29,13 +29,13 @@
                     <hr class="my-5">
 
                     <div class="custom-file mb-3 col-12 col-md-6">
-                        <label class="form-label" for="image">画像</label>
+                        <label class="form-label" for="image">問題画像</label>
                         <input type="file" class="form-control custom-file-input" name="image" @change.prevent="changeImage($event, 'image')">
                     </div>
 
                     <div class="preview col-12 col-md-12">
                         <img class="preview-image" src="http://placehold.jp/1024x720.png" />
-                        <svg :viewBox="viewBox" class="label-area" id="annotation" @mousedown="startDrawingBox" @mousemove="changeBox" @mouseup="stopDrawingBox">
+                        <svg :viewBox="viewBox" class="label-area" id="annotation1" @mousedown="startDrawingBox($event, 'annotation1')" @mousemove="changeBox($event, 'annotation1')" @mouseup="stopDrawingBox">
                             <g v-if="drawingBox">
                                 <rect :stroke="color(true)" fill-opacity="0%" stroke-width="5" :height="drawingBox.height" :width="drawingBox.width" :y="drawingBox.y" :x="drawingBox.x" />
                             </g>
@@ -57,6 +57,26 @@
                     <bulk-question-form :index="index+1" :question="questionBoundingBox.question" :key="index" v-for="(questionBoundingBox, index) in questionBoundingBoxes" />
 
                     <hr class="my-5">
+
+                    <div class="custom-file mb-3 col-12 col-md-6">
+                        <label class="form-label" for="commentary_image">解説画像</label>
+                        <input type="file" class="form-control custom-file-input" name="commentary_image" @change.prevent="changeImage($event, 'commentary_image')">
+                    </div>
+
+                    <div class="preview col-12 col-md-12">
+                        <img class="preview-image" src="http://placehold.jp/1024x720.png" />
+                        <svg :viewBox="viewBox" class="label-area" id="annotation2" @mousedown="startDrawingBox($event, 'annotation2')" @mousemove="changeBox($event, 'annotation2')" @mouseup="stopCommentaryDrawingBox">
+                            <g v-if="drawingBox">
+                                <rect :stroke="color(true)" fill-opacity="0%" stroke-width="5" :height="drawingBox.height" :width="drawingBox.width" :y="drawingBox.y" :x="drawingBox.x" />
+                            </g>
+                            <g :key="index" v-for="(commentaryBoundingBox, index) in commentaryBoundingBoxes">
+                                <text :x="commentaryBoundingBox.bbox.x" :y="commentaryBoundingBox.bbox.y-5" font-size="1.5em" font-weight="bold" :fill="color(false)" >
+                                    {{ index + 1 }}
+                                </text>
+                                <rect :stroke="color(false)" fill-opacity="0%" stroke-width="5" :height="commentaryBoundingBox.bbox.height" :width="commentaryBoundingBox.bbox.width" :y="commentaryBoundingBox.bbox.y" :x="commentaryBoundingBox.bbox.x" />
+                            </g>
+                        </svg>
+                    </div>
 
                     <!-- 送信ボタン -->
                     <div class="col-12">
@@ -94,6 +114,7 @@ export default {
             chapters: JSON.parse(document.getElementById('chapters').dataset.value),
             chapter_id: null,
             questionBoundingBoxes: [],
+            commentaryBoundingBoxes: [],
             errors: {},
             drawingBox: null,
             editingImage: {
@@ -132,23 +153,23 @@ export default {
                 console.error(evt);
             }
         },
-        startDrawingBox(e) {
+        startDrawingBox(e, id) {
             this.drawingBox = {
                 width: 0,
                 height: 0,
-                y: this.getCoursorTop(e),
-                x: this.getCoursorLeft(e),
+                y: this.getCoursorTop(e, id),
+                x: this.getCoursorLeft(e, id),
             };
         },
-        changeBox(e) {
+        changeBox(e, id) {
             if (this.drawingBox) {
-                var width = this.getCoursorLeft(e) - this.drawingBox.x;
-                var height = this.getCoursorTop(e) - this.drawingBox.y;
+                var width = this.getCoursorLeft(e, id) - this.drawingBox.x;
+                var height = this.getCoursorTop(e, id) - this.drawingBox.y;
                 if (width > 0 && height > 0) {
                     this.drawingBox = {
                         ...this.drawingBox,
-                        width: this.getCoursorLeft(e) - this.drawingBox.x,
-                        height: this.getCoursorTop(e) - this.drawingBox.y,
+                        width: this.getCoursorLeft(e, id) - this.drawingBox.x,
+                        height: this.getCoursorTop(e, id) - this.drawingBox.y,
                     };
                 }
             }
@@ -165,21 +186,33 @@ export default {
             }
             this.drawingBox = null;
         },
-        getWidthRate() {
-            const rect = document.getElementById('annotation').getBoundingClientRect();
+        stopCommentaryDrawingBox() {
+            if (this.drawingBox && this.drawingBox.width > 5) {
+                let bbox = {
+                    x: this.drawingBox.x,
+                    y: this.drawingBox.y,
+                    width: this.drawingBox.width,
+                    height: this.drawingBox.height,
+                }
+                this.commentaryBoundingBoxes.push({bbox: bbox})
+            }
+            this.drawingBox = null;
+        },
+        getWidthRate(id) {
+            const rect = document.getElementById(id).getBoundingClientRect();
             return this.editingImage.width / rect.width;
         },
-        getHeightRate() {
-            const rect = document.getElementById('annotation').getBoundingClientRect();
+        getHeightRate(id) {
+            const rect = document.getElementById(id).getBoundingClientRect();
             return this.editingImage.height / rect.height;
         },
-        getCoursorLeft(e) {
-            const rect = document.getElementById('annotation').getBoundingClientRect();
-            return Math.round((e.clientX - rect.left) * this.getWidthRate());
+        getCoursorLeft(e, id) {
+            const rect = document.getElementById(id).getBoundingClientRect();
+            return Math.round((e.clientX - rect.left) * this.getWidthRate(id));
         },
-        getCoursorTop(e) {
-            const rect = document.getElementById('annotation').getBoundingClientRect();
-            return Math.round((e.clientY - rect.top) * this.getHeightRate());
+        getCoursorTop(e, id) {
+            const rect = document.getElementById(id).getBoundingClientRect();
+            return Math.round((e.clientY - rect.top) * this.getHeightRate(id));
         },
         color(flag) {
             return flag ? "#dc3545" : "#ffc107"
