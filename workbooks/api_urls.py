@@ -14,6 +14,7 @@ urlpatterns = [
     path('<str:workbook_id>/chapters/<str:chapter_id>/', views.ChapterDetailView.as_view(), name='chapter_detail'),
     path('<str:workbook_id>/questions/', views.QuestionListView.as_view(), name='quetion_list'),
     path('<str:workbook_id>/question_groups/', views.QuestionGroupListView.as_view(), name='quetion_group_list'),
+    path('<str:workbook_id>/question/bulk/', views.QuestionBulkCreateView.as_view(), name='quetion_bulk_create'),
     path('<str:workbook_id>/questions/<str:question_id>/', views.QuestionDetailView.as_view(), name='quetion_detail'),
     path('<str:workbook_id>/questions/<str:question_id>/delete/', views.QuestionDeleteView.as_view(), name='quetion_delete'),
     path('<str:workbook_id>/trainings/', views.TrainingListView.as_view(), name='training_list'),

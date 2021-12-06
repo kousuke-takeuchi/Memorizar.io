@@ -150,9 +150,22 @@ class QuestionGroupListView(mixins.MemorizarBaseMixin, APIView):
         return SuccessResponse({'question_groups': serializer.data})
     
     def post(self, request, workbook_id):
-        print(request.data)
         workbook = self.get_workbook(workbook_id)
         serializer = serializers.QuestionGroupSerializer(data=request.data, context={'request': request, 'workbook': workbook})
+        if not serializer.is_valid(raise_exception=False):
+            return ErrorResponse(serializer.errors)
+        serializer.save()
+        return SuccessResponse({})
+
+
+class QuestionBulkCreateView(mixins.MemorizarBaseMixin, APIView):
+    def get_workbook(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def post(self, request, workbook_id):
+        workbook = self.get_workbook(workbook_id)
+        serializer = serializers.QuestionSerializer(many=True, data=request.data, context={'request': request, 'workbook': workbook})
         if not serializer.is_valid(raise_exception=False):
             return ErrorResponse(serializer.errors)
         serializer.save()
