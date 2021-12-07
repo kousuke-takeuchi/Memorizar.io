@@ -18,9 +18,9 @@
         </div>
 
         <div class="col-12 col-md-2">
-            <label class="form-label" for="correct_index">対応する解説番号</label>
-            <select class="form-select" name="correct_index" data-width="100%" tabindex="null" required>
-                <option :value="answer.index" :key="answer.index" v-for="answer in question.answers">{{ answer.index }}</option>
+            <label class="form-label" for="commentaryIndex">対応する解説番号</label>
+            <select class="form-select" name="commentaryIndex" data-width="100%" tabindex="null" v-model="question.commentaryIndex" required>
+                <option :value="index" :key="index" v-for="index in commentaryIndexes">{{ index }}</option>
             </select>
         </div>
     </div>
@@ -36,6 +36,7 @@ export default {
     props: {
         question: Question,
         index: Number,
+        commentaryIndexes: Number,
     },
 }
 </script>

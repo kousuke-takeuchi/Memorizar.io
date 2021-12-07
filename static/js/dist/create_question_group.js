@@ -2465,6 +2465,7 @@ class Question {
     this.commentary = null;
     this.image_urls = [];
     this.commentary_image_urls = [];
+    this.commentaryIndex = null;
     this.chapter_id = null;
 
     if (size === undefined) {

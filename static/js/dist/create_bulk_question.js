@@ -2163,7 +2163,8 @@ __webpack_require__.r(__webpack_exports__);
   name: 'AnswerForm',
   props: {
     question: _models_Question__WEBPACK_IMPORTED_MODULE_0__["default"],
-    index: Number
+    index: Number,
+    commentaryIndexes: Number
   }
 });
 
@@ -2208,8 +2209,16 @@ __webpack_require__.r(__webpack_exports__);
       errors: {},
       drawingBox: null,
       editingImage: {
-        width: 1024,
-        height: 720
+        width: null,
+        height: null,
+        loaded: false,
+        url: null
+      },
+      editingCommentaryImage: {
+        width: null,
+        height: null,
+        loaded: false,
+        url: null
       }
     };
   },
@@ -2220,20 +2229,48 @@ __webpack_require__.r(__webpack_exports__);
 
   },
   methods: {
-    changeImage(e, type) {
+    changeImage(e) {
       this.editingImage.loaded = false;
       let file = e.target.files[0];
       if (!file || file.type.indexOf('image/') !== 0) return;
+      this.editingImage.url = URL.createObjectURL(file);
       let reader = new FileReader();
+      let that = this;
       reader.readAsDataURL(file);
 
       reader.onload = function (evt) {
         let img = new Image();
 
         img.onload = () => {
-          this.editingImage.width = img.width;
-          this.editingImage.height = img.height;
-          this.editingImage.loaded = true;
+          that.editingImage.width = img.width;
+          that.editingImage.height = img.height;
+          that.editingImage.loaded = true;
+        };
+
+        img.src = evt.target.result;
+      };
+
+      reader.onerror = evt => {
+        console.error(evt);
+      };
+    },
+
+    changeCommentaryImage(e) {
+      this.editingCommentaryImage.loaded = false;
+      let file = e.target.files[0];
+      if (!file || file.type.indexOf('image/') !== 0) return;
+      this.editingCommentaryImage.url = URL.createObjectURL(file);
+      let reader = new FileReader();
+      let that = this;
+      reader.readAsDataURL(file);
+
+      reader.onload = function (evt) {
+        let img = new Image();
+
+        img.onload = () => {
+          that.editingCommentaryImage.width = img.width;
+          that.editingCommentaryImage.height = img.height;
+          that.editingCommentaryImage.loaded = true;
         };
 
         img.src = evt.target.result;
@@ -2544,6 +2581,7 @@ class Question {
     this.commentary = null;
     this.image_urls = [];
     this.commentary_image_urls = [];
+    this.commentaryIndex = null;
     this.chapter_id = null;
 
     if (size === undefined) {
@@ -2726,7 +2764,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.preview[data-v-30e3a107] {\n  position: relative;\n}\n.preview-image[data-v-30e3a107] {\n  width: 100%;\n}\n.label-area[data-v-30e3a107] {\n    position: absolute;\n    top: 1.25rem;\n    bottom: 1.25rem;\n    left: 1.25rem;\n    right: 1.25rem;\n}\n.class-badge[data-v-30e3a107] {\n  margin: 5px;\n}\n.remove-descriptor-btn[data-v-30e3a107] {\n  position: absolute;\n  right: 30px;\n  bottom: 15px;\n}\n", "",{"version":3,"sources":["webpack://./src/pages/CreateBulkQuestionPage.vue"],"names":[],"mappings":";AA2OA;EACA,kBAAA;AACA;AACA;EACA,WAAA;AACA;AACA;IACA,kBAAA;IACA,YAAA;IACA,eAAA;IACA,aAAA;IACA,cAAA;AACA;AACA;EACA,WAAA;AACA;AACA;EACA,kBAAA;EACA,WAAA;EACA,YAAA;AACA","sourcesContent":["<template>\r\n<div>\r\n    <!-- 問題作成フォーム -->\r\n    <div class=\"container pt-5 pb-5\">\r\n        <div class=\"lg-12 md-12 col-12\"> \r\n            <div class=\"card\">\r\n                <div class=\"d-lg-flex justify-content-between align-items-center card-header\">\r\n                    <div class=\"mb-3 mb-lg-0\">\r\n                        <h3 class=\"mb-0\">Create a new Question</h3>\r\n                        <span>問題の新規作成</span>\r\n                    </div>\r\n                </div>\r\n\r\n                <form id=\"form\" class=\"card-body\">\r\n                    <!-- 問題 -->\r\n                    <h4 class=\"mb-0\">Question</h4>\r\n                    <p class=\"mb-4\">共通項目の編集</p>\r\n\r\n                    <div class=\"row\">\r\n                        <div class=\"mb-3 col-12 col-md-6\">\r\n                            <label class=\"form-label\" for=\"chapter_id\">Chapter</label>\r\n                            <select class=\"form-select\" name=\"chapter_id\" data-width=\"100%\" tabindex=\"null\" v-model=\"chapter_id\">\r\n                                <!-- <option value=\"\" selected disabled>チャプターを選択してください</option> -->\r\n                                <option :value=\"chapter.chapter_id\" :key=\"chapter.chapter_id\" v-for=\"chapter in chapters\">{{ chapter.title }}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n\r\n                    <hr class=\"my-5\">\r\n\r\n                    <div class=\"custom-file mb-3 col-12 col-md-6\">\r\n                        <label class=\"form-label\" for=\"image\">問題画像</label>\r\n                        <input type=\"file\" class=\"form-control custom-file-input\" name=\"image\" @change.prevent=\"changeImage($event, 'image')\">\r\n                    </div>\r\n\r\n                    <div class=\"preview col-12 col-md-12\">\r\n                        <img class=\"preview-image\" src=\"http://placehold.jp/1024x720.png\" />\r\n                        <svg :viewBox=\"viewBox\" class=\"label-area\" id=\"annotation1\" @mousedown=\"startDrawingBox($event, 'annotation1')\" @mousemove=\"changeBox($event, 'annotation1')\" @mouseup=\"stopDrawingBox\">\r\n                            <g v-if=\"drawingBox\">\r\n                                <rect :stroke=\"color(true)\" fill-opacity=\"0%\" stroke-width=\"5\" :height=\"drawingBox.height\" :width=\"drawingBox.width\" :y=\"drawingBox.y\" :x=\"drawingBox.x\" />\r\n                            </g>\r\n                            <g :key=\"index\" v-for=\"(questionBoundingBox, index) in questionBoundingBoxes\">\r\n                                <text :x=\"questionBoundingBox.bbox.x\" :y=\"questionBoundingBox.bbox.y-5\" font-size=\"1.5em\" font-weight=\"bold\" :fill=\"color(false)\" >\r\n                                    {{ index + 1 }}\r\n                                </text>\r\n                                <rect :stroke=\"color(false)\" fill-opacity=\"0%\" stroke-width=\"5\" :height=\"questionBoundingBox.bbox.height\" :width=\"questionBoundingBox.bbox.width\" :y=\"questionBoundingBox.bbox.y\" :x=\"questionBoundingBox.bbox.x\" />\r\n                            </g>\r\n                        </svg>\r\n                    </div>\r\n\r\n                    <hr class=\"my-5\">\r\n\r\n                    <!-- 回答選択肢 -->\r\n                    <h4 class=\"mb-0\">Questions</h4>\r\n                    <p class=\"mb-4\">問題の編集</p>\r\n\r\n                    <bulk-question-form :index=\"index+1\" :question=\"questionBoundingBox.question\" :key=\"index\" v-for=\"(questionBoundingBox, index) in questionBoundingBoxes\" />\r\n\r\n                    <hr class=\"my-5\">\r\n\r\n                    <div class=\"custom-file mb-3 col-12 col-md-6\">\r\n                        <label class=\"form-label\" for=\"commentary_image\">解説画像</label>\r\n                        <input type=\"file\" class=\"form-control custom-file-input\" name=\"commentary_image\" @change.prevent=\"changeImage($event, 'commentary_image')\">\r\n                    </div>\r\n\r\n                    <div class=\"preview col-12 col-md-12\">\r\n                        <img class=\"preview-image\" src=\"http://placehold.jp/1024x720.png\" />\r\n                        <svg :viewBox=\"viewBox\" class=\"label-area\" id=\"annotation2\" @mousedown=\"startDrawingBox($event, 'annotation2')\" @mousemove=\"changeBox($event, 'annotation2')\" @mouseup=\"stopCommentaryDrawingBox\">\r\n                            <g v-if=\"drawingBox\">\r\n                                <rect :stroke=\"color(true)\" fill-opacity=\"0%\" stroke-width=\"5\" :height=\"drawingBox.height\" :width=\"drawingBox.width\" :y=\"drawingBox.y\" :x=\"drawingBox.x\" />\r\n                            </g>\r\n                            <g :key=\"index\" v-for=\"(commentaryBoundingBox, index) in commentaryBoundingBoxes\">\r\n                                <text :x=\"commentaryBoundingBox.bbox.x\" :y=\"commentaryBoundingBox.bbox.y-5\" font-size=\"1.5em\" font-weight=\"bold\" :fill=\"color(false)\" >\r\n                                    {{ index + 1 }}\r\n                                </text>\r\n                                <rect :stroke=\"color(false)\" fill-opacity=\"0%\" stroke-width=\"5\" :height=\"commentaryBoundingBox.bbox.height\" :width=\"commentaryBoundingBox.bbox.width\" :y=\"commentaryBoundingBox.bbox.y\" :x=\"commentaryBoundingBox.bbox.x\" />\r\n                            </g>\r\n                        </svg>\r\n                    </div>\r\n\r\n                    <!-- 送信ボタン -->\r\n                    <div class=\"col-12\">\r\n                        <button class=\"btn btn-primary\" @click.prevent=\"createQuestions\">Create Questions</button>\r\n                    </div>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n</template>\r\n\r\n\r\n<script lang=\"js\">\r\nimport Question from '../models/Question';\r\nimport QuestionAPI from '../apis/QuestionAPI';\r\n\r\nimport BulkQuestionForm from '../components/BulkQuestionForm';\r\n\r\nexport default {\r\n    name: 'CreateQuestionPage',\r\n    components: {\r\n        BulkQuestionForm,\r\n    },\r\n    data: function () {\r\n        let regex = /.*\\/workbooks\\/([0-9a-z\\-]+)\\/questions\\/new_bulk\\/+/i\r\n        let url = window.location.href;\r\n        let workbookId = url.match(regex)[1];\r\n        let defaultAnswerCount = document.getElementById('default_answer_count').dataset.value\r\n        let token = document.getElementById('token').dataset.value\r\n        let api = new QuestionAPI(token);\r\n        return {\r\n            workbookId: workbookId,\r\n            api: api,\r\n            chapters: JSON.parse(document.getElementById('chapters').dataset.value),\r\n            chapter_id: null,\r\n            questionBoundingBoxes: [],\r\n            commentaryBoundingBoxes: [],\r\n            errors: {},\r\n            drawingBox: null,\r\n            editingImage: {\r\n                width: 1024,\r\n                height: 720,\r\n            },\r\n        }\r\n    },\r\n    computed: {\r\n        viewBox() {\r\n            return `0 0 ${this.editingImage.width} ${this.editingImage.height}`; \r\n        },\r\n    },\r\n    methods: {\r\n        changeImage(e, type) {\r\n            this.editingImage.loaded = false;\r\n            \r\n            let file = e.target.files[0];\r\n            if(!file || file.type.indexOf('image/') !== 0)\r\n                return;\r\n            \r\n            let reader = new FileReader();\r\n            \r\n            reader.readAsDataURL(file);\r\n            reader.onload = function (evt) {\r\n                let img = new Image();\r\n                img.onload = () => {\r\n                    this.editingImage.width = img.width;\r\n                    this.editingImage.height = img.height;\r\n                    this.editingImage.loaded = true;\r\n                }\r\n                img.src = evt.target.result;\r\n            }\r\n\r\n            reader.onerror = evt => {\r\n                console.error(evt);\r\n            }\r\n        },\r\n        startDrawingBox(e, id) {\r\n            this.drawingBox = {\r\n                width: 0,\r\n                height: 0,\r\n                y: this.getCoursorTop(e, id),\r\n                x: this.getCoursorLeft(e, id),\r\n            };\r\n        },\r\n        changeBox(e, id) {\r\n            if (this.drawingBox) {\r\n                var width = this.getCoursorLeft(e, id) - this.drawingBox.x;\r\n                var height = this.getCoursorTop(e, id) - this.drawingBox.y;\r\n                if (width > 0 && height > 0) {\r\n                    this.drawingBox = {\r\n                        ...this.drawingBox,\r\n                        width: this.getCoursorLeft(e, id) - this.drawingBox.x,\r\n                        height: this.getCoursorTop(e, id) - this.drawingBox.y,\r\n                    };\r\n                }\r\n            }\r\n        },\r\n        stopDrawingBox() {\r\n            if (this.drawingBox && this.drawingBox.width > 5) {\r\n                let bbox = {\r\n                    x: this.drawingBox.x,\r\n                    y: this.drawingBox.y,\r\n                    width: this.drawingBox.width,\r\n                    height: this.drawingBox.height,\r\n                }\r\n                this.questionBoundingBoxes.push({question: new Question(4), bbox: bbox})\r\n            }\r\n            this.drawingBox = null;\r\n        },\r\n        stopCommentaryDrawingBox() {\r\n            if (this.drawingBox && this.drawingBox.width > 5) {\r\n                let bbox = {\r\n                    x: this.drawingBox.x,\r\n                    y: this.drawingBox.y,\r\n                    width: this.drawingBox.width,\r\n                    height: this.drawingBox.height,\r\n                }\r\n                this.commentaryBoundingBoxes.push({bbox: bbox})\r\n            }\r\n            this.drawingBox = null;\r\n        },\r\n        getWidthRate(id) {\r\n            const rect = document.getElementById(id).getBoundingClientRect();\r\n            return this.editingImage.width / rect.width;\r\n        },\r\n        getHeightRate(id) {\r\n            const rect = document.getElementById(id).getBoundingClientRect();\r\n            return this.editingImage.height / rect.height;\r\n        },\r\n        getCoursorLeft(e, id) {\r\n            const rect = document.getElementById(id).getBoundingClientRect();\r\n            return Math.round((e.clientX - rect.left) * this.getWidthRate(id));\r\n        },\r\n        getCoursorTop(e, id) {\r\n            const rect = document.getElementById(id).getBoundingClientRect();\r\n            return Math.round((e.clientY - rect.top) * this.getHeightRate(id));\r\n        },\r\n        color(flag) {\r\n            return flag ? \"#dc3545\" : \"#ffc107\"\r\n        },\r\n        async createQuestions() {\r\n            this.api.createQuestions(this.workbookId, this.question).then(data => {\r\n                window.location.href = window.location.href.replace('/questions/new', '');\r\n            }).catch(error => {\r\n                console.log(error)\r\n                this.errors = {};\r\n                for (let e of error.data.errors) {\r\n                    this.errors[e.field] = e.message;\r\n                }\r\n            })\r\n        }\r\n    },\r\n}\r\n</script>\r\n\r\n<style scoped>\r\n  .preview {\r\n    position: relative;\r\n  }\r\n  .preview-image {\r\n    width: 100%;\r\n  }\r\n  .label-area {\r\n      position: absolute;\r\n      top: 1.25rem;\r\n      bottom: 1.25rem;\r\n      left: 1.25rem;\r\n      right: 1.25rem;\r\n  }\r\n  .class-badge {\r\n    margin: 5px;\r\n  }\r\n  .remove-descriptor-btn {\r\n    position: absolute;\r\n    right: 30px;\r\n    bottom: 15px;\r\n  }\r\n</style>"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.preview[data-v-30e3a107] {\n  position: relative;\n}\n.preview-image[data-v-30e3a107] {\n  width: 100%;\n}\n.label-area[data-v-30e3a107] {\n    position: absolute;\n    top: 1.25rem;\n    bottom: 1.25rem;\n    left: 1.25rem;\n    right: 1.25rem;\n}\n.class-badge[data-v-30e3a107] {\n  margin: 5px;\n}\n.remove-descriptor-btn[data-v-30e3a107] {\n  position: absolute;\n  right: 30px;\n  bottom: 15px;\n}\n", "",{"version":3,"sources":["webpack://./src/pages/CreateBulkQuestionPage.vue"],"names":[],"mappings":";AA+QA;EACA,kBAAA;AACA;AACA;EACA,WAAA;AACA;AACA;IACA,kBAAA;IACA,YAAA;IACA,eAAA;IACA,aAAA;IACA,cAAA;AACA;AACA;EACA,WAAA;AACA;AACA;EACA,kBAAA;EACA,WAAA;EACA,YAAA;AACA","sourcesContent":["<template>\r\n<div>\r\n    <!-- 問題作成フォーム -->\r\n    <div class=\"container pt-5 pb-5\">\r\n        <div class=\"lg-12 md-12 col-12\"> \r\n            <div class=\"card\">\r\n                <div class=\"d-lg-flex justify-content-between align-items-center card-header\">\r\n                    <div class=\"mb-3 mb-lg-0\">\r\n                        <h3 class=\"mb-0\">Create a new Question</h3>\r\n                        <span>問題の新規作成</span>\r\n                    </div>\r\n                </div>\r\n\r\n                <form id=\"form\" class=\"card-body\">\r\n                    <!-- 問題 -->\r\n                    <h4 class=\"mb-0\">Question</h4>\r\n                    <p class=\"mb-4\">共通項目の編集</p>\r\n\r\n                    <div class=\"row\">\r\n                        <div class=\"mb-3 col-12 col-md-6\">\r\n                            <label class=\"form-label\" for=\"chapter_id\">Chapter</label>\r\n                            <select class=\"form-select\" name=\"chapter_id\" data-width=\"100%\" tabindex=\"null\" v-model=\"chapter_id\">\r\n                                <!-- <option value=\"\" selected disabled>チャプターを選択してください</option> -->\r\n                                <option :value=\"chapter.chapter_id\" :key=\"chapter.chapter_id\" v-for=\"chapter in chapters\">{{ chapter.title }}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n\r\n                    <hr class=\"my-5\">\r\n\r\n                    <div class=\"custom-file mb-3 col-12 col-md-6\">\r\n                        <label class=\"form-label\" for=\"image\">問題画像</label>\r\n                        <input type=\"file\" class=\"form-control custom-file-input\" name=\"image\" @change.prevent=\"changeImage\">\r\n                    </div>\r\n\r\n                    <div class=\"preview col-12 col-md-12\" v-if=\"editingImage.loaded\">\r\n                        <img class=\"preview-image\" :src=\"editingImage.url\" />\r\n                        <svg :viewBox=\"viewBox\" class=\"label-area\" id=\"annotation1\" @mousedown=\"startDrawingBox($event, 'annotation1')\" @mousemove=\"changeBox($event, 'annotation1')\" @mouseup=\"stopDrawingBox\">\r\n                            <g v-if=\"drawingBox\">\r\n                                <rect :stroke=\"color(true)\" fill-opacity=\"0%\" stroke-width=\"5\" :height=\"drawingBox.height\" :width=\"drawingBox.width\" :y=\"drawingBox.y\" :x=\"drawingBox.x\" />\r\n                            </g>\r\n                            <g :key=\"index\" v-for=\"(questionBoundingBox, index) in questionBoundingBoxes\">\r\n                                <text :x=\"questionBoundingBox.bbox.x\" :y=\"questionBoundingBox.bbox.y-5\" font-size=\"1.5em\" font-weight=\"bold\" :fill=\"color(false)\" >\r\n                                    {{ index + 1 }}\r\n                                </text>\r\n                                <rect :stroke=\"color(false)\" fill-opacity=\"0%\" stroke-width=\"5\" :height=\"questionBoundingBox.bbox.height\" :width=\"questionBoundingBox.bbox.width\" :y=\"questionBoundingBox.bbox.y\" :x=\"questionBoundingBox.bbox.x\" />\r\n                            </g>\r\n                        </svg>\r\n                    </div>\r\n\r\n                    <hr class=\"my-5\">\r\n\r\n                    <!-- 回答選択肢 -->\r\n                    <h4 class=\"mb-0\">Questions</h4>\r\n                    <p class=\"mb-4\">問題の編集</p>\r\n\r\n                    <bulk-question-form :index=\"index+1\" :question=\"questionBoundingBox.question\" :key=\"index\" v-for=\"(questionBoundingBox, index) in questionBoundingBoxes\" :commentaryIndexes=\"commentaryBoundingBoxes.length\" />\r\n\r\n                    <hr class=\"my-5\">\r\n\r\n                    <div class=\"custom-file mb-3 col-12 col-md-6\">\r\n                        <label class=\"form-label\" for=\"commentary_image\">解説画像</label>\r\n                        <input type=\"file\" class=\"form-control custom-file-input\" name=\"commentary_image\" @change.prevent=\"changeCommentaryImage\">\r\n                    </div>\r\n\r\n                    <div class=\"preview col-12 col-md-12\" v-if=\"editingCommentaryImage.loaded\">\r\n                        <img class=\"preview-image\" :src=\"editingCommentaryImage.url\" />\r\n                        <svg :viewBox=\"viewBox\" class=\"label-area\" id=\"annotation2\" @mousedown=\"startDrawingBox($event, 'annotation2')\" @mousemove=\"changeBox($event, 'annotation2')\" @mouseup=\"stopCommentaryDrawingBox\">\r\n                            <g v-if=\"drawingBox\">\r\n                                <rect :stroke=\"color(true)\" fill-opacity=\"0%\" stroke-width=\"5\" :height=\"drawingBox.height\" :width=\"drawingBox.width\" :y=\"drawingBox.y\" :x=\"drawingBox.x\" />\r\n                            </g>\r\n                            <g :key=\"index\" v-for=\"(commentaryBoundingBox, index) in commentaryBoundingBoxes\">\r\n                                <text :x=\"commentaryBoundingBox.bbox.x\" :y=\"commentaryBoundingBox.bbox.y-5\" font-size=\"1.5em\" font-weight=\"bold\" :fill=\"color(false)\" >\r\n                                    {{ index + 1 }}\r\n                                </text>\r\n                                <rect :stroke=\"color(false)\" fill-opacity=\"0%\" stroke-width=\"5\" :height=\"commentaryBoundingBox.bbox.height\" :width=\"commentaryBoundingBox.bbox.width\" :y=\"commentaryBoundingBox.bbox.y\" :x=\"commentaryBoundingBox.bbox.x\" />\r\n                            </g>\r\n                        </svg>\r\n                    </div>\r\n\r\n                    <!-- 送信ボタン -->\r\n                    <div class=\"col-12 mt-4\">\r\n                        <button class=\"btn btn-primary\" @click.prevent=\"createQuestions\">Create Questions</button>\r\n                    </div>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n</template>\r\n\r\n\r\n<script lang=\"js\">\r\nimport Question from '../models/Question';\r\nimport QuestionAPI from '../apis/QuestionAPI';\r\n\r\nimport BulkQuestionForm from '../components/BulkQuestionForm';\r\n\r\nexport default {\r\n    name: 'CreateQuestionPage',\r\n    components: {\r\n        BulkQuestionForm,\r\n    },\r\n    data: function () {\r\n        let regex = /.*\\/workbooks\\/([0-9a-z\\-]+)\\/questions\\/new_bulk\\/+/i\r\n        let url = window.location.href;\r\n        let workbookId = url.match(regex)[1];\r\n        let defaultAnswerCount = document.getElementById('default_answer_count').dataset.value\r\n        let token = document.getElementById('token').dataset.value\r\n        let api = new QuestionAPI(token);\r\n        return {\r\n            workbookId: workbookId,\r\n            api: api,\r\n            chapters: JSON.parse(document.getElementById('chapters').dataset.value),\r\n            chapter_id: null,\r\n            questionBoundingBoxes: [],\r\n            commentaryBoundingBoxes: [],\r\n            errors: {},\r\n            drawingBox: null,\r\n            editingImage: {\r\n                width: null,\r\n                height: null,\r\n                loaded: false,\r\n                url: null\r\n            },\r\n            editingCommentaryImage: {\r\n                width: null,\r\n                height: null,\r\n                loaded: false,\r\n                url: null\r\n            },\r\n        }\r\n    },\r\n    computed: {\r\n        viewBox() {\r\n            return `0 0 ${this.editingImage.width} ${this.editingImage.height}`; \r\n        },\r\n    },\r\n    methods: {\r\n        changeImage(e) {\r\n            this.editingImage.loaded = false;\r\n            \r\n            let file = e.target.files[0];\r\n            if(!file || file.type.indexOf('image/') !== 0)\r\n                return;\r\n            \r\n            this.editingImage.url = URL.createObjectURL(file);\r\n            let reader = new FileReader();\r\n            \r\n            let that = this;\r\n            reader.readAsDataURL(file);\r\n            reader.onload = function (evt) {\r\n                let img = new Image();\r\n                img.onload = () => {\r\n                    that.editingImage.width = img.width;\r\n                    that.editingImage.height = img.height;\r\n                    that.editingImage.loaded = true;\r\n                }\r\n                img.src = evt.target.result;\r\n            }\r\n\r\n            reader.onerror = evt => {\r\n                console.error(evt);\r\n            }\r\n        },\r\n        changeCommentaryImage(e) {\r\n            this.editingCommentaryImage.loaded = false;\r\n            \r\n            let file = e.target.files[0];\r\n            if(!file || file.type.indexOf('image/') !== 0)\r\n                return;\r\n            \r\n            this.editingCommentaryImage.url = URL.createObjectURL(file);\r\n            let reader = new FileReader();\r\n            \r\n            let that = this;\r\n            reader.readAsDataURL(file);\r\n            reader.onload = function (evt) {\r\n                let img = new Image();\r\n                img.onload = () => {\r\n                    that.editingCommentaryImage.width = img.width;\r\n                    that.editingCommentaryImage.height = img.height;\r\n                    that.editingCommentaryImage.loaded = true;\r\n                }\r\n                img.src = evt.target.result;\r\n            }\r\n\r\n            reader.onerror = evt => {\r\n                console.error(evt);\r\n            }\r\n        },\r\n        startDrawingBox(e, id) {\r\n            this.drawingBox = {\r\n                width: 0,\r\n                height: 0,\r\n                y: this.getCoursorTop(e, id),\r\n                x: this.getCoursorLeft(e, id),\r\n            };\r\n        },\r\n        changeBox(e, id) {\r\n            if (this.drawingBox) {\r\n                var width = this.getCoursorLeft(e, id) - this.drawingBox.x;\r\n                var height = this.getCoursorTop(e, id) - this.drawingBox.y;\r\n                if (width > 0 && height > 0) {\r\n                    this.drawingBox = {\r\n                        ...this.drawingBox,\r\n                        width: this.getCoursorLeft(e, id) - this.drawingBox.x,\r\n                        height: this.getCoursorTop(e, id) - this.drawingBox.y,\r\n                    };\r\n                }\r\n            }\r\n        },\r\n        stopDrawingBox() {\r\n            if (this.drawingBox && this.drawingBox.width > 5) {\r\n                let bbox = {\r\n                    x: this.drawingBox.x,\r\n                    y: this.drawingBox.y,\r\n                    width: this.drawingBox.width,\r\n                    height: this.drawingBox.height,\r\n                }\r\n                this.questionBoundingBoxes.push({question: new Question(4), bbox: bbox})\r\n            }\r\n            this.drawingBox = null;\r\n        },\r\n        stopCommentaryDrawingBox() {\r\n            if (this.drawingBox && this.drawingBox.width > 5) {\r\n                let bbox = {\r\n                    x: this.drawingBox.x,\r\n                    y: this.drawingBox.y,\r\n                    width: this.drawingBox.width,\r\n                    height: this.drawingBox.height,\r\n                }\r\n                this.commentaryBoundingBoxes.push({bbox: bbox})\r\n            }\r\n            this.drawingBox = null;\r\n        },\r\n        getWidthRate(id) {\r\n            const rect = document.getElementById(id).getBoundingClientRect();\r\n            return this.editingImage.width / rect.width;\r\n        },\r\n        getHeightRate(id) {\r\n            const rect = document.getElementById(id).getBoundingClientRect();\r\n            return this.editingImage.height / rect.height;\r\n        },\r\n        getCoursorLeft(e, id) {\r\n            const rect = document.getElementById(id).getBoundingClientRect();\r\n            return Math.round((e.clientX - rect.left) * this.getWidthRate(id));\r\n        },\r\n        getCoursorTop(e, id) {\r\n            const rect = document.getElementById(id).getBoundingClientRect();\r\n            return Math.round((e.clientY - rect.top) * this.getHeightRate(id));\r\n        },\r\n        color(flag) {\r\n            return flag ? \"#dc3545\" : \"#ffc107\"\r\n        },\r\n        async createQuestions() {\r\n            this.api.createQuestions(this.workbookId, this.question).then(data => {\r\n                window.location.href = window.location.href.replace('/questions/new', '');\r\n            }).catch(error => {\r\n                console.log(error)\r\n                this.errors = {};\r\n                for (let e of error.data.errors) {\r\n                    this.errors[e.field] = e.message;\r\n                }\r\n            })\r\n        }\r\n    },\r\n}\r\n</script>\r\n\r\n<style scoped>\r\n  .preview {\r\n    position: relative;\r\n  }\r\n  .preview-image {\r\n    width: 100%;\r\n  }\r\n  .label-area {\r\n      position: absolute;\r\n      top: 1.25rem;\r\n      bottom: 1.25rem;\r\n      left: 1.25rem;\r\n      right: 1.25rem;\r\n  }\r\n  .class-badge {\r\n    margin: 5px;\r\n  }\r\n  .remove-descriptor-btn {\r\n    position: absolute;\r\n    right: 30px;\r\n    bottom: 15px;\r\n  }\r\n</style>"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -15045,27 +15083,50 @@ var render = function() {
     _c("div", { staticClass: "col-12 col-md-2" }, [
       _c(
         "label",
-        { staticClass: "form-label", attrs: { for: "correct_index" } },
+        { staticClass: "form-label", attrs: { for: "commentaryIndex" } },
         [_vm._v("対応する解説番号")]
       ),
       _vm._v(" "),
       _c(
         "select",
         {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.question.commentaryIndex,
+              expression: "question.commentaryIndex"
+            }
+          ],
           staticClass: "form-select",
           attrs: {
-            name: "correct_index",
+            name: "commentaryIndex",
             "data-width": "100%",
             tabindex: "null",
             required: ""
+          },
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.$set(
+                _vm.question,
+                "commentaryIndex",
+                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+              )
+            }
           }
         },
-        _vm._l(_vm.question.answers, function(answer) {
-          return _c(
-            "option",
-            { key: answer.index, domProps: { value: answer.index } },
-            [_vm._v(_vm._s(answer.index))]
-          )
+        _vm._l(_vm.commentaryIndexes, function(index) {
+          return _c("option", { key: index, domProps: { value: index } }, [
+            _vm._v(_vm._s(index))
+          ])
         }),
         0
       )
@@ -15180,92 +15241,94 @@ var render = function() {
                   on: {
                     change: function($event) {
                       $event.preventDefault()
-                      return _vm.changeImage($event, "image")
+                      return _vm.changeImage.apply(null, arguments)
                     }
                   }
                 })
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "preview col-12 col-md-12" }, [
-                _c("img", {
-                  staticClass: "preview-image",
-                  attrs: { src: "http://placehold.jp/1024x720.png" }
-                }),
-                _vm._v(" "),
-                _c(
-                  "svg",
-                  {
-                    staticClass: "label-area",
-                    attrs: { viewBox: _vm.viewBox, id: "annotation1" },
-                    on: {
-                      mousedown: function($event) {
-                        return _vm.startDrawingBox($event, "annotation1")
-                      },
-                      mousemove: function($event) {
-                        return _vm.changeBox($event, "annotation1")
-                      },
-                      mouseup: _vm.stopDrawingBox
-                    }
-                  },
-                  [
-                    _vm.drawingBox
-                      ? _c("g", [
-                          _c("rect", {
-                            attrs: {
-                              stroke: _vm.color(true),
-                              "fill-opacity": "0%",
-                              "stroke-width": "5",
-                              height: _vm.drawingBox.height,
-                              width: _vm.drawingBox.width,
-                              y: _vm.drawingBox.y,
-                              x: _vm.drawingBox.x
-                            }
-                          })
-                        ])
-                      : _vm._e(),
+              _vm.editingImage.loaded
+                ? _c("div", { staticClass: "preview col-12 col-md-12" }, [
+                    _c("img", {
+                      staticClass: "preview-image",
+                      attrs: { src: _vm.editingImage.url }
+                    }),
                     _vm._v(" "),
-                    _vm._l(_vm.questionBoundingBoxes, function(
-                      questionBoundingBox,
-                      index
-                    ) {
-                      return _c("g", { key: index }, [
-                        _c(
-                          "text",
-                          {
-                            attrs: {
-                              x: questionBoundingBox.bbox.x,
-                              y: questionBoundingBox.bbox.y - 5,
-                              "font-size": "1.5em",
-                              "font-weight": "bold",
-                              fill: _vm.color(false)
-                            }
+                    _c(
+                      "svg",
+                      {
+                        staticClass: "label-area",
+                        attrs: { viewBox: _vm.viewBox, id: "annotation1" },
+                        on: {
+                          mousedown: function($event) {
+                            return _vm.startDrawingBox($event, "annotation1")
                           },
-                          [
-                            _vm._v(
-                              "\r\n                                    " +
-                                _vm._s(index + 1) +
-                                "\r\n                                "
-                            )
-                          ]
-                        ),
+                          mousemove: function($event) {
+                            return _vm.changeBox($event, "annotation1")
+                          },
+                          mouseup: _vm.stopDrawingBox
+                        }
+                      },
+                      [
+                        _vm.drawingBox
+                          ? _c("g", [
+                              _c("rect", {
+                                attrs: {
+                                  stroke: _vm.color(true),
+                                  "fill-opacity": "0%",
+                                  "stroke-width": "5",
+                                  height: _vm.drawingBox.height,
+                                  width: _vm.drawingBox.width,
+                                  y: _vm.drawingBox.y,
+                                  x: _vm.drawingBox.x
+                                }
+                              })
+                            ])
+                          : _vm._e(),
                         _vm._v(" "),
-                        _c("rect", {
-                          attrs: {
-                            stroke: _vm.color(false),
-                            "fill-opacity": "0%",
-                            "stroke-width": "5",
-                            height: questionBoundingBox.bbox.height,
-                            width: questionBoundingBox.bbox.width,
-                            y: questionBoundingBox.bbox.y,
-                            x: questionBoundingBox.bbox.x
-                          }
+                        _vm._l(_vm.questionBoundingBoxes, function(
+                          questionBoundingBox,
+                          index
+                        ) {
+                          return _c("g", { key: index }, [
+                            _c(
+                              "text",
+                              {
+                                attrs: {
+                                  x: questionBoundingBox.bbox.x,
+                                  y: questionBoundingBox.bbox.y - 5,
+                                  "font-size": "1.5em",
+                                  "font-weight": "bold",
+                                  fill: _vm.color(false)
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\r\n                                    " +
+                                    _vm._s(index + 1) +
+                                    "\r\n                                "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("rect", {
+                              attrs: {
+                                stroke: _vm.color(false),
+                                "fill-opacity": "0%",
+                                "stroke-width": "5",
+                                height: questionBoundingBox.bbox.height,
+                                width: questionBoundingBox.bbox.width,
+                                y: questionBoundingBox.bbox.y,
+                                x: questionBoundingBox.bbox.x
+                              }
+                            })
+                          ])
                         })
-                      ])
-                    })
-                  ],
-                  2
-                )
-              ]),
+                      ],
+                      2
+                    )
+                  ])
+                : _vm._e(),
               _vm._v(" "),
               _c("hr", { staticClass: "my-5" }),
               _vm._v(" "),
@@ -15281,7 +15344,8 @@ var render = function() {
                   key: index,
                   attrs: {
                     index: index + 1,
-                    question: questionBoundingBox.question
+                    question: questionBoundingBox.question,
+                    commentaryIndexes: _vm.commentaryBoundingBoxes.length
                   }
                 })
               }),
@@ -15304,94 +15368,96 @@ var render = function() {
                   on: {
                     change: function($event) {
                       $event.preventDefault()
-                      return _vm.changeImage($event, "commentary_image")
+                      return _vm.changeCommentaryImage.apply(null, arguments)
                     }
                   }
                 })
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "preview col-12 col-md-12" }, [
-                _c("img", {
-                  staticClass: "preview-image",
-                  attrs: { src: "http://placehold.jp/1024x720.png" }
-                }),
-                _vm._v(" "),
-                _c(
-                  "svg",
-                  {
-                    staticClass: "label-area",
-                    attrs: { viewBox: _vm.viewBox, id: "annotation2" },
-                    on: {
-                      mousedown: function($event) {
-                        return _vm.startDrawingBox($event, "annotation2")
-                      },
-                      mousemove: function($event) {
-                        return _vm.changeBox($event, "annotation2")
-                      },
-                      mouseup: _vm.stopCommentaryDrawingBox
-                    }
-                  },
-                  [
-                    _vm.drawingBox
-                      ? _c("g", [
-                          _c("rect", {
-                            attrs: {
-                              stroke: _vm.color(true),
-                              "fill-opacity": "0%",
-                              "stroke-width": "5",
-                              height: _vm.drawingBox.height,
-                              width: _vm.drawingBox.width,
-                              y: _vm.drawingBox.y,
-                              x: _vm.drawingBox.x
-                            }
-                          })
-                        ])
-                      : _vm._e(),
+              _vm.editingCommentaryImage.loaded
+                ? _c("div", { staticClass: "preview col-12 col-md-12" }, [
+                    _c("img", {
+                      staticClass: "preview-image",
+                      attrs: { src: _vm.editingCommentaryImage.url }
+                    }),
                     _vm._v(" "),
-                    _vm._l(_vm.commentaryBoundingBoxes, function(
-                      commentaryBoundingBox,
-                      index
-                    ) {
-                      return _c("g", { key: index }, [
-                        _c(
-                          "text",
-                          {
-                            attrs: {
-                              x: commentaryBoundingBox.bbox.x,
-                              y: commentaryBoundingBox.bbox.y - 5,
-                              "font-size": "1.5em",
-                              "font-weight": "bold",
-                              fill: _vm.color(false)
-                            }
+                    _c(
+                      "svg",
+                      {
+                        staticClass: "label-area",
+                        attrs: { viewBox: _vm.viewBox, id: "annotation2" },
+                        on: {
+                          mousedown: function($event) {
+                            return _vm.startDrawingBox($event, "annotation2")
                           },
-                          [
-                            _vm._v(
-                              "\r\n                                    " +
-                                _vm._s(index + 1) +
-                                "\r\n                                "
-                            )
-                          ]
-                        ),
+                          mousemove: function($event) {
+                            return _vm.changeBox($event, "annotation2")
+                          },
+                          mouseup: _vm.stopCommentaryDrawingBox
+                        }
+                      },
+                      [
+                        _vm.drawingBox
+                          ? _c("g", [
+                              _c("rect", {
+                                attrs: {
+                                  stroke: _vm.color(true),
+                                  "fill-opacity": "0%",
+                                  "stroke-width": "5",
+                                  height: _vm.drawingBox.height,
+                                  width: _vm.drawingBox.width,
+                                  y: _vm.drawingBox.y,
+                                  x: _vm.drawingBox.x
+                                }
+                              })
+                            ])
+                          : _vm._e(),
                         _vm._v(" "),
-                        _c("rect", {
-                          attrs: {
-                            stroke: _vm.color(false),
-                            "fill-opacity": "0%",
-                            "stroke-width": "5",
-                            height: commentaryBoundingBox.bbox.height,
-                            width: commentaryBoundingBox.bbox.width,
-                            y: commentaryBoundingBox.bbox.y,
-                            x: commentaryBoundingBox.bbox.x
-                          }
+                        _vm._l(_vm.commentaryBoundingBoxes, function(
+                          commentaryBoundingBox,
+                          index
+                        ) {
+                          return _c("g", { key: index }, [
+                            _c(
+                              "text",
+                              {
+                                attrs: {
+                                  x: commentaryBoundingBox.bbox.x,
+                                  y: commentaryBoundingBox.bbox.y - 5,
+                                  "font-size": "1.5em",
+                                  "font-weight": "bold",
+                                  fill: _vm.color(false)
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\r\n                                    " +
+                                    _vm._s(index + 1) +
+                                    "\r\n                                "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("rect", {
+                              attrs: {
+                                stroke: _vm.color(false),
+                                "fill-opacity": "0%",
+                                "stroke-width": "5",
+                                height: commentaryBoundingBox.bbox.height,
+                                width: commentaryBoundingBox.bbox.width,
+                                y: commentaryBoundingBox.bbox.y,
+                                x: commentaryBoundingBox.bbox.x
+                              }
+                            })
+                          ])
                         })
-                      ])
-                    })
-                  ],
-                  2
-                )
-              ]),
+                      ],
+                      2
+                    )
+                  ])
+                : _vm._e(),
               _vm._v(" "),
-              _c("div", { staticClass: "col-12" }, [
+              _c("div", { staticClass: "col-12 mt-4" }, [
                 _c(
                   "button",
                   {

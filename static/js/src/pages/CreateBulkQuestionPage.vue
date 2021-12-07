@@ -30,11 +30,11 @@
 
                     <div class="custom-file mb-3 col-12 col-md-6">
                         <label class="form-label" for="image">問題画像</label>
-                        <input type="file" class="form-control custom-file-input" name="image" @change.prevent="changeImage($event, 'image')">
+                        <input type="file" class="form-control custom-file-input" name="image" @change.prevent="changeImage">
                     </div>
 
-                    <div class="preview col-12 col-md-12">
-                        <img class="preview-image" src="http://placehold.jp/1024x720.png" />
+                    <div class="preview col-12 col-md-12" v-if="editingImage.loaded">
+                        <img class="preview-image" :src="editingImage.url" />
                         <svg :viewBox="viewBox" class="label-area" id="annotation1" @mousedown="startDrawingBox($event, 'annotation1')" @mousemove="changeBox($event, 'annotation1')" @mouseup="stopDrawingBox">
                             <g v-if="drawingBox">
                                 <rect :stroke="color(true)" fill-opacity="0%" stroke-width="5" :height="drawingBox.height" :width="drawingBox.width" :y="drawingBox.y" :x="drawingBox.x" />
@@ -54,17 +54,17 @@
                     <h4 class="mb-0">Questions</h4>
                     <p class="mb-4">問題の編集</p>
 
-                    <bulk-question-form :index="index+1" :question="questionBoundingBox.question" :key="index" v-for="(questionBoundingBox, index) in questionBoundingBoxes" />
+                    <bulk-question-form :index="index+1" :question="questionBoundingBox.question" :key="index" v-for="(questionBoundingBox, index) in questionBoundingBoxes" :commentaryIndexes="commentaryBoundingBoxes.length" />
 
                     <hr class="my-5">
 
                     <div class="custom-file mb-3 col-12 col-md-6">
                         <label class="form-label" for="commentary_image">解説画像</label>
-                        <input type="file" class="form-control custom-file-input" name="commentary_image" @change.prevent="changeImage($event, 'commentary_image')">
+                        <input type="file" class="form-control custom-file-input" name="commentary_image" @change.prevent="changeCommentaryImage">
                     </div>
 
-                    <div class="preview col-12 col-md-12">
-                        <img class="preview-image" src="http://placehold.jp/1024x720.png" />
+                    <div class="preview col-12 col-md-12" v-if="editingCommentaryImage.loaded">
+                        <img class="preview-image" :src="editingCommentaryImage.url" />
                         <svg :viewBox="viewBox" class="label-area" id="annotation2" @mousedown="startDrawingBox($event, 'annotation2')" @mousemove="changeBox($event, 'annotation2')" @mouseup="stopCommentaryDrawingBox">
                             <g v-if="drawingBox">
                                 <rect :stroke="color(true)" fill-opacity="0%" stroke-width="5" :height="drawingBox.height" :width="drawingBox.width" :y="drawingBox.y" :x="drawingBox.x" />
@@ -79,7 +79,7 @@
                     </div>
 
                     <!-- 送信ボタン -->
-                    <div class="col-12">
+                    <div class="col-12 mt-4">
                         <button class="btn btn-primary" @click.prevent="createQuestions">Create Questions</button>
                     </div>
                 </form>
@@ -118,8 +118,16 @@ export default {
             errors: {},
             drawingBox: null,
             editingImage: {
-                width: 1024,
-                height: 720,
+                width: null,
+                height: null,
+                loaded: false,
+                url: null
+            },
+            editingCommentaryImage: {
+                width: null,
+                height: null,
+                loaded: false,
+                url: null
             },
         }
     },
@@ -129,22 +137,50 @@ export default {
         },
     },
     methods: {
-        changeImage(e, type) {
+        changeImage(e) {
             this.editingImage.loaded = false;
             
             let file = e.target.files[0];
             if(!file || file.type.indexOf('image/') !== 0)
                 return;
             
+            this.editingImage.url = URL.createObjectURL(file);
             let reader = new FileReader();
             
+            let that = this;
             reader.readAsDataURL(file);
             reader.onload = function (evt) {
                 let img = new Image();
                 img.onload = () => {
-                    this.editingImage.width = img.width;
-                    this.editingImage.height = img.height;
-                    this.editingImage.loaded = true;
+                    that.editingImage.width = img.width;
+                    that.editingImage.height = img.height;
+                    that.editingImage.loaded = true;
+                }
+                img.src = evt.target.result;
+            }
+
+            reader.onerror = evt => {
+                console.error(evt);
+            }
+        },
+        changeCommentaryImage(e) {
+            this.editingCommentaryImage.loaded = false;
+            
+            let file = e.target.files[0];
+            if(!file || file.type.indexOf('image/') !== 0)
+                return;
+            
+            this.editingCommentaryImage.url = URL.createObjectURL(file);
+            let reader = new FileReader();
+            
+            let that = this;
+            reader.readAsDataURL(file);
+            reader.onload = function (evt) {
+                let img = new Image();
+                img.onload = () => {
+                    that.editingCommentaryImage.width = img.width;
+                    that.editingCommentaryImage.height = img.height;
+                    that.editingCommentaryImage.loaded = true;
                 }
                 img.src = evt.target.result;
             }
