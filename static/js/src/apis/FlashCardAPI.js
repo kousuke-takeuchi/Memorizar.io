@@ -29,6 +29,7 @@ export default class FlashCardAPI extends API {
         let path = `/api/flash_cards/`;
         let data = {
             'title': deck.title,
+            'flash_cards': [],
         }
         for (let flash_card of deck.flash_cards) {
             let form = {

@@ -17,7 +17,7 @@ class FlashCardDeckSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.FlashCardDeck
-        read_only_fields = ('deck_id', 'title',)
+        read_only_fields = ('deck_id',)
         write_only_fields = ()
         fields = read_only_fields + write_only_fields + ('title', 'flash_cards',)
         extra_kwargs = dict([(field, {'write_only': True, 'required': True}) for field in write_only_fields])
