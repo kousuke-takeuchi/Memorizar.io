@@ -448,3 +448,35 @@ class WorkbookTrainingAnswerForm(forms.Form):
         training_selection.confident = not self.cleaned_data['not_confident']
         training_selection.save()
         return training_selection
+
+
+class WorkbookExamForm(forms.Form):
+    question_count = forms.IntegerField(required=True)
+    passing_score = forms.IntegerField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.context = kwargs.pop('context', {})
+        super(WorkbookExamForm, self).__init__(*args, **kwargs)
+
+    def clean_question_count(self):
+        count = self.cleaned_data.get('question_count')
+        if count <= 0:
+            raise forms.ValidationError('1以上を指定してください')
+        return count
+    
+    def clean_passing_score(self):
+        count = self.cleaned_data.get('passing_score')
+        if count <= 0:
+            raise forms.ValidationError('1以上を指定してください')
+        return count
+    
+    def save(self):
+        training_type = self.context.get('training_type')
+        training = models.Training.objects.create(
+            workbook=self.context['workbook'],
+            user=self.context['request'].user,
+            training_type=training_type,
+            question_count=self.cleaned_data['question_count'],
+            passing_score=self.cleaned_data['passing_score'],
+        )
+        return training

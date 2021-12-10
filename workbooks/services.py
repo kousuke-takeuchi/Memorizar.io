@@ -290,7 +290,7 @@ class TrainingService:
             chapters = training.chapters.all()
             questions = models.Question.objects.filter(workbook=training.workbook).order_by('index')
         else:
-            # 指定されない場合はすべてのチャプターから問題を取得
+            # 指定されない場合はすべてのチャプターから問題を取得, 模擬テストの場合も同様
             chapters = models.Chapter.objects.filter(workbook=training.workbook)
             questions = models.Question.objects.filter(workbook=training.workbook)
 
@@ -325,6 +325,6 @@ class TrainingService:
         
         # 10問解いた場合も終了
         selected_questions = models.TrainingSelection.objects.filter(training=training)
-        if len(selected_questions) > 9:
+        if len(selected_questions) >= training.question_count:
             return True
         return False

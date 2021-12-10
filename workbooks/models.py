@@ -158,12 +158,16 @@ class Training(BaseModel, models.Model):
         SELECT_CHAPTER = 'CHAP', 'Select Chapter'
         REVIEW_MISTAKE = 'MIST', 'Review Mistake'
         ORDERED = 'ORDR', 'Ordered'
+        EXAM = 'EXAM', 'Exam'
 
     training_id = models.UUIDField('イベントID', default=uuid.uuid4, unique=True, db_index=True)
     user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     workbook = models.ForeignKey('workbooks.Workbook', db_index=True, on_delete=models.CASCADE)
     training_type = models.TextField('実施種別', max_length=4, choices=TrainingTypes.choices, default=TrainingTypes.RANDOM)
+    question_count = models.IntegerField('問題数', default=10)
     done = models.BooleanField('実施完了済みか', default=False)
+    # 模擬テストの場合の必要正解数
+    passing_score = models.IntegerField('合格点', null=True, default=None, blank=True)
 
     chapters = models.ManyToManyField('workbooks.Chapter', through='workbooks.TrainingChapter')
     

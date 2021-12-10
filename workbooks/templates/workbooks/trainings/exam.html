@@ -1,0 +1,49 @@
+{% extends 'memorizar/base.html' %}
+{% load static %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    
+    <div class="py-md-5 py-5 container">
+        <!-- Card -->
+        <div class="card">
+            <!-- Card header -->
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="pt-2">
+                    <!-- Notification -->
+                    <h3 class="mb-0">Mock Exam</h3>
+                    <p>模擬テストを実施します。出題する問題数と合格点を選択してください</p>
+                </div>
+            </div>
+            <!-- Card body -->
+            <div class="card-body" style="padding-top: 0; padding-left: 0; padding-right: 0;">
+                <div class="mb-3 col-12 col-md-6">
+                    <label class="form-label{% if form.errors.question_count %} text-danger{% endif %}" for="question_count">Question Count</label>
+                    <input type="number" name="question_count" class="form-control{% if form.errors.question_count %} border-danger{% endif %}" required>
+                    {% if form.errors.question_count %}
+                        <small class="text-danger">{{ form.errors.question_count.0 }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3 col-12 col-md-6">
+                    <label class="form-label{% if form.errors.passing_score %} text-danger{% endif %}" for="passing_score">Question Count</label>
+                    <input type="number" name="passing_score" class="form-control{% if form.errors.passing_score %} border-danger{% endif %}" required>
+                    {% if form.errors.passing_score %}
+                        <small class="text-danger">{{ form.errors.passing_score.0 }}</small>
+                    {% endif %}
+                </div>
+
+                <!-- Button -->
+                <button class="btn btn-primary mt-4 ms-4" type="submit">Start Exam</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+
+{% block js %}
+<script src="{% static 'js/select_chapter.js' %}"></script>
+{% endblock %}

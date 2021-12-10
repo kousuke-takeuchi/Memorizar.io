@@ -474,3 +474,32 @@ class WorkbookWrongView(mixins.BaseMixin, View):
 
         context = dict(workbook=workbook, question=question, answers=answers, next_url=next_url)
         return render(request, self.template_name, context)
+
+
+class WorkbookExamView(mixins.BaseMixin, View):
+    template_name = 'workbooks/trainings/exam.html'
+
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    # チャプター一覧を表示
+    def get(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        service = services.WorkbookService()
+        form = forms.WorkbookExamForm(context={'request': request})
+        context = dict(form=form)
+        return render(request, self.template_name, context)
+    
+    # チャプターを関連付けて問題を開始
+    def post(self, request, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        training_type = models.Training.TrainingTypes.EXAM
+        form = forms.WorkbookExamForm(request.POST, context={'request': request, 'workbook': workbook, 'training_type': training_type})
+        if not form.is_valid():
+            service = services.WorkbookService()
+            context = dict(form=form)
+            return render(request, self.template_name, context)
+        training = form.save()
+        # 問題ページに移動
+        return redirect('workbooks:training_question', workbook_id=training.workbook.workbook_id, training_id=training.training_id)

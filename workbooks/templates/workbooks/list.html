@@ -67,6 +67,7 @@
 													<button type="submit" class="dropdown-item">間違えた問題から出題</button>
 												</form>
 												<a href="{% url 'workbooks:wrongs' workbook.workbook_id %}" class="dropdown-item">間違えた問題を復習</a>
+												<a href="{% url 'workbooks:training_exam' workbook.workbook_id %}" class="dropdown-item">模擬テスト</a>
 											</div>
 										</td>
 									</tr>

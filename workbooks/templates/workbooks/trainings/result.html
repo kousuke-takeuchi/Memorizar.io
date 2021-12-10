@@ -13,17 +13,38 @@
 						</div>
 					</div>
 
-					<div class="card-body">
-						<div class="col-12 pb-4 py-md-4 py-4">
-							<h3 class="mb-2">正解率 : <span class="{% if true_rate >= 80 %}text-success{% elif true_rate > 40 %}text-warning{% else %}text-danger{% endif %}">{{ true_rate }}%</span></h3>
-							<h3 class="mb-2">解答内容 : <b>{{ selection_count }}</b>問中<span class="{% if true_rate >= 80 %}text-success{% elif true_rate > 40 %}text-warning{% else %}text-danger{% endif %}">{{ true_count }}</span>問正解</h3>
-						</div>
+					<!-- 模擬テストの場合 -->
+					{% if training.training_type == training.TrainingTypes.EXAM %}
+						<div class="card-body">
+							<div class="col-12 pb-4 py-md-4 py-4">
+								{% if true_count > training.passing_score %}
+									<h2 class="mb-2 text-success">合格!</h2>
+									<h3 class="mb-2">正解率 : <span class="text-success">{{ true_rate }}%</span></h3>
+									<h3 class="mb-2">解答内容 : <b>{{ selection_count }}</b>問中<span class="text-success">{{ true_count }}</span>問正解</h3>
+								{% else %}
+									<h2 class="mb-2 text-danger">不合格</h2>
+									<h3 class="mb-2">正解率 : <span class="text-danger">{{ true_rate }}%</span></h3>
+									<h3 class="mb-2">解答内容 : <b>{{ selection_count }}</b>問中<span class="text-danger">{{ true_count }}</span>問正解</h3>
+								{% endif %}
+							</div>
 
-						<div class="pb-4 py-md-4 py-4">
-							<a href="{% url 'workbooks:list' %}" class="btn btn-primary btn-block btn-lg">もう一度</a>
-							<a href="{% url 'workbooks:detail' training.workbook.workbook_id %}" class="btn btn-default btn-block btn-lg">トップに戻る</a>
+							<div class="pb-4 py-md-4 py-4">
+								<a href="{% url 'workbooks:detail' training.workbook.workbook_id %}" class="btn btn-default btn-block btn-lg">トップに戻る</a>
+							</div>
 						</div>
-					</div>
+					{% else %}
+						<div class="card-body">
+							<div class="col-12 pb-4 py-md-4 py-4">
+								<h3 class="mb-2">正解率 : <span class="{% if true_rate >= 80 %}text-success{% elif true_rate > 40 %}text-warning{% else %}text-danger{% endif %}">{{ true_rate }}%</span></h3>
+								<h3 class="mb-2">解答内容 : <b>{{ selection_count }}</b>問中<span class="{% if true_rate >= 80 %}text-success{% elif true_rate > 40 %}text-warning{% else %}text-danger{% endif %}">{{ true_count }}</span>問正解</h3>
+							</div>
+
+							<div class="pb-4 py-md-4 py-4">
+								<a href="{% url 'workbooks:list' %}" class="btn btn-primary btn-block btn-lg">もう一度</a>
+								<a href="{% url 'workbooks:detail' training.workbook.workbook_id %}" class="btn btn-default btn-block btn-lg">トップに戻る</a>
+							</div>
+						</div>
+					{% endif %}
 				</div>
 			</div>
 		</div>
