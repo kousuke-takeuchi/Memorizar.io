@@ -1,5 +1,6 @@
-import API from "./API";
+import axios from 'axios';
 
+import API from "./API";
 import QuestionGroup from "../models/QuestionGroup";
 
 
@@ -10,6 +11,19 @@ export default class QuestionGroupAPI extends API {
         const questionGroupData = resp.data.question_group;
         const questionGroup = new QuestionGroup();
         return questionGroup;
+    }
+
+    async uploadImage(file, width, height, left, top) {
+        let path = `/api/workbooks/upload/`;
+        let headers = this.getHeader();
+        headers['Content-Type'] = 'multipart/form-data';
+        let formData = new FormData();
+        formData.append('file', file);
+        formData.append('width', width);
+        formData.append('height', height);
+        formData.append('left', left);
+        formData.append('top', top);
+        return axios.post(path, formData, { headers });
     }
 
     async createQuestionGroup(workbookId, questionGroup) {

@@ -58,10 +58,32 @@ class WorkbookImportView(mixins.BaseMixin, View):
         return redirect('workbooks:list')
 
 
+class WorkbookPreviousReviewView(mixins.BaseMixin, View):
+    def get_querysets(self):
+        last_selection = models.TrainingSelection.objects.all().order_by('-created_at').first()
+        if not last_selection:
+            return None
+        return last_selection.training.workbook
+    
+    def post(self, request):
+        # 前回のトレーニングから間違った箇所を出題
+        workbook = self.get_querysets()
+        print(workbook)
+        if not workbook:
+            return redirect('index')
+        form = forms.WorkbookTrainingCreateForm(request.POST, context={'request': request, 'workbook': workbook})
+        if not form.is_valid():
+            print(form.errors)
+            return redirect('index')
+        training = form.save()
+        return redirect('workbooks:training_question', workbook_id=training.workbook.workbook_id, training_id=training.training_id)
+
+
 class WorkbookDetailView(mixins.BaseMixin, View):
     template_name = 'workbooks/detail.html'
 
     def get_querysets(self, workbook_id):
+        # [TODO] QuestionGroupの一覧を返す
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
         trainings = models.TrainingSelection.objects.aggregate(training__workbook=workbook)[:5]
         questions = workbook.question_set.all().order_by('-created_at')
@@ -154,6 +176,17 @@ class WorkbookEditView(mixins.BaseMixin, View):
 
 
 class WorkbookDeleteView(mixins.BaseMixin, View):
+    def get_querysets(self, workbook_id):
+        workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
+        return workbook
+    
+    def post(self, _, workbook_id):
+        workbook = self.get_querysets(workbook_id)
+        workbook.delete()
+        return redirect('workbooks:list')
+
+
+class WorkbookArchiveView(mixins.BaseMixin, View):
     def get_querysets(self, workbook_id):
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
         return workbook
@@ -378,10 +411,11 @@ class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
             return render(request, self.not_found_template_name, context)
         
         # 問題集から次の問題と回答選択肢を選ぶ
-        question, answers = service.select_question(training)
+        # [TODO] QuestionもしくはQuestionGroupをコンテキストに入れるようにする
+        question, answers, selection_count = service.select_question(training)
 
         form = forms.WorkbookTrainingQuestionForm(context={'request': request})
-        context = dict(form=form, question=question, answers=answers, start_at=time.time())
+        context = dict(form=form, training=training, question=question, answers=answers, start_at=time.time(), selection_count=selection_count+1)
         return render(request, self.template_name, context)
     
     # 回答を送信
@@ -404,6 +438,7 @@ class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
         return redirect('workbooks:training_answer', training_id=training.training_id, selection_id=training_selection.training_selection_id)
 
 
+# [TODO] QuestionGroupを選択した場合のViewを複製して作る
 class WorkbookTrainingAnswerView(mixins.BaseMixin, View):
     template_name = 'workbooks/trainings/answer.html'
 

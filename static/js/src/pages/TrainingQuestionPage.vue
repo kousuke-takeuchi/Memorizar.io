@@ -6,7 +6,7 @@
                     <div class="card">
                         <div class="justify-content-between align-items-center card-header">
                             <div class="mb-3 mb-lg-0">
-                                <h3 class="mb-0">{{ question.title }}</h3>
+                                <h3 class="mb-0">{{ question.title }} ({{ training.selection_count }}/{{ training.question_count }})</h3>
                                 <span id="question-sentense" v-html="marked(question.sentense)"></span>
                             </div>
                             <div class="mb-3" v-if="question.image_urls">
@@ -62,6 +62,7 @@ export default {
             selected_answer: null,
             question: question,
             start_at: JSON.parse(document.getElementById('start_at').dataset.value),
+            training: JSON.parse(document.getElementById('training').dataset.value),
             didSelected: false,
         }
     },

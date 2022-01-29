@@ -70,6 +70,7 @@ class Question {
 Question.load_data = function (question_data, answers_data) {
     const question = new Question(answers_data.length);
     question.question_id = question_data.question_id;
+    question.title = question_data.title;
     question.sentense = question_data.sentense;
     question.image_urls = question_data.image_urls;
     question.commentary = question_data.commentary;

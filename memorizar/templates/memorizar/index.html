@@ -28,11 +28,32 @@
                     </div>
                     <!-- card body -->
                     <div class="card-body">
-                        <h3 class="mb-0 fw-semi-bold"><a href="{% url 'workbooks:list' %}" class="text-inherit">Start Training</a></h3>
-                        <p class="mb-3">学習を開始する</p>
+                        <h3 class="mb-0 fw-semi-bold"><a href="{% url 'workbooks:list' %}" class="text-inherit">Select Workbook</a></h3>
+                        <p class="mb-3">学習する問題集を選択</p>
                     </div>
                 </div>
             </a>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            <!-- card -->
+            <form action="{% url 'workbooks:previous_review' %}" method="POST" name="review_form">
+                {% csrf_token %}
+                <a href="javascript:review_form.submit()">
+                    <input type="hidden" name="training_type" value="MIST">
+                    <div class="card mb-4 card-hover">
+                        <!-- img -->
+                        <div class="card-img-top">
+                            <img src="{% static 'images/menu-training.jpeg' %}" alt=""
+                                class="rounded-top-md img-fluid">
+                        </div>
+                        <!-- card body -->
+                        <div class="card-body">
+                            <h3 class="mb-0 fw-semi-bold"><a href="{% url 'workbooks:list' %}" class="text-inherit">Start Review</a></h3>
+                            <p class="mb-3">前回間違えた問題の復習</p>
+                        </div>
+                    </div>
+                </a>
+            </form>
         </div>
         <div class="col-xl-3 col-lg-4 col-md-6 col-12">
             <!-- card -->

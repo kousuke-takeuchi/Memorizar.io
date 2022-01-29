@@ -13,7 +13,10 @@
                     <h3 class="mb-0">Edit Workbook</h3>
                     <span>問題集を編集</span>
                 </div>
-                <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteWorkbookModal" href="#">Delete</a>
+                <div class="buttons">
+                    <a class="btn btn-warning text-white" data-bs-toggle="modal" data-bs-target="#archiveWorkbookModal" href="#">Archive</a>
+                    <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteWorkbookModal" href="#">Delete</a>
+                </div>
             </div>
 
             <div class="card-body">
@@ -81,6 +84,29 @@
     </div>
 </div>
 
+
+<!-- アーカイブ確認モーダル -->
+<div class="modal fade" id="archiveWorkbookModal" tabindex="-1" aria-labelledby="archive-modal" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="archive-modal">問題集をアーカイブ</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+            <form method="POST" action="{% url 'workbooks:archive' workbook_id=workbook.workbook_id %}">
+                <div class="modal-body">
+                    <p>アーカイブに変更すると、実行履歴などは詳細ページから除外されますがよろしいですか？</p>
+				</div>
+
+                <div class="modal-footer">
+					{% csrf_token %}
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+					<button type="submit" class="btn btn-warning text-white" id="start-archive-btn">アーカイブ</button>
+				</div>
+            </form>
+		</div>
+	</div>
+</div>
 
 <!-- 削除確認モーダル -->
 <div class="modal fade" id="deleteWorkbookModal" tabindex="-1" aria-labelledby="delete-modal" aria-hidden="true">

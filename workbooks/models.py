@@ -158,6 +158,7 @@ class Training(BaseModel, models.Model):
         SELECT_CHAPTER = 'CHAP', 'Select Chapter'
         REVIEW_MISTAKE = 'MIST', 'Review Mistake'
         ORDERED = 'ORDR', 'Ordered'
+        NOT_SURE = 'NOTS', 'Not Sure'
         EXAM = 'EXAM', 'Exam'
 
     training_id = models.UUIDField('イベントID', default=uuid.uuid4, unique=True, db_index=True)

@@ -66,6 +66,11 @@
 													<input type="hidden" name="training_type" value="MIST">
 													<button type="submit" class="dropdown-item">間違えた問題から出題</button>
 												</form>
+												<form method="POST">
+													{% csrf_token %}
+													<input type="hidden" name="training_type" value="NOTS">
+													<button type="submit" class="dropdown-item">間違えた問題から出題</button>
+												</form>
 												<a href="{% url 'workbooks:wrongs' workbook.workbook_id %}" class="dropdown-item">間違えた問題を復習</a>
 												<a href="{% url 'workbooks:training_exam' workbook.workbook_id %}" class="dropdown-item">模擬テスト</a>
 											</div>

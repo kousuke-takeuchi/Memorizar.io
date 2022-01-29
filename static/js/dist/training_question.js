@@ -2173,6 +2173,7 @@ __webpack_require__.r(__webpack_exports__);
       selected_answer: null,
       question: question,
       start_at: JSON.parse(document.getElementById('start_at').dataset.value),
+      training: JSON.parse(document.getElementById('training').dataset.value),
       didSelected: false
     };
   },
@@ -2400,6 +2401,7 @@ class Question {
 Question.load_data = function (question_data, answers_data) {
   const question = new Question(answers_data.length);
   question.question_id = question_data.question_id;
+  question.title = question_data.title;
   question.sentense = question_data.sentense;
   question.image_urls = question_data.image_urls;
   question.commentary = question_data.commentary;
@@ -5518,7 +5520,14 @@ var render = function() {
               [
                 _c("div", { staticClass: "mb-3 mb-lg-0" }, [
                   _c("h3", { staticClass: "mb-0" }, [
-                    _vm._v(_vm._s(_vm.question.title))
+                    _vm._v(
+                      _vm._s(_vm.question.title) +
+                        " (" +
+                        _vm._s(_vm.training.selection_count) +
+                        "/" +
+                        _vm._s(_vm.training.question_count) +
+                        ")"
+                    )
                   ]),
                   _vm._v(" "),
                   _c("span", {

@@ -4,6 +4,7 @@ import openpyxl
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.db.models import Q
 
 from workbooks import models
 
@@ -275,24 +276,37 @@ class TrainingService:
     def select_questions(self, training):
         # ORMでSQL発行すると副クエリが大量に発生するため、
         # 1問題集に含まれる問題数はさほど多くないので、pythonのリストでフィルター処理する
+        
+        # 問題取得の際に、単発の問題と問題グループを分けておく
+        # [TODO] first_questions_in_groupは、問題グループの最初の問題を格納
 
         if training.training_type == models.Training.TrainingTypes.SELECT_CHAPTER:
             # チャプターを指定する場合は、選ばれたチャプターの中から問題を取得
             chapters = training.chapters.all()
-            questions = models.Question.objects.filter(workbook=training.workbook)
+            questions = models.Question.objects.filter(workbook=training.workbook, group=None)
+            first_questions_in_group = models.Question.objects.filter(workbook=training.workbook).filter(~Q(group=None))
         elif training.training_type == models.Training.TrainingTypes.REVIEW_MISTAKE:
             # 選択されたチャプターから間違えた問題のみ取得
             chapters = training.chapters.all()
             wrong_selections = models.TrainingSelection.objects.filter(training__workbook=training.workbook, correct=False).order_by('question').distinct()
-            questions = [wrong_selection.question for wrong_selection in wrong_selections]
+            questions = [wrong_selection.question for wrong_selection in wrong_selections if wrong_selection.question.group is None]
+            first_questions_in_group = [wrong_selection.question for wrong_selection in wrong_selections if wrong_selection.question.group is not None]
         elif training.training_type == models.Training.TrainingTypes.ORDERED:
             # 選択されたチャプターから問題を順番に実行
             chapters = training.chapters.all()
-            questions = models.Question.objects.filter(workbook=training.workbook).order_by('index')
+            questions = models.Question.objects.filter(workbook=training.workbook, group=None).order_by('index')
+            first_questions_in_group = models.Question.objects.filter(workbook=training.workbook).filter(~Q(group=None)).order_by('index')
+        elif training.training_type == models.Training.TrainingTypes.NOT_SURE:
+            # 迷った問題から取得
+            chapters = training.chapters.all()
+            not_sure_questions = models.TrainingSelection.objects.filter(training__workbook=training.workbook, confident=True).order_by('question').distinct()
+            questions = [wrong_selection.question for wrong_selection in not_sure_questions if wrong_selection.question.group is None]
+            first_questions_in_group = [wrong_selection.question for wrong_selection in not_sure_questions if wrong_selection.question.group is not None]
         else:
             # 指定されない場合はすべてのチャプターから問題を取得, 模擬テストの場合も同様
             chapters = models.Chapter.objects.filter(workbook=training.workbook)
-            questions = models.Question.objects.filter(workbook=training.workbook)
+            questions = models.Question.objects.filter(workbook=training.workbook, group=None)
+            first_questions_in_group = models.Question.objects.filter(workbook=training.workbook).filter(~Q(group=None))
 
         # すでに回答された問題
         answered_question_ids = models.TrainingSelection.objects.filter(training=training).values_list('question__question_id')
@@ -300,31 +314,37 @@ class TrainingService:
         # 選択されたチャプターのID
         chapter_ids = chapters.values_list('chapter_id')
         chapter_ids = [x[0] for x in chapter_ids]
+        
+        # [TODO] 回答されていない問題と問題グループを検索
 
         rest_questions = []
+        rest_question_groups = []
         for question in questions:
             if not question.question_id in answered_question_ids and question.chapter.chapter_id in chapter_ids:
                 rest_questions.append(question)
-        return rest_questions
+        # まだ出題されていない問題、問題グループ、実施済み問題数を返す
+        return rest_questions, rest_question_groups, len(answered_question_ids)
 
     def select_question(self, training):
         # まだ回答されていない問題から、ランダムに問題を取得する
-        questions = self.select_questions(training)
-        if len(questions) == 0:
+        questions, rest_question_groups, selection_count = self.select_questions(training)
+        if len(questions) == 0 and len(rest_question_groups) == 0:
             return None, []
+        # [TODO] questionだけ返して、後ほど別の関数でquestion_group[question, answers]を取得するようにする
         question = questions[random.randint(0, len(questions)-1)]
         answers = models.Answer.objects.filter(question=question)
 
-        return question, answers
+        # 問題、回答選択肢、現在の問題番号を返す
+        return question, answers, selection_count
     
     def did_finish(self, training):
         # 問題集をすべて解き終わったかどうか
-        rest_questions = self.select_questions(training)
-        if len(rest_questions) == 0:
+        rest_questions, rest_question_groups, selection_count = self.select_questions(training)
+        if len(rest_questions) == 0  and len(rest_question_groups) == 0:
             return True
         
         # 10問解いた場合も終了
         selected_questions = models.TrainingSelection.objects.filter(training=training)
-        if len(selected_questions) >= training.question_count:
+        if len(selected_questions) + len(rest_question_groups) >= training.question_count:
             return True
         return False

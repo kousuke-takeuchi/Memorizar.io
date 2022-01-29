@@ -24,7 +24,14 @@
 
                 <div class="mb-12 col-12 col-md-12">
                     <label class="form-label" for="sentense">Sentense</label>
-                    <textarea name="sentense" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.sentense}" v-model="questionGroup.sentense" placeholder="問題グループ本文" required></textarea>
+                    <quill-editor
+                            v-model='questionGroup.sentense'
+                            ref='textEditor'
+                            :options='editorOption'
+                            class="from-control"
+                            :class="{'is-invalid': errors.sentense}"
+                        />
+                    <!-- <textarea name="sentense" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.sentense}" v-model="questionGroup.sentense" placeholder="問題グループ本文" required></textarea> -->
                     <div id="validationSentenseFeedback" class="invalid-feedback" v-if="errors.sentense">{{ errors.sentense }}</div>
                 </div>
 
@@ -60,14 +67,21 @@
 
                     <div class="mb-12 col-12 col-md-12">
                         <label class="form-label" for="sentense">Sentense</label>
-                        <textarea name="sentense" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.sentense}" v-model="question.sentense" placeholder="問題本文" required></textarea>
+                        <quill-editor
+                            v-model='question.sentense'
+                            ref='textEditor'
+                            :options='editorOption'
+                            class="from-control"
+                            :class="{'is-invalid': errors.sentense}"
+                        />
+                        <!-- <textarea name="sentense" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.sentense}" v-model="question.sentense" placeholder="問題本文" required></textarea> -->
                         <div id="validationSentenseFeedback" class="invalid-feedback" v-if="errors.sentense">{{ errors.sentense }}</div>
                     </div>
 
                     <div class="row">
                         <div class="custom-file mb-3 col-12 col-md-6">
                             <label class="form-label" for="image">Figure (Option)</label>
-                            <input type="file" class="form-control custom-file-input" name="image">
+                            <input type="file" class="form-control custom-file-input" name="image" @change.prevent="changeImage($event, question, 'image')">
                         </div>
                     </div>
 
@@ -77,9 +91,9 @@
                     <h4 class="mb-0">Selections</h4>
                     <p class="mb-4">回答選択肢 (4つ)</p>
 
-                    <draggable class="row" @change.prevent="onChangedAnswers(question)">
+                    <div class="row">
                         <AnswerForm :answer="answer" :key="answer.index" v-for="answer in question.answers" />
-                    </draggable>
+                    </div>
 
                     <div class="row">
                         <div class="mb-3 col-12 col-md-6">
@@ -102,13 +116,19 @@
                     
                     <div class="mb-3 col-12 col-md-12">
                         <label class="form-label" for="commentary">Commentary</label>
-                        <textarea name="commentary" cols="30" rows="10" class="form-control" :class="{'is-invalid': errors.commentary}" v-model="question.commentary" placeholder="問題本文" required></textarea>
+                        <quill-editor
+                            v-model='question.commentary'
+                            ref='textEditor'
+                            :options='editorOption'
+                            class="from-control"
+                            :class="{'is-invalid': errors.commentary}"
+                        />
                         <div id="validationCommentaryFeedback" class="invalid-feedback" v-if="errors.commentary">{{ errors.commentary }}</div>
                     </div>
 
                     <div class="custom-file mb-3 col-12 col-md-6">
                         <label class="form-label" for="chapter_id">Figure (Option)</label>
-                        <input type="file" class="form-control custom-file-input" name="commentary_image">
+                        <input type="file" class="form-control custom-file-input" name="commentary_image" @change.prevent="changeImage($event, question, 'commentary_image')">
                     </div>
 
                     <hr class="my-5">
@@ -128,6 +148,9 @@
             </form>
         </div>
     </div>
+
+    <!-- 画像編集モーダル -->
+    <image-crop-modal :file="editingImage.file" :data="editingImage.data" v-if="editingImage.data" @crop="finishChangeImage" @cancel="cancelChangeImage" />
 </div>
 </template>
 
@@ -140,12 +163,13 @@ import Question from '../models/Question';
 import AnswerForm from '../components/AnswerForm';
 import QuestionGroupAPI from '../apis/QuestionGroupAPI';
 
+import ImageCropModal from '../components/ImageCropModal';
 
 export default {
     name: 'CreateQuestionGroupPage',
     components: {
         AnswerForm,
-        draggable,
+        ImageCropModal,
     },
     data: function () {
         let regex = /.*\/workbooks\/([0-9a-z\-]+)\/questions\/new_group\/+/i
@@ -157,8 +181,25 @@ export default {
             workbookId: workbookId,
             api: api,
             questionGroup: new QuestionGroup(),
+            editingQuestion: null,
             chapters: JSON.parse(document.getElementById('chapters').dataset.value),
             errors: {},
+            editingImage: {
+                file: null,
+                data: null,
+                type: null,
+            },
+            editorOption: {
+                placeholder: 'What’s on your mind?',
+                theme: 'snow',
+                modules: {
+                    markdownShortcuts: {},
+                    toolbar: [
+                        [{ header: [1, 2, 3, 4, 5, false] }],
+                        ['blockquote', 'bold', 'italic', 'link', 'code-block']
+                    ]
+                }
+            }
         }
     },
     beforeMount() {
@@ -173,14 +214,46 @@ export default {
         }
     },
     methods: {
+        changeImage(e, question, type) {
+            let file = e.target.files[0];
+            let reader = new FileReader();
+            let that = this;
+            this.editingQuestion = question;
+            reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                let data = e.target.result;
+                that.editingImage = { data, file, type };
+            };
+        },
+        async finishChangeImage(file, width, height, left, top) {
+            this.$isLoading(true);
+            await this.editingQuestion.upload(this.api, file, width, height, left, top).then(url => {
+                if (this.editingImage.type == 'image') {
+                    this.editingQuestion.image_urls = [url];
+                } else if (this.editingImage.type == 'commentary_image') {
+                    this.editingQuestion.commentary_image_urls = [url];
+                }
+                this.editingImage = {
+                    data: null,
+                    file: null,
+                    type: null,
+                }
+            }).finally(() => {
+                this.$isLoading(false);
+            });
+        },
+        cancelChangeImage() {
+            this.editingImage = {
+                data: null,
+                file: null,
+                type: null,
+            }
+        },
         addQuestion() {
             this.questionGroup.addNewQuestion();
         },
         selectedChapter(e) {
             this.questionGroup.setChapter(e.target.value)
-        },
-        onChangedAnswers(question) {
-            question.reindex();
         },
         async createQuestionGroup() {
             this.api.createQuestionGroup(this.workbookId, this.questionGroup).then(data => {

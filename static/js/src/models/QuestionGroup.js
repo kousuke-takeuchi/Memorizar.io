@@ -11,7 +11,12 @@ class QuestionGroup {
     }
 
     addNewQuestion() {
-        this.questions.push(new Question(4));
+        let question = new Question(4);
+        let lastQuestion = this.questions[this.questions.length - 1];
+        for (let index in question.answers) {
+            question.answers[index].sentense = lastQuestion.answers[index].sentense;
+        }
+        this.questions.push(question);
     }
 
     setChapter(chapterId) {
