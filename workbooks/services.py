@@ -278,7 +278,7 @@ class TrainingService:
         # 1問題集に含まれる問題数はさほど多くないので、pythonのリストでフィルター処理する
         
         # 問題取得の際に、単発の問題と問題グループを分けておく
-        # [TODO] first_questions_in_groupは、問題グループの最初の問題を格納
+        # first_questions_in_groupは、問題グループの最初の問題を格納
 
         if training.training_type == models.Training.TrainingTypes.SELECT_CHAPTER:
             # チャプターを指定する場合は、選ばれたチャプターの中から問題を取得
@@ -307,31 +307,57 @@ class TrainingService:
             chapters = models.Chapter.objects.filter(workbook=training.workbook)
             questions = models.Question.objects.filter(workbook=training.workbook, group=None)
             first_questions_in_group = models.Question.objects.filter(workbook=training.workbook).filter(~Q(group=None))
+        
+        # 問題グループでは、グループ内の最初の問題だけ取り出す
+        group_hash = {}
+        for question in first_questions_in_group:
+            group_hash[question.group] = question
+        first_questions_in_group = list(group_hash.values())
 
         # すでに回答された問題
         answered_question_ids = models.TrainingSelection.objects.filter(training=training).values_list('question__question_id')
         answered_question_ids = [x[0] for x in answered_question_ids]
+        
+        # 過去に回答された問題
+        trained_question_ids = models.TrainingSelection.objects.values_list('question__question_id')
+        trained_question_ids = [x[0] for x in trained_question_ids]
+        trained_question_ids = list(set(trained_question_ids))
+        
         # 選択されたチャプターのID
         chapter_ids = chapters.values_list('chapter_id')
         chapter_ids = [x[0] for x in chapter_ids]
         
-        # [TODO] 回答されていない問題と問題グループを検索
-
+        # 回答されていない問題と問題グループを検索
         rest_questions = []
         rest_question_groups = []
         for question in questions:
             if not question.question_id in answered_question_ids and question.chapter.chapter_id in chapter_ids:
                 rest_questions.append(question)
+        for question in first_questions_in_group:
+            if not question.question_id in answered_question_ids and question.chapter.chapter_id in chapter_ids:
+                rest_question_groups.append(question)
         # まだ出題されていない問題、問題グループ、実施済み問題数を返す
-        return rest_questions, rest_question_groups, len(answered_question_ids)
+        return rest_questions, rest_question_groups, len(answered_question_ids), trained_question_ids
+    
+    def get_unanswered_questions(self, questions, trained_question_ids):
+        unanswered_questions = []
+        for question in questions:
+            if not question.question_id in trained_question_ids:
+                unanswered_questions.append(question)
+        return unanswered_questions
 
     def select_question(self, training):
         # まだ回答されていない問題から、ランダムに問題を取得する
-        questions, rest_question_groups, selection_count = self.select_questions(training)
+        questions, rest_question_groups, selection_count, trained_question_ids = self.select_questions(training)
         if len(questions) == 0 and len(rest_question_groups) == 0:
             return None, []
-        # [TODO] questionだけ返して、後ほど別の関数でquestion_group[question, answers]を取得するようにする
-        question = questions[random.randint(0, len(questions)-1)]
+        # questionだけ返して、後ほど別の関数でquestion_group[question, answers]を取得するようにする
+        questions += rest_question_groups
+        unanswered_questions = self.get_unanswered_questions(questions, trained_question_ids)
+        if len(unanswered_questions) > 0:
+            question = unanswered_questions[random.randint(0, len(unanswered_questions)-1)]
+        else:
+            question = questions[random.randint(0, len(questions)-1)]
         answers = models.Answer.objects.filter(question=question)
 
         # 問題、回答選択肢、現在の問題番号を返す
@@ -339,7 +365,7 @@ class TrainingService:
     
     def did_finish(self, training):
         # 問題集をすべて解き終わったかどうか
-        rest_questions, rest_question_groups, selection_count = self.select_questions(training)
+        rest_questions, rest_question_groups, selection_count, trained_question_ids = self.select_questions(training)
         if len(rest_questions) == 0  and len(rest_question_groups) == 0:
             return True
         

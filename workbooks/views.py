@@ -83,17 +83,17 @@ class WorkbookDetailView(mixins.BaseMixin, View):
     template_name = 'workbooks/detail.html'
 
     def get_querysets(self, workbook_id):
-        # [TODO] QuestionGroupの一覧を返す
         workbook = get_object_or_404(models.Workbook, workbook_id=workbook_id)
         trainings = models.TrainingSelection.objects.aggregate(training__workbook=workbook)[:5]
         questions = workbook.question_set.all().order_by('-created_at')
+        groups = models.QuestionGroup.objects.filter(workbook=workbook).order_by('-created_at')
         p = Paginator(questions, 10)
         page = self.request.GET.get('page', 1)
-        return workbook, trainings, p.page(page)
+        return workbook, trainings, p.page(page), groups
     
     def get(self, request, workbook_id):
         # 問題集の実施結果集計
-        workbook, trainings, questions = self.get_querysets(workbook_id)
+        workbook, trainings, questions, groups = self.get_querysets(workbook_id)
         service = services.WorkbookService()
         chapters = service.get_chapters(workbook)
         dates, learning_counts, correct_counts = service.aggregate_daily(workbook)
@@ -105,6 +105,7 @@ class WorkbookDetailView(mixins.BaseMixin, View):
                 dates=dates,
                 learning_counts=learning_counts,
                 correct_counts=correct_counts,
+                groups=groups,
             )
         return render(request, self.template_name, context)
     
@@ -411,7 +412,6 @@ class WorkbookTrainingQuestionView(mixins.BaseMixin, View):
             return render(request, self.not_found_template_name, context)
         
         # 問題集から次の問題と回答選択肢を選ぶ
-        # [TODO] QuestionもしくはQuestionGroupをコンテキストに入れるようにする
         question, answers, selection_count = service.select_question(training)
 
         form = forms.WorkbookTrainingQuestionForm(context={'request': request})

@@ -13,5 +13,9 @@
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'js/dist/training_question.js' %}"></script>
+{% if question.group %}
+    <script src="{% static 'js/dist/training_question_group.js' %}"></script>
+{% else %}
+    <script src="{% static 'js/dist/training_question.js' %}"></script>
+{% endif %}
 {% endblock %}
